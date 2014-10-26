@@ -402,7 +402,8 @@ app.factory('osmdocHierarchyService', ['$http', function($http) {
     	loadHierarchy:function($scope, language) {
     		$http.get(API_ROOT + '/osmdoc/hierachy', {
     			'params' : {
-    				'lang': language
+    				'lang': language,
+    				'hierarchy': 'osm-ru'
     			}
 	    	}).success(function(data) {
 	                
