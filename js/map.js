@@ -96,10 +96,12 @@ app.directive('ngEnter', function() {
 			    $scope.map.panTo($scope.map.unproject(px),{animate: false});
 			    
 			    $scope.activeFeatureID = e.popup._source.feature_id;
+			    $scope.$digest();
 			});
 
 			$scope.map.on('popupclose', function(e) {
 				$scope.activeFeatureID = '';
+				$scope.$digest();
 			});
 			
 		});
