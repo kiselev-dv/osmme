@@ -100,7 +100,7 @@ app.directive('ngEnter', function() {
 			});
 
 			$scope.map.on('popupclose', function(e) {
-				$scope.activeFeatureID = '';
+				$scope.activeFeatureID = null;
 				$scope.$digest();
 			});
 			
@@ -111,7 +111,8 @@ app.directive('ngEnter', function() {
 				function() {
 					$scope.activeFeatureID = $location.search()['fid'];
 					$scope.explain = !!($location.search()['explain']);
-				}
+				},
+				true
 		);
 		
 		$scope.$watch('activeFeatureID', function(term) {
@@ -444,7 +445,8 @@ app.factory('SearchAPI', ['$http', function($http) {
 					'lon':$scope.pagesCenter.lng,
 					'mark':('' + $scope.cathegories + $scope.searchQuerry).hashCode(),
 					'page':page,
-					'explain':$scope.explain
+					'explain':$scope.explain,
+					'hierarchy':'osm-ru'
 				}
 			}).success(function(data) {
 				if(data.result == 'success') {
@@ -505,7 +507,8 @@ app.factory('SearchAPI', ['$http', function($http) {
 					'bbox':$scope.map.getBounds().toBBoxString(),
 					'size':50,
 					'page':page,
-					'mark':('' + $scope.cathegories + $scope.searchQuerry).hashCode()
+					'mark':('' + $scope.cathegories + $scope.searchQuerry).hashCode(),
+					'hierarchy':'osm-ru'
 				}
 			}).success(function(data) {
 				if(data.result == 'success') {
