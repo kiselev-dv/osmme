@@ -1,5 +1,5 @@
 <script type="text/ng-template"  id="PoiTreeItem.html">
-	<input type="checkbox" ng-model="data.selected" ng-change="select(data, 'groups')"></input>
+	<input type="checkbox" ng-model="data.selected" ng-change="selectCathegory(data, 'groups')"></input>
     <a ng-click="expand(data);" 
 		ng-class="{'not-empty':(data.groups.length!=0 || data.features.length!=0)}">
 		{{data.title}}
@@ -7,8 +7,8 @@
     <ul ng-show="data.expanded">
         <li ng-repeat="data in data.groups" ng-include="'PoiTreeItem.html'"></li>
 		<li class="feature" ng-repeat="feature in data.features">
-			<input type="checkbox" ng-model="feature.selected" ng-change="select(feature, 'features');"></input>
-			<a ng-click="feature.selected = !!!feature.selected; select(feature, 'features');">{{feature.title}}</a>
+			<input type="checkbox" ng-model="feature.selected" ng-change="selectCathegory(feature, 'features');"></input>
+			<a ng-click="feature.selected = !!!feature.selected; selectCathegory(feature, 'features');">{{feature.title}}</a>
 		</li>
     </ul>
 </script>
@@ -23,10 +23,10 @@
 	    		<input id="serch-input" class="field ui-autocomplete-input ui-widget" 
 	    			type="search" placeholder="{{translation['map.js.input.search.placeholder']}}" 
 	    			autofocus="" autocomplete="off" name="q" ng-model="searchQuerry" 
-	    			ng-enter="find();">
+	    			ng-enter="$broadcast('Search', searchQuerry);">
 	    		<input type="submit" id="search-button" 
 	    			value="{{translation['map.js.button.search']}}"
-	    			class="button" ng-click="find();"/> 
+	    			class="button" ng-click="$broadcast('Search', searchQuerry);"/> 
 			</form>    	 
     	</div>
     </div>
@@ -36,7 +36,9 @@
 				<pre id="explanation" ng-show="explanation">{{explanation}}</pre>
 				<div id="search-results" ng-show="searchResultsPage.features">
 					<ul>
-						<li ng-repeat="f in searchResultsPage.features" class="search-result" ng-click="selectRow(f)">
+						<li ng-repeat="f in searchResultsPage.features" 
+							ng-class="{selected: f.feature_id == activeFeatureID}" 
+							class="search-result" ng-click="selectRow(f);">
 							<div class="title" ng-show="f.name || f.poi_class_names">{{formatSearchResultTitle(f)}}</div>
 							<div class="address">{{formatSearchResultAddress(f)}}</div>
 						</li>

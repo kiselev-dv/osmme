@@ -1,122 +1,191 @@
-var meSearch = angular.module('meSearch', [  ]);
+var meSearch = angular.module('meSearch', [ 'meMap', 'meOSMDoc' ]);
 
-meSearch.factory('search', ['$http', '$rootScope', function($http, $rootScope) {  
+meSearch.factory('search', ['$http', 'mapService', 'docTree', 
+    function($http, mapService, docTree) {  
 	
-	$rootScope.$on('MapViewChanged', function(map) {
-//		if (!$scope.pagesMode) {
-			service.listPOI(map, 1);
-//		}
-	});
+	    var service = {
+	    	
+	    	attach: function($scope) {
+	    		$scope.$on('MapViewChanged', function(event) {
+	    			if (!service.pagesMode) {
+	    				service.listPOI.apply(service, [$scope, 1]);
+	    			}
+	    		});
+	    		
+	    		$scope.$on('SelectCathegoryTreeNode', function(){
+	    			service.pagesMode = false;
+	    			service.listPOI.apply(service, [$scope, 1]);
+	    		});
 
-    var service = {
-    	
-		search:function($scope, page) {
-			
-			if($scope.cathegories.features.length == 0 
-					&& $scope.cathegories.groups == 0
-					&& !$scope.searchQuerry) {
+	    		$scope.$on('UnselectCathegoryTreeNode', function(){
+	    			service.pagesMode = false;
+	    			service.listPOI.apply(service, [$scope, 1]);
+	    		});
+	    	
+	    		$scope.$on('Search', function() {
+	    			service.pagesCenter = mapService.map.getCenter();
+	    			service.search.apply(service, [$scope, 1]);
+	    		});
+
+	    		$scope.$on('SelectFeature', function(evnt, f) {
+	    			mapService.openPopUP($scope, f.feature_id);
+	    		});
+	    		
+	    		$scope.searchResultsPage = {};
+	    		
+	    		$scope.getSRPages = function(){
+	    			service.listPages($scope);
+	    		} 
+	    		
+	    		$scope.goPage = function(p) {
+	    			service.search($scope, p.p);
+	    		};
+	    	},
+	    	
+			search: function($scope, page) {
 				
-				return;
-			}
-			
-			$http.get(API_ROOT + '/feature/_search', {
-				'params' : {
-					'q':$scope.searchQuerry,
-					'poiclass':$scope.cathegories.features,
-					'poigroup':$scope.cathegories.groups,
-					'lat':$scope.pagesCenter.lat,
-					'lon':$scope.pagesCenter.lng,
-					'mark':('' + $scope.cathegories + $scope.searchQuerry).hashCode(),
-					'page':page,
-					'explain':$scope.explain,
-					'hierarchy':'osm-ru'
+				if(this.isEmpty($scope)) {
+					return;
 				}
-			}).success(function(data) {
+				
+				$http.get(API_ROOT + '/feature/_search', {
+					'params' : {
+						'q':$scope.searchQuerry,
+						'poiclass': docTree.cathegories.features,
+						'poigroup': docTree.cathegories.groups,
+						'lat':this.pagesCenter.lat,
+						'lon':this.pagesCenter.lng,
+						'mark':this.getHash($scope),
+						'page':page,
+						'explain':$scope.explain,
+						'hierarchy':'osm-ru'
+					}
+				}).success(function(data) {
+					service.searchSuccess.apply(service, [$scope, data]);
+				});
+			},
+
+			searchSuccess: function($scope, data) {
 				if(data.result == 'success') {
-					var curentHash = ('' + $scope.cathegories + $scope.searchQuerry).hashCode();
+					var curentHash = this.getHash($scope);
 					if(data.mark == curentHash) {
 						
-						angular.forEach($scope.searchResultsPage.features, function(f){
-							if($scope.id2Feature[f.feature_id] !== undefined){
-								$scope.map.removeLayer($scope.id2Marker[f.feature_id]);
-								delete $scope.id2Feature[f.feature_id];
-								delete $scope.id2Marker[f.feature_id];
-								$scope.activeFeatureID = '';
-							}
-						});
+						mapService.closePopUP($scope, $scope.activeFeatureID);
+						
+						if($scope.searchResultsPage && $scope.searchResultsPage.features) {
+							angular.forEach($scope.searchResultsPage.features, function(f){
+								mapService.remove($scope, f.feature_id);
+							});
+						}
 
 						$scope.searchResultsPage = data;
 						$scope.getSRPages();
 						
 						var pointsArray = [];
 						angular.forEach(data.features, function(f, index){
-							if($scope.id2Feature[f.feature_id] == undefined){
-								$scope.id2Feature[f.feature_id] = f;
-								
-								var m = L.marker(f.center_point);
-								$scope.id2Marker[f.feature_id] = m;
-								m.feature_id = f.feature_id;
-								m.addTo($scope.map).bindPopup(createPopUP(f, $scope));
-								
-								pointsArray.push(f.center_point);
-								
-								if(data.explanations && data.explanations[index]) {
-									f._explanation = data.explanations[index];
-								}
-							}
+							mapService.createPopUP($scope, f, f.feature_id);
+							pointsArray.push(f.center_point);
 						});
 						
-						$scope.map.fitBounds(L.latLngBounds(pointsArray));
-						$scope.pagesMode = true;
+						mapService.map.fitBounds(L.latLngBounds(pointsArray));
+						this.pagesMode = true;
 					}
 				}
-			});
-		},
-    			
-		listPOI:function($scope, page) {
+			},
 			
-			if($scope.cathegories.features.length == 0 
-					&& $scope.cathegories.groups == 0
-					&& !$scope.searchQuerry) {
-				
-				return;
-			}
+			getHash: function($scope) {
+				return ('' + docTree.cathegories + $scope.searchQuerry).hashCode();
+			},
 			
-			$http.get(API_ROOT + '/feature/_search', {
-				'params' : {
-					'q':$scope.searchQuerry,
-					'poiclass':$scope.cathegories.features,
-					'poigroup':$scope.cathegories.groups,
-					'bbox':$scope.map.getBounds().toBBoxString(),
-					'size':50,
-					'page':page,
-					'mark':('' + $scope.cathegories + $scope.searchQuerry).hashCode(),
-					'hierarchy':'osm-ru'
+			listPOI:function($scope, page) {
+
+				if(this.isEmpty($scope)) {
+					return;
 				}
-			}).success(function(data) {
-				if(data.result == 'success') {
-					var curentHash = ('' + $scope.cathegories + $scope.searchQuerry).hashCode();
-					if(data.mark == curentHash) {
-						angular.forEach(data.features, function(f, index){
-							if($scope.id2Feature[f.feature_id] == undefined){
-								$scope.id2Feature[f.feature_id] = f;
-								
-								var m = L.marker(f.center_point);
-								$scope.id2Marker[f.feature_id] = m;
-								m.feature_id = f.feature_id;
-								m.addTo($scope.map).bindPopup(createPopUP(f, $scope));
+				
+				$http.get(API_ROOT + '/feature/_search', {
+					'params' : {
+						'q':$scope.searchQuerry,
+						'poiclass':docTree.cathegories.features,
+						'poigroup':docTree.cathegories.groups,
+						'bbox':mapService.map.getBounds().toBBoxString(),
+						'size':50,
+						'page':page,
+						'mark': this.getHash($scope),
+						'hierarchy':'osm-ru'
+					}
+				}).success(function(data) {
+					if(data.result == 'success') {
+						var curentHash = service.getHash($scope);
+						if(data.mark == curentHash) {
+							angular.forEach(data.features, function(f, index){
+								mapService.createPopUP($scope, f);
+							});
+							
+							//load data paged but no more than 1000 items
+							if(data.page * data.size < data.hits && data.page < 20) {
+								service.listPOI($scope, data.page + 1);
 							}
-						});
-						
-						//load data paged but no more than 1000 items
-						if(data.page * data.size < data.hits && data.page < 20) {
-							searchAPIFactory.listPOI($scope, data.page + 1);
 						}
 					}
-				}
-			});
-		}
-    };
-    
-    return service;
+				});
+			},
+			
+			isEmpty: function($scope) {
+				return (!$scope.searchQuerry && 
+				docTree.cathegories.features.length == 0 && 
+				docTree.cathegories.groups == 0);
+			},
+			
+			listPages: function($scope) {
+    			
+    			var r = {};
+    			
+    			if($scope.searchResultsPage) {
+    				
+    				var total = $scope.searchResultsPage.hits;
+    				var page = $scope.searchResultsPage.page;
+    				var pageSize = $scope.searchResultsPage.size;
+    				var maxPage = parseInt(total/pageSize);
+    				if(total % pageSize == 0) {
+    					maxPage += 1;
+    				}
+    				
+    				for(var i = 1; i <= maxPage && i <= 8; i++){
+    					r[i] = {
+    							'p':i,
+    							'active':page == i
+    					};
+    				}
+    				
+    				for(var i = page - 1; i <= page + 1; i++){
+    					if(i > 0 && i <= maxPage) {
+    						r[i] = {
+    								'p':i,
+    								'active':page == i
+    						};
+    					}
+    				}
+    				
+    				for(var i = maxPage - 2; i <= maxPage; i++){
+    					if(i > 0) {
+    						r[i] = {
+    								'p':i,
+    								'active':page == i
+    						};
+    					}
+    				}
+    			}
+    			var rarr = [];
+    			angular.forEach(r, function(v){
+    				rarr.push(v);
+    			});
+    			
+    			rarr.sort(function (a, b) { return a.p - b.p; });
+    			
+    			$scope.srPages = rarr;
+    		}
+	    };
+	    
+	    return service;
 }]);

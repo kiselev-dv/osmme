@@ -128,6 +128,9 @@ input, textarea, form:active, input:focus {
 .search-result {
 	padding: 0 5px 4px 5px;
 }
+#search-results .selected {
+	background-color: #FFD296;
+}
 .search-result:HOVER {
 	background-color: #FAFAFA;
 }
