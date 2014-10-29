@@ -51,12 +51,19 @@ app.controller('MapController',['$scope', '$cookies', 'i18nService', 'mapService
  function ($scope, $cookies, i18nService, mapService, search, 
 		 docTree, details, iGeocoder, $location) {
 	
+	var ls = $location.search();
+
 	$scope.name2FClass = {};
 	docTree.loadTree($scope, 'ru', 'osm-ru');
 	
 	i18nService.getTranslation($scope, 'ru', true, function(){
 		
-		var map = mapService.createMap($scope);
+		var zlatlon = [null, null, null];
+		if(ls['map']) {
+			zlatlon = ls['map'].split(',');
+		}
+		
+		var map = mapService.createMap($scope, zlatlon[1], zlatlon[2], zlatlon[0]);
 		iGeocoder.create($scope, map);
 		
 		docTree.attach($scope);
@@ -64,9 +71,9 @@ app.controller('MapController',['$scope', '$cookies', 'i18nService', 'mapService
 		
 	});
 	
-	var ls = $location.search();
 	$scope.activeFeatureID = ls['fid'];
 	$scope.explain = ls['explain'];
+	$scope.content = (ls['details'] === undefined) ? 'map' : 'details';
 	
 	if($scope.activeFeatureID) {
 		details.showPopup($scope, $scope.activeFeatureID);
@@ -84,6 +91,13 @@ app.controller('MapController',['$scope', '$cookies', 'i18nService', 'mapService
 		else if(oldId) {
 			details.closePopup($scope, oldId);
 		}
+		
+		$scope.content = (ls['details'] === undefined) ? 'map' : 'details';
+		
+		if(ls['map']) {
+			var zlatlon = ls['map'].split(',');
+			mapService.setView(zlatlon[1], zlatlon[2], zlatlon[0]);
+		}
 	});
 	
 	$scope.$on('PopupClose', function(evnt, fid) {
@@ -94,7 +108,10 @@ app.controller('MapController',['$scope', '$cookies', 'i18nService', 'mapService
 		$location.search('fid', fid);
 	});
 	
-	
+	$scope.$on('MapViewChanged', function() {
+		$location.search('map', mapService.getStateString()).replace();
+	});
+
 	$scope.formatSearchResultTitle = function(f) {
 		
 		if(f.name || f.poi_class_names) {
@@ -118,7 +135,7 @@ app.controller('MapController',['$scope', '$cookies', 'i18nService', 'mapService
 		$scope.$broadcast('SelectFeature', f);
 	}; 
 	
-}]);	
+}]);
 
 function getAddress(f) {
 	

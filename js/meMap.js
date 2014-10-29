@@ -1,10 +1,10 @@
-var MapModule = angular.module('meMap', [ 'meI18n' ]);
+var MapModule = angular.module('meMap', [ 'ngCookies', 'meI18n' ]);
 
 //Hide from common namespace
 (function( ng, module ) {
 	
-	module.factory('mapService', [ 'i18nService', '$rootScope',  
-   		function(i18nService, $rootScope) {
+	module.factory('mapService', [ 'i18nService', '$rootScope', '$cookies', 
+   		function(i18nService, $rootScope, $cookies) {
 		
 			var service = {
 					
@@ -16,9 +16,9 @@ var MapModule = angular.module('meMap', [ 'meI18n' ]);
 				createMap: function($scope, lat, lon, z) {
 					
 					//default map viewport
-					lat = lat || 42.4564;
-					lon = lon || 18.5347;
-					z = z || 15;
+					lat = lat || $cookies.lat || 42.4564;
+					lon = lon || $cookies.lon || 18.5347;
+					z = z || $cookies.z || 15;
 					
 					this.map = L.map('map').setView([lat, lon], z);
 					
@@ -61,15 +61,16 @@ var MapModule = angular.module('meMap', [ 'meI18n' ]);
 					
 					var mapClosure = this.map;
 					this.map.on('viewreset', function() {
+						service.saveStateToCookie.apply(service, []);
 						$scope.$broadcast('MapViewChanged', mapClosure.getCenter(), mapClosure.getZoom());
 						$rootScope.$$phase || $rootScope.$apply();
 					});
 
 					this.map.on('moveend', function() {
+						service.saveStateToCookie.apply(service, []);
 						$scope.$broadcast('MapViewChanged', mapClosure.getCenter(), mapClosure.getZoom());
 						$rootScope.$$phase || $rootScope.$apply();
 					});
-					
 
 					this.map.on('popupopen', function(e) {
 						var px = mapClosure.project(e.popup._latlng);
@@ -164,6 +165,24 @@ var MapModule = angular.module('meMap', [ 'meI18n' ]);
 					angular.forEach(remove, function(id){
 						service.remove.apply(service, [$scope, id]);
 					});
+				},
+				
+				getStateString: function() {
+					var c = this.map.getCenter();
+					var z = this.map.getZoom();
+					return z + ',' + roundNumber(c.lat, 4) + ',' + roundNumber(c.lng, 4);
+				},
+				
+				saveStateToCookie: function() {
+					var c = this.map.getCenter();
+					var z = this.map.getZoom();
+					$cookies.lat = c.lat;
+					$cookies.lon = c.lng;
+					$cookies.z = z;
+				},
+				
+				setView: function(lat, lon, z) {
+					this.map.setView([lat, lon], z);
 				}
 					
 			};
@@ -173,7 +192,11 @@ var MapModule = angular.module('meMap', [ 'meI18n' ]);
    		} 
 	]);
 
-	
+	function roundNumber(number, digits) {
+        var multiple = Math.pow(10, digits);
+        var rndedNum = Math.round(number * multiple) / multiple;
+        return rndedNum;
+    }
 	
 })(angular, MapModule);
 

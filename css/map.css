@@ -29,14 +29,16 @@ html, body {
     overflow-x: hide; 
     overflow-y: auto;
 }
-#map {
+.content {
 	display: block;
 	overflow: hidden;
 	height: 100%;
 	position: absolute;
 	right: 0px;
-	background-color: grey;
 	border-left: 3px solid grey;
+}
+#map {
+	background-color: grey;
 }
 #search-form {
 	display: inline;

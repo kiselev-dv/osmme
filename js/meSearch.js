@@ -13,6 +13,8 @@ meSearch.factory('search', ['$http', 'mapService', 'docTree',
 	    		});
 	    		
 	    		$scope.$on('SelectCathegoryTreeNode', function(){
+	    			$scope.searchQuerry = '';
+	    			$scope.searchResultsPage = {};
 	    			service.pagesMode = false;
 	    			service.listPOI.apply(service, [$scope, 1]);
 	    		});
@@ -30,7 +32,7 @@ meSearch.factory('search', ['$http', 'mapService', 'docTree',
 	    		$scope.$on('SelectFeature', function(evnt, f) {
 	    			mapService.openPopUP($scope, f.feature_id);
 	    		});
-	    		
+
 	    		$scope.searchResultsPage = {};
 	    		
 	    		$scope.getSRPages = function(){

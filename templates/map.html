@@ -53,7 +53,9 @@
 	    			<li ng-repeat="data in hierarchy.groups" ng-include="'PoiTreeItem.html'"></li>
 				</ul>
 			</div>
-			<div id="map" style="left:450px;"></div>
+			<!-- style="left:450px;" inprinted for further sidebar animation -->
+			<div id="map" class="content" style="left:450px;" ng-show="content == 'map'"></div>
+			<div id="details" class="content" style="left:450px;" ng-show="content == 'details'"></div>
 		</div>
     </div>
 	<div style="clear: both;"></div>	
