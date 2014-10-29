@@ -20,7 +20,7 @@ var meOSMDoc = angular.module('meOSMDoc', [ 'meMap' ]);
 	
 	module.factory('docTree', ['$http', 'mapService', function($http, mapService) {  
 		
-		service = {
+		var service = {
 				
 			cathegories: {
 				features:[],

@@ -93,6 +93,9 @@ app.controller('MapController',['$scope', '$cookies', 'i18nService', 'mapService
 		}
 		
 		$scope.content = (ls['details'] === undefined) ? 'map' : 'details';
+		if($scope.content == 'details') {
+			details.showDetails($scope, $scope.activeFeatureID);
+		}
 		
 		if(ls['map']) {
 			var zlatlon = ls['map'].split(',');
@@ -110,6 +113,11 @@ app.controller('MapController',['$scope', '$cookies', 'i18nService', 'mapService
 	
 	$scope.$on('MapViewChanged', function() {
 		$location.search('map', mapService.getStateString()).replace();
+	});
+
+	$scope.$on('PopUPDetailsLinkClick', function() {
+		$scope.content = 'details';
+		$location.search('details', true);
 	});
 
 	$scope.formatSearchResultTitle = function(f) {

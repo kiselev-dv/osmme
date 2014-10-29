@@ -78,6 +78,11 @@ var MapModule = angular.module('meMap', [ 'ngCookies', 'meI18n' ]);
 						mapClosure.panTo(mapClosure.unproject(px), {
 							animate : false
 						});
+						
+						angular.element(e.popup._container).find('a').on('click', function(){
+							$scope.$broadcast('PopUPDetailsLinkClick', e.popup._source.feature_id);
+							$rootScope.$$phase || $rootScope.$apply();
+						});
 
 						$scope.$broadcast('PopupOpen', e.popup._source.feature_id);
 						$rootScope.$$phase || $rootScope.$apply();
@@ -133,9 +138,9 @@ var MapModule = angular.module('meMap', [ 'ngCookies', 'meI18n' ]);
 
 					var address = getAddress(f);
 					
-					var moreLink = '<a href="' + HTML_ROOT + '/index.html#!/feature?fid=' + activeFeatureID + '">' + 
+					var moreLink = '<a class="more-link" href="javascript:void(0);">' + 
 						i18nService.tr($scope, 'map.js.popup.more') + '</a>';
-
+					
 					if(title) {
 						return '<div class="fpopup"><h2>' + title + '</h2>' +
 						'<div>' + address + '</div>' + moreLink + '</div>';

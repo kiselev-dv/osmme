@@ -55,7 +55,8 @@
 			</div>
 			<!-- style="left:450px;" inprinted for further sidebar animation -->
 			<div id="map" class="content" style="left:450px;" ng-show="content == 'map'"></div>
-			<div id="details" class="content" style="left:450px;" ng-show="content == 'details'"></div>
+			<div id="details" class="content" style="left:450px;" 
+				ng-show="content == 'details'" ng-include="HTML_ROOT + '/templates/details.html'"></div>
 		</div>
     </div>
 	<div style="clear: both;"></div>	
