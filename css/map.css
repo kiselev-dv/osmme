@@ -173,3 +173,6 @@ input, textarea, form:active, input:focus {
 	margin: 2px;
 	vertical-align: middle;
 }
+#details {
+	padding-left: 10px;
+}

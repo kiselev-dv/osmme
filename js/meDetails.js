@@ -17,7 +17,7 @@ meDetails.factory('details', ['$http', 'mapService', function($http, mapService)
 					mapService.openPopUP($scope, activeFeatureID);
 				}
 				else {
-					this._load($scope, activeFeatureID, function(data) {
+					this._load($scope, activeFeatureID, false, function(data) {
 						mapService.createPopUP($scope, data);
 						mapService.openPopUP($scope, activeFeatureID);
 					});
@@ -33,24 +33,41 @@ meDetails.factory('details', ['$http', 'mapService', function($http, mapService)
 		
 		showDetails: function($scope, id){
 			if(id) {
+				$scope.moreLikeThis = null;
 				if(this.cache.get(id)) {
 					$scope.objectDetails = this.cache.get(id);
 					$scope.content = 'details';
+					service.loadMoreLikeThis($scope, $scope.objectDetails);
 				}
 				else {
-					this._load($scope, id, function(data) {
+					this._load($scope, id, false, function(data) {
 						$scope.objectDetails = data;
 						$scope.content = 'details';
+						service.loadMoreLikeThis($scope, data);
 					});
 				}
 			}
 		},
 		
-		_load: function($scope, id, callback) {
+		loadMoreLikeThis: function($scope, f) {
+			$http.get(API_ROOT + '/feature/_search', {
+				'params' : {
+					'poiclass': f.poi_class,
+					'lat': f.center_point.lat,
+					'lon': f.center_point.lon,
+					'page': 1,
+					'hierarchy': 'osm-ru'
+				}
+			}).success(function(data) {
+				$scope.moreLikeThis = data;
+			});
+		},
+		
+		_load: function($scope, id, related, callback) {
 			$http.get(API_ROOT + '/feature', {
 				'params' : {
 					'id':id,
-					'related':false
+					'related': related
 				}
 			}).success(function(data) {
 				

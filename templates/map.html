@@ -39,7 +39,7 @@
 						<li ng-repeat="f in searchResultsPage.features" 
 							ng-class="{selected: f.feature_id == activeFeatureID}" 
 							class="search-result" ng-click="selectRow(f);">
-							<div class="title" ng-show="f.name || f.poi_class_names">{{formatSearchResultTitle(f)}}</div>
+							<div class="title" ng-show="f.name || f.poi_keywords">{{formatSearchResultTitle(f)}}</div>
 							<div class="address">{{formatSearchResultAddress(f)}}</div>
 						</li>
 					</ul>
@@ -56,7 +56,7 @@
 			<!-- style="left:450px;" inprinted for further sidebar animation -->
 			<div id="map" class="content" style="left:450px;" ng-show="content == 'map'"></div>
 			<div id="details" class="content" style="left:450px;" 
-				ng-show="content == 'details'" ng-include="HTML_ROOT + '/templates/details.html'"></div>
+				ng-show="content == 'details' && objectDetails" ng-include="HTML_ROOT + '/templates/details.html'"></div>
 		</div>
     </div>
 	<div style="clear: both;"></div>	

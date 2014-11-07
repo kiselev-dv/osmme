@@ -10,8 +10,22 @@ String.prototype.hashCode = function(){
 	return hash;
 }
 
+String.prototype.format = function() {
+	var args = arguments;
+	return this.replace(/{(\d+)}/g, function(match, number) {
+		return typeof args[number] != 'undefined' ? args[number] : match;
+	});
+};
+
 var app = angular.module('Main', [ 'ngRoute', 'ngCookies', 'meMap', 'meI18n', 
                                    'meSearch', 'meOSMDoc', 'meIGeocoder', 'meDetails']);
+
+//app.filter('without', function() {
+//    return function(arr, id) {
+//        var r = [];
+//        for()
+//    }
+//});
 
 app.config(['$locationProvider', function($locationProvider) {
 	$locationProvider.hashPrefix('!');
@@ -76,7 +90,12 @@ app.controller('MapController',['$scope', '$cookies', 'i18nService', 'mapService
 	$scope.content = (ls['details'] === undefined) ? 'map' : 'details';
 	
 	if($scope.activeFeatureID) {
-		details.showPopup($scope, $scope.activeFeatureID);
+		if($scope.content == 'details') {
+			details.showDetails($scope, $scope.activeFeatureID);
+		}
+		else {
+			details.showPopup($scope, $scope.activeFeatureID);
+		}
 	}
 	
 	$scope.$on('$locationChangeSuccess', function(){
@@ -122,11 +141,11 @@ app.controller('MapController',['$scope', '$cookies', 'i18nService', 'mapService
 
 	$scope.formatSearchResultTitle = function(f) {
 		
-		if(f.name || f.poi_class_names) {
-			var title = (f.name || f.poi_class_names[0]);
+		if(f.name || f.poi_keywords) {
+			var title = (f.name || f.poi_keywords[0]);
 			
-			if(f.name && f.poi_class_names) {
-				title += ' (' + f.poi_class_names[0] + ')';
+			if(f.name && f.poi_keywords) {
+				title += ' (' + f.poi_keywords[0] + ')';
 			}
 			
 			return title;
@@ -146,6 +165,10 @@ app.controller('MapController',['$scope', '$cookies', 'i18nService', 'mapService
 }]);
 
 function getAddress(f) {
+	
+	if(!f) {
+		return '';
+	}
 	
 	var addrArray = [];
 	
