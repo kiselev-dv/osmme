@@ -20,13 +20,6 @@ String.prototype.format = function() {
 var app = angular.module('Main', [ 'ngRoute', 'ngCookies', 'meMap', 'meI18n', 
                                    'meSearch', 'meOSMDoc', 'meIGeocoder', 'meDetails']);
 
-//app.filter('without', function() {
-//    return function(arr, id) {
-//        var r = [];
-//        for()
-//    }
-//});
-
 app.config(['$locationProvider', function($locationProvider) {
 	$locationProvider.hashPrefix('!');
 }]);
@@ -135,8 +128,10 @@ app.controller('MapController',['$scope', '$cookies', 'i18nService', 'mapService
 	});
 
 	$scope.$on('PopUPDetailsLinkClick', function() {
-		$scope.content = 'details';
-		$location.search('details', true);
+		if($scope.activeFeature) {
+			$scope.content = 'details';
+			$location.search('details', true);
+		}
 	});
 
 	$scope.formatSearchResultTitle = function(f) {

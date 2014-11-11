@@ -46,7 +46,7 @@ meSearch.factory('search', ['$http', 'mapService', 'docTree',
 	    	
 			search: function($scope, page) {
 				
-				if(this.isEmpty($scope)) {
+				if(!$scope.searchQuerry) {
 					return;
 				}
 				
@@ -101,7 +101,8 @@ meSearch.factory('search', ['$http', 'mapService', 'docTree',
 			
 			listPOI:function($scope, page) {
 
-				if(this.isEmpty($scope)) {
+				if(docTree.cathegories.features.length == 0 
+						&& docTree.cathegories.groups == 0) {
 					return;
 				}
 				
@@ -131,12 +132,6 @@ meSearch.factory('search', ['$http', 'mapService', 'docTree',
 						}
 					}
 				});
-			},
-			
-			isEmpty: function($scope) {
-				return (!$scope.searchQuerry && 
-				docTree.cathegories.features.length == 0 && 
-				docTree.cathegories.groups == 0);
 			},
 			
 			listPages: function($scope) {
