@@ -8,5 +8,6 @@
 		"map.js.input.search.placeholder": "Искать",
 		"map.js.search.result.pages": "Страницы: ",
 		"map.js.popup.more": "Подробнее",
-		"details.poi.more": "Другие {0} поблизости"
+		"details.poi.more": "Другие {0} поблизости",
+		"map.js.search.title.adrpnt": "Здание"
 }

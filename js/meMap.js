@@ -126,15 +126,7 @@ var MapModule = angular.module('meMap', [ 'ngCookies', 'meI18n' ]);
 				},
 				
 				getPopUPHtml: function(f, activeFeatureID, $scope) {
-					var title = '';
-					
-					if(f.name || f.poi_keywords) {
-						title = (f.name || f.poi_keywords[0]);
-						
-						if(f.name && f.poi_keywords) {
-							title += ' (' + f.poi_keywords[0] + ')';
-						}
-					}
+					var title = $scope.formatSearchResultTitle(f);
 
 					var address = getAddress(f);
 					

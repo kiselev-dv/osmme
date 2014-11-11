@@ -50,19 +50,26 @@ var meOSMDoc = angular.module('meOSMDoc', [ 'meMap' ]);
 	        
 				var service = this;
 				
-	        	$http.get(API_ROOT + '/osmdoc/hierachy', {
-	        		'params' : {
-	        			'lang': lang,
-	        			'hierarchy': hierarchy
-	        		}
-	        	}).success(function(data) {
-	        		$scope.hierarchy = data;
-	        		traverseHierarchy($scope.hierarchy, {
-	        			feature:function(f){
-	        				 $scope.name2FClass[f.name] = f;
-	        			}
-	        		}, []);    
-	            });
+	        	$http.get(API_ROOT + '/osmdoc/hierarchy/' + lang + '/' + hierarchy)
+		        	.success(function(data) {
+		        		$scope.hierarchy = data;
+		        		traverseHierarchy($scope.hierarchy, {
+		        			feature: function(f) {
+		        				 $scope.name2FClass[f.name] = f;
+		        			}
+		        		}, []);    
+		            });
+	        	
+	        },        
+
+	        loadClasses: function($scope, lang) {
+	        	
+	        	var service = this;
+	        	
+	        	$http.get(API_ROOT + '/osmdoc/poi-class/' + lang + '/_all')
+	        	.success(function(data) {
+	        		$scope.poiClass = data;
+	        	});
 	        	
 	        },        
 			

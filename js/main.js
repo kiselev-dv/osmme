@@ -62,6 +62,7 @@ app.controller('MapController',['$scope', '$cookies', 'i18nService', 'mapService
 
 	$scope.name2FClass = {};
 	docTree.loadTree($scope, 'ru', 'osm-ru');
+	docTree.loadClasses($scope, 'ru');
 	
 	i18nService.getTranslation($scope, 'ru', true, function(){
 		
@@ -136,11 +137,28 @@ app.controller('MapController',['$scope', '$cookies', 'i18nService', 'mapService
 
 	$scope.formatSearchResultTitle = function(f) {
 		
-		if(f.name || f.poi_keywords) {
-			var title = (f.name || f.poi_keywords[0]);
+		if(f.type == 'adrpnt') {
+			return i18nService.tr('map.js.search.title.adrpnt');
+		}
+		
+		if(f.name || f.poi_class) {
 			
-			if(f.name && f.poi_keywords) {
-				title += ' (' + f.poi_keywords[0] + ')';
+			var types = [];
+			angular.forEach(f.poi_class, function(v) {
+				if($scope.poiClass && $scope.poiClass[v]) {
+					var typeTitle = $scope.poiClass[v]['translated_title'];
+					if(typeTitle.toUpperCase() !== (f.name || '').toUpperCase()) {
+						types.push(typeTitle);
+					}
+				}
+			});
+
+			var typeString = types.join(', ');
+			
+			var title = (f.name || typeString);
+			
+			if(f.name && typeString) {
+				title += ' (' + typeString + ')';
 			}
 			
 			return title;
