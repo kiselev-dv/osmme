@@ -1,13 +1,16 @@
 <h3>
-	<span class="details-type">{{objectDetails.poi_keywords[0]}}</span>:&nbsp;<span class="details-name">{{objectDetails.name}}</span>
+	<span class="details-name" ng-bind="objectDetails.name"></span>:&nbsp;<span class="details-type">{{formatObjectType(objectDetails)}}</span>
 </h3>
 <div class="details-address">
 	<span ng-bind="formatSearchResultAddress(objectDetails)"></span>
 </div>
-<div class="details-info" ng-show="moreLikeThis">
+<div class="details-info" ng-show="objectDetails.more_tags">
+	<table>
+		<tr ng-repeat="t in listMoreTags(objectDetails)"><td ng-bind="t.name"></td><td ng-bind="t.value"></td></tr>
+	</table>
 </div>
 <div class="details-more-like-this">
-	<h4 ng-bind="translation['details.poi.more'].format(objectDetails.poi_keywords[0].toLowerCase())"></h4>
+	<h4 ng-bind="translation['details.poi.more'].format(formatObjectType(objectDetails).toLowerCase())"></h4>
 	<div ng-repeat="f in moreLikeThis.features | filter:({'feature_id':'!'+objectDetails.feature_id})">
 		<span ng-bind="f.name"></span>
 	</div>

@@ -62,7 +62,6 @@ app.controller('MapController',['$scope', '$cookies', 'i18nService', 'mapService
 
 	$scope.name2FClass = {};
 	docTree.loadTree($scope, 'ru', 'osm-ru');
-	docTree.loadClasses($scope, 'ru');
 	
 	i18nService.getTranslation($scope, 'ru', true, function(){
 		
@@ -110,10 +109,6 @@ app.controller('MapController',['$scope', '$cookies', 'i18nService', 'mapService
 			details.showDetails($scope, $scope.activeFeatureID);
 		}
 		
-		if(ls['map']) {
-			var zlatlon = ls['map'].split(',');
-			mapService.setView(zlatlon[1], zlatlon[2], zlatlon[0]);
-		}
 	});
 	
 	$scope.$on('PopupClose', function(evnt, fid) {
@@ -129,20 +124,14 @@ app.controller('MapController',['$scope', '$cookies', 'i18nService', 'mapService
 	});
 
 	$scope.$on('PopUPDetailsLinkClick', function() {
-		if($scope.activeFeature) {
+		if($scope.activeFeatureID) {
 			$scope.content = 'details';
 			$location.search('details', true);
 		}
 	});
-
-	$scope.formatSearchResultTitle = function(f) {
-		
-		if(f.type == 'adrpnt') {
-			return i18nService.tr('map.js.search.title.adrpnt');
-		}
-		
-		if(f.name || f.poi_class) {
-			
+	
+	$scope.formatObjectType = function(f) {
+		if(f && f.poi_class) {
 			var types = [];
 			angular.forEach(f.poi_class, function(v) {
 				if($scope.poiClass && $scope.poiClass[v]) {
@@ -153,7 +142,23 @@ app.controller('MapController',['$scope', '$cookies', 'i18nService', 'mapService
 				}
 			});
 
-			var typeString = types.join(', ');
+			if(types.length > 0) {
+				return types.join(', ');
+			}
+		}
+		
+		return null;
+	};
+
+	$scope.formatSearchResultTitle = function(f) {
+		
+		if(f.type == 'adrpnt') {
+			return i18nService.tr('map.js.search.title.adrpnt');
+		}
+		
+		if(f.name || f.poi_class) {
+			
+			var typeString = $scope.formatObjectType(f);
 			
 			var title = (f.name || typeString);
 			

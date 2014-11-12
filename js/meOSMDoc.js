@@ -44,6 +44,40 @@ var meOSMDoc = angular.module('meOSMDoc', [ 'meMap' ]);
 					var cathegories = service.expandCathegories.apply(service, [$scope]);
 					mapService.filterMarkersByTypes.apply(mapService, [$scope, cathegories]);
 				};
+				
+				$scope.listMoreTags = function(obj) {
+					if(!obj) {
+						return null;
+					}
+					
+					var types = obj.poi_class;
+					var result = [];
+					angular.forEach(obj.more_tags, function(value, key){
+						for(var i in types) {
+							var tr = {};
+							
+							var type = $scope.name2FClass[types[i]];
+							
+							var tag = type.more_tags[key];
+							if(tag) {
+								tr.name = tag.name;
+								
+								if(tag.values[value]) {
+									tr.value = tag.values[value].name;
+									tr.group = tag.values[value].group;
+								}
+								else {
+									tr.value = value;
+								}
+								
+								result.push(tr);
+							}
+						}
+					});
+					
+					return result;
+				};
+				
 			},
 			
 			loadTree: function($scope, lang, hierarchy) {
@@ -62,17 +96,6 @@ var meOSMDoc = angular.module('meOSMDoc', [ 'meMap' ]);
 	        	
 	        },        
 
-	        loadClasses: function($scope, lang) {
-	        	
-	        	var service = this;
-	        	
-	        	$http.get(API_ROOT + '/osmdoc/poi-class/' + lang + '/_all')
-	        	.success(function(data) {
-	        		$scope.poiClass = data;
-	        	});
-	        	
-	        },        
-			
 			expandCathegories: function($scope) {
 				
 				if(!$scope.hierarchy) {
