@@ -46,8 +46,12 @@ var meOSMDoc = angular.module('meOSMDoc', [ 'meMap' ]);
 				};
 				
 				$scope.listMoreTags = function(obj) {
-					if(!obj) {
+					if(!obj || !$scope.name2FClass) {
 						return null;
+					}
+					
+					if(obj.__translatedTags && obj.__translatedTags.length > 0) {
+						return obj.__translatedTags;
 					}
 					
 					var types = obj.poi_class;
@@ -58,23 +62,25 @@ var meOSMDoc = angular.module('meOSMDoc', [ 'meMap' ]);
 							
 							var type = $scope.name2FClass[types[i]];
 							
-							var tag = type.more_tags[key];
-							if(tag) {
-								tr.name = tag.name;
-								
-								if(tag.values[value]) {
-									tr.value = tag.values[value].name;
-									tr.group = tag.values[value].group;
+							if(type) {
+								var tag = type.more_tags[key];
+								if(tag) {
+									tr.name = tag.name;
+									
+									if(tag.values[value]) {
+										tr.value = tag.values[value].name;
+										tr.group = tag.values[value].group;
+									}
+									else {
+										tr.value = value;
+									}
+									
+									result.push(tr);
 								}
-								else {
-									tr.value = value;
-								}
-								
-								result.push(tr);
 							}
 						}
 					});
-					
+					obj.__translatedTags = result;
 					return result;
 				};
 				

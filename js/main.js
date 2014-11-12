@@ -132,22 +132,44 @@ app.controller('MapController',['$scope', '$cookies', 'i18nService', 'mapService
 	
 	$scope.formatObjectType = function(f) {
 		if(f && f.poi_class) {
-			var types = [];
-			angular.forEach(f.poi_class, function(v) {
-				if($scope.poiClass && $scope.poiClass[v]) {
-					var typeTitle = $scope.poiClass[v]['translated_title'];
-					if(typeTitle.toUpperCase() !== (f.name || '').toUpperCase()) {
-						types.push(typeTitle);
-					}
-				}
-			});
+			var typeNames = $scope.translateTypeNames(f);
 
-			if(types.length > 0) {
-				return types.join(', ');
+			if(typeNames.length > 0) {
+				return typeNames.join(', ');
 			}
 		}
 		
 		return null;
+	};
+	
+	$scope.translateTypeNames = function(f) {
+		var typeNames = [];
+
+		if(f && f.poi_class) {
+			for(var i in f.poi_class) {
+				var v = f.poi_class[i];
+				if($scope.name2FClass && $scope.name2FClass[v]) {
+					var typeTitle = $scope.name2FClass[v]['translated_title'];
+					if(typeTitle.toUpperCase() !== (f.name || '').toUpperCase()) {
+						typeNames.push(typeTitle);
+					}
+				}
+			}
+		}
+		
+		return typeNames;
+	};
+	
+	$scope.nameContainsType = function(f) {
+		var typeNames = $scope.translateTypeNames(f);
+		var name = (f.name || '').toLowerCase();
+		for(var i in typeNames) {
+			 if(name.indexOf(typeNames[i].toLowerCase()) >= 0) {
+				 return true;
+			 }
+		}
+		
+		return false;
 	};
 
 	$scope.formatSearchResultTitle = function(f) {

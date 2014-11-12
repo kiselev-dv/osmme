@@ -176,3 +176,10 @@ input, textarea, form:active, input:focus {
 #details {
 	padding-left: 10px;
 }
+.details-info {
+	margin-top: 15px;
+}
+.attr-name {
+	font-weight: bold;
+	padding-right: 5px;
+}

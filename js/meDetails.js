@@ -1,6 +1,6 @@
-var meDetails = angular.module('meDetails', [ 'meMap' ]);
+var meDetails = angular.module('meDetails', [ 'meMap', 'meI18n' ]);
 
-meDetails.factory('details', ['$http', 'mapService', function($http, mapService) {  
+meDetails.factory('details', ['$http', 'mapService', 'i18nService', function($http, mapService, i18nService) {  
 	service = {
 		
 		cache: new FixedSizeFIFOCache(),
@@ -60,6 +60,8 @@ meDetails.factory('details', ['$http', 'mapService', function($http, mapService)
 				}
 			}).success(function(data) {
 				$scope.moreLikeThis = data;
+				$scope.moreLikeThisH4 = i18nService.tr($scope, 'details.poi.more')
+					.format(($scope.formatObjectType(f) || '').toLowerCase());
 			});
 		},
 		
