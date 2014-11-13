@@ -33,6 +33,7 @@ meDetails.factory('details', ['$http', 'mapService', 'i18nService', function($ht
 		
 		showDetails: function($scope, id){
 			if(id) {
+				mapService.closePopUP($scope, id);
 				$scope.moreLikeThis = null;
 				if(this.cache.get(id)) {
 					$scope.objectDetails = this.cache.get(id);

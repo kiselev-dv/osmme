@@ -1,7 +1,9 @@
 <h3>
 	<span class="details-name" ng-bind="objectDetails.name"></span><span 
 		ng-show="name2FClass && !nameContainsType(objectDetails)" 
-		class="details-type">({{formatObjectType(objectDetails)}})</span>
+		class="details-type">&nbsp;({{formatObjectType(objectDetails)}})</span>
+	<span>&nbsp;<a href="javascript:void(0);" ng-click="navigate('details', null)" 
+	ng-bind="translation['details.back-to-map']"></a></span>	
 </h3>
 <div class="details-address">
 	<span ng-bind="formatSearchResultAddress(objectDetails)"></span>
@@ -9,13 +11,15 @@
 <div class="details-info" ng-show="objectDetails.more_tags">
 	<table>
 		<tr ng-repeat="t in listMoreTags(objectDetails)">
-			<td class="attr-name" ng-bind="t.name"></td><td ng-bind="t.value"></td>
+			<td class="attr-name" ng-bind="t.name"></td><td>{{tagValueHTML(t)}}</td>
 		</tr>
 	</table>
 </div>
 <div class="details-more-like-this">
 	<h4 ng-bind="moreLikeThisH4"></h4>
-	<div ng-repeat="f in moreLikeThis.features | filter:({'feature_id':'!'+objectDetails.feature_id})">
-		<span ng-bind="f.name"></span>
-	</div>
+	<ul>
+		<li ng-repeat="f in moreLikeThis.features | filter:({'feature_id':'!'+objectDetails.feature_id})">
+			<a href="javascript:void(0);" ng-click="navigate('fid', f.feature_id)">{{formatSearchResultTitle(f)}}</a>
+		</li>
+	</ul>
 </div>

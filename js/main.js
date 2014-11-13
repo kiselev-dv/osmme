@@ -84,6 +84,7 @@ app.controller('MapController',['$scope', '$cookies', 'i18nService', 'mapService
 	
 	if($scope.activeFeatureID) {
 		if($scope.content == 'details') {
+			$location.search('map', null);
 			details.showDetails($scope, $scope.activeFeatureID);
 		}
 		else {
@@ -106,6 +107,7 @@ app.controller('MapController',['$scope', '$cookies', 'i18nService', 'mapService
 		
 		$scope.content = (ls['details'] === undefined) ? 'map' : 'details';
 		if($scope.content == 'details') {
+			$location.search('map', null);
 			details.showDetails($scope, $scope.activeFeatureID);
 		}
 		
@@ -161,15 +163,25 @@ app.controller('MapController',['$scope', '$cookies', 'i18nService', 'mapService
 	};
 	
 	$scope.nameContainsType = function(f) {
-		var typeNames = $scope.translateTypeNames(f);
-		var name = (f.name || '').toLowerCase();
-		for(var i in typeNames) {
-			 if(name.indexOf(typeNames[i].toLowerCase()) >= 0) {
-				 return true;
-			 }
+		if(f) {
+			var typeNames = $scope.translateTypeNames(f);
+			var name = (f.name || '').toLowerCase();
+			for(var i in typeNames) {
+				if(name.indexOf(typeNames[i].toLowerCase()) >= 0) {
+					return true;
+				}
+			}
 		}
 		
 		return false;
+	};
+	
+	$scope.tagValueHTML = function(t) {
+		return t.value;
+	};
+
+	$scope.navigate = function(key, val) {
+		$location.search(key, val);
 	};
 
 	$scope.formatSearchResultTitle = function(f) {

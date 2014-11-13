@@ -9,5 +9,6 @@
 		"map.js.search.result.pages": "Страницы: ",
 		"map.js.popup.more": "Подробнее",
 		"details.poi.more": "Другие {0} поблизости",
-		"map.js.search.title.adrpnt": "Здание"
+		"map.js.search.title.adrpnt": "Здание",
+		"details.back-to-map": "Показать на карте"
 }

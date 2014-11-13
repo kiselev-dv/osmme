@@ -109,9 +109,20 @@ var MapModule = angular.module('meMap', [ 'ngCookies', 'meI18n' ]);
 					}
 				},
 				
-				openPopUP: function($scope, id) {
+				openPopUP: function($scope, id, c) {
 					if(this.id2Marker[id]) {
-						this.id2Marker[id].openPopup();
+						if($scope.content == 'map') {
+							this.id2Marker[id].openPopup();
+						}
+						else {
+							var thisClosure = this;
+							var ttl = c || 2;
+							if(ttl > 0) {
+								window.setTimeout(function(){
+									thisClosure.openPopUP.apply(thisClosure, [$scope, id, ttl]);
+								}, 500);
+							}
+						}
 					}
 				},
 				
@@ -179,7 +190,9 @@ var MapModule = angular.module('meMap', [ 'ngCookies', 'meI18n' ]);
 				},
 				
 				setView: function(lat, lon, z) {
-					this.map.setView([lat, lon], z);
+					if(z > 0 && z < 19) {
+						this.map.setView([lat, lon], z);
+					}
 				}
 					
 			};
