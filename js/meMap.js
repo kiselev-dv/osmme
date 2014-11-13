@@ -111,18 +111,19 @@ var MapModule = angular.module('meMap', [ 'ngCookies', 'meI18n' ]);
 				
 				openPopUP: function($scope, id, c) {
 					if(this.id2Marker[id]) {
-						if($scope.content == 'map') {
-							this.id2Marker[id].openPopup();
-						}
-						else {
-							var thisClosure = this;
-							var ttl = c || 2;
-							if(ttl > 0) {
-								window.setTimeout(function(){
-									thisClosure.openPopUP.apply(thisClosure, [$scope, id, ttl]);
-								}, 500);
-							}
-						}
+						this.id2Marker[id].openPopup();
+//						if($scope.content == 'map') {
+//							this.id2Marker[id].openPopup();
+//						}
+//						else {
+//							var thisClosure = this;
+//							var ttl = c || 2;
+//							if(ttl > 0) {
+//								window.setTimeout(function(){
+//									thisClosure.openPopUP.apply(thisClosure, [$scope, id, ttl]);
+//								}, 500);
+//							}
+//						}
 					}
 				},
 				

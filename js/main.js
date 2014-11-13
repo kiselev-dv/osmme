@@ -17,7 +17,7 @@ String.prototype.format = function() {
 	});
 };
 
-var app = angular.module('Main', [ 'ngRoute', 'ngCookies', 'meMap', 'meI18n', 
+var app = angular.module('Main', [ 'ngRoute', 'ngCookies', 'ngSanitize', 'meMap', 'meI18n', 
                                    'meSearch', 'meOSMDoc', 'meIGeocoder', 'meDetails']);
 
 app.config(['$locationProvider', function($locationProvider) {
@@ -75,6 +75,8 @@ app.controller('MapController',['$scope', '$cookies', 'i18nService', 'mapService
 		
 		docTree.attach($scope);
 		search.attach($scope);
+		
+		$scope.dayNames = i18nService.tr($scope, 'details.poi.tag.values.wh.days').split(' ');
 		
 	});
 	
@@ -177,6 +179,29 @@ app.controller('MapController',['$scope', '$cookies', 'i18nService', 'mapService
 	};
 	
 	$scope.tagValueHTML = function(t) {
+		if(t.value === true) {
+			return i18nService.tr($scope, 'details.poi.tag.values.true');
+		}
+		else if(t.value === false) {
+			return i18nService.tr($scope, 'details.poi.tag.values.false');
+		}
+		if(t.key == 'contact:website') {
+			return '<a href="' + t.value + '">' + t.value + '</a>';
+		}
+		if(t.key == 'opening_hours') {
+			if(t.value['24_7']) {
+				return i18nService.tr($scope, 'details.poi.tag.values.wh.24_7');
+			}
+			
+			var table = getWHTable($scope, t, i18nService);
+			whTableSpan(table);
+			if(table[0][1].rspan == 6) {
+				return i18nService.tr($scope, 'details.poi.tag.values.wh.evryday') + table[0][1].text; 
+			}
+			
+			return whTableHTML(table);
+		}
+		
 		return t.value;
 	};
 
@@ -215,6 +240,91 @@ app.controller('MapController',['$scope', '$cookies', 'i18nService', 'mapService
 	}; 
 	
 }]);
+
+function whTableSpan(table) {
+	var cells = [];
+	for(var r in table) {
+		cells.push(table[r][1]);
+	}
+	
+	for(var i = 0; i < cells.length; i++) {
+		var rspan = checkNext(i, cells[i].text);
+		if(rspan) {
+			cells[i].rspan = rspan;
+			for(var t = 1; t <= rspan; t++) {
+				table[i + t][1] = null;
+			}
+			i += rspan;
+		}
+	}
+	
+	function checkNext(index, text) {
+		var c = 0;
+		for(var i = index + 1; i < cells.length; i++) {
+			if(cells[i].text != text) {
+				return c;
+			}
+			
+			c++;
+		}
+		
+		return c;
+	}
+}
+
+function whTableHTML(table) {
+	var t = '<table>';
+	for(var r in table) {
+		t += '<tr>';
+		for(var c in table[r]) {
+			var cell = table[r][c];
+			if(cell) {
+				t += '<td';
+				if(cell.cspan) {
+					t += ' colspan="' + cell.cspan + '"';
+				}
+				if(cell.rspan) {
+					t += ' rowspan="' + cell.rspan + '"';
+				}
+				t += '>';
+				t += cell.text + '</td>';
+			}
+		}
+		t += '</tr>';
+	}
+	t += '</table>';
+	return t;
+}
+
+function getWHTable($scope, t, i18nService) {
+	var table = [];
+	
+	var dayKeys = ["MO", "TU", "WE", "TH", "FR", "SA", "SU"];
+	for(var i in dayKeys) {
+		var row = [];
+		table.push(row);
+		
+		var k = dayKeys[i];
+		var time = t.value[k];
+		var dayName = $scope.dayNames[i];
+		
+		row.push({'text': dayName});
+		
+		if(time) {
+			if(time[2]) {
+				row.push({'text': time[0] + '-' + time[1] + '<br>' + time[2] + '-' + time[3]});
+			}
+			else {
+				row.push({'text': time[0] + '-' + time[1]});
+			}
+		}
+		else {
+			row.push({'text': i18nService.tr($scope, 'details.poi.tag.values.wh.off')});
+		}
+	}
+	
+	return table;
+}
 
 function getAddress(f) {
 	

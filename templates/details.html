@@ -11,7 +11,8 @@
 <div class="details-info" ng-show="objectDetails.more_tags">
 	<table>
 		<tr ng-repeat="t in listMoreTags(objectDetails)">
-			<td class="attr-name" ng-bind="t.name"></td><td>{{tagValueHTML(t)}}</td>
+			<td class="attr-name" valign="top" ng-bind="t.name"></td>
+			<td ng-bind-html="tagValueHTML(t)"></td>
 		</tr>
 	</table>
 </div>

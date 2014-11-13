@@ -8,7 +8,14 @@
 		"map.js.input.search.placeholder": "Искать",
 		"map.js.search.result.pages": "Страницы: ",
 		"map.js.popup.more": "Подробнее",
-		"details.poi.more": "Другие {0} поблизости",
 		"map.js.search.title.adrpnt": "Здание",
-		"details.back-to-map": "Показать на карте"
+		"details.poi.more": "Другие {0} поблизости",
+		"details.back-to-map": "Показать на карте",
+		"details.poi.tag.values.true": "Да",
+		"details.poi.tag.values.false": "Нет",
+		"details.poi.tag.values.wh.24_7": "Круглосуточно",
+		"details.poi.tag.values.wh.today": "Сегодня: ",
+		"details.poi.tag.values.wh.days": "Пн Вт Ср Чт Пт Сб Вс",
+		"details.poi.tag.values.wh.off": "Вых",
+		"details.poi.tag.values.wh.evryday": "Ежедневно, "
 }

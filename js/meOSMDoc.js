@@ -66,6 +66,8 @@ var meOSMDoc = angular.module('meOSMDoc', [ 'meMap' ]);
 								var tag = type.more_tags[key];
 								if(tag) {
 									tr.name = tag.name;
+									tr.type = tag.valueType;
+									tr['key'] = key;
 									
 									if(tag.values[value]) {
 										tr.value = tag.values[value].name;
