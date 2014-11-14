@@ -17,5 +17,8 @@
 		"details.poi.tag.values.wh.today": "Сегодня: ",
 		"details.poi.tag.values.wh.days": "Пн Вт Ср Чт Пт Сб Вс",
 		"details.poi.tag.values.wh.off": "Вых",
-		"details.poi.tag.values.wh.evryday": "Ежедневно, "
+		"details.poi.tag.values.wh.evryday": "Ежедневно, ",
+		"details.adr.building": "Здание",
+		"details.building.levels": "Этажи: ",
+		"details.building.pois": "Организации"
 }

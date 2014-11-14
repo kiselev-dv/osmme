@@ -204,6 +204,10 @@ app.controller('MapController',['$scope', '$cookies', 'i18nService', 'mapService
 		
 		return t.value;
 	};
+	
+	$scope.buildingType = function(f) {
+		return i18nService.tr($scope, 'details.adr.building');
+	};
 
 	$scope.navigate = function(key, val) {
 		$location.search(key, val);

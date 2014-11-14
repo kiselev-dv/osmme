@@ -50,19 +50,34 @@ meDetails.factory('details', ['$http', 'mapService', 'i18nService', function($ht
 		},
 		
 		loadMoreLikeThis: function($scope, f) {
-			$http.get(API_ROOT + '/feature/_search', {
-				'params' : {
-					'poiclass': f.poi_class,
-					'lat': f.center_point.lat,
-					'lon': f.center_point.lon,
-					'page': 1,
-					'hierarchy': 'osm-ru'
-				}
-			}).success(function(data) {
-				$scope.moreLikeThis = data;
-				$scope.moreLikeThisH4 = i18nService.tr($scope, 'details.poi.more')
+			if(f.type == 'poipnt') {
+				$http.get(API_ROOT + '/feature/_search', {
+					'params' : {
+						'poiclass': f.poi_class,
+						'lat': f.center_point.lat,
+						'lon': f.center_point.lon,
+						'page': 1,
+						'hierarchy': 'osm-ru'
+					}
+				}).success(function(data) {
+					$scope.moreLikeThis = data;
+					$scope.moreLikeThisH4 = i18nService.tr($scope, 'details.poi.more')
 					.format(($scope.formatObjectType(f) || '').toLowerCase());
-			});
+				});
+			}
+			else {
+				$http.get(API_ROOT + '/feature/_search', {
+					'params' : {
+						'poiclass': f.poi_class,
+						'lat': f.center_point.lat,
+						'lon': f.center_point.lon,
+						'page': 1,
+						'hierarchy': 'osm-ru'
+					}
+				}).success(function(data) {
+					$scope.buildingPois = data;
+				});
+			}
 		},
 		
 		_load: function($scope, id, related, callback) {
