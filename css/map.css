@@ -46,7 +46,7 @@ html, body {
 #serch-input {
 	font-size: 1.2em;
 	width: 40%;
-	background: url("/img/magnifier12.png") no-repeat scroll 98% center rgba(0, 0, 0, 0);
+	background: url("img/magnifier12.png") no-repeat scroll 98% center rgba(0, 0, 0, 0);
     height: 32px;
     margin: 8px 3px 3px 3px;
     padding: 0 0 0 5px
