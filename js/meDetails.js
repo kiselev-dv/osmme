@@ -37,56 +37,28 @@ meDetails.factory('details', ['$http', 'mapService', 'i18nService', function($ht
 				if(this.cache.get(id)) {
 					$scope.objectDetails = this.cache.get(id);
 					$scope.content = 'details';
-					service.loadMoreLikeThis($scope, $scope.objectDetails);
+					$scope.moreLikeThisH4 = i18nService.tr($scope, 'details.poi.more')
+						.format(($scope.formatObjectType($scope.objectDetails) || '').toLowerCase());
 				}
 				else {
-					this._load($scope, id, false, function(data) {
+					this._load($scope, id, true, function(data) {
 						$scope.objectDetails = data;
 						$scope.content = 'details';
-						service.loadMoreLikeThis($scope, data);
+						$scope.moreLikeThisH4 = i18nService.tr($scope, 'details.poi.more')
+							.format(($scope.formatObjectType($scope.objectDetails) || '').toLowerCase());
 					});
 				}
 			}
 		},
 		
-		loadMoreLikeThis: function($scope, f) {
-			if(f.type == 'poipnt') {
-				$http.get(API_ROOT + '/feature/_search', {
-					'params' : {
-						'poiclass': f.poi_class,
-						'lat': f.center_point.lat,
-						'lon': f.center_point.lon,
-						'page': 1,
-						'hierarchy': 'osm-ru'
-					}
-				}).success(function(data) {
-					$scope.moreLikeThis = data;
-					$scope.moreLikeThisH4 = i18nService.tr($scope, 'details.poi.more')
-					.format(($scope.formatObjectType(f) || '').toLowerCase());
-				});
-			}
-			else {
-				$http.get(API_ROOT + '/feature/_search', {
-					'params' : {
-						'poiclass': f.poi_class,
-						'lat': f.center_point.lat,
-						'lon': f.center_point.lon,
-						'page': 1,
-						'hierarchy': 'osm-ru'
-					}
-				}).success(function(data) {
-					$scope.buildingPois = data;
-				});
-			}
-		},
-		
 		_load: function($scope, id, related, callback) {
-			$http.get(API_ROOT + '/feature', {
-				'params' : {
-					'id':id,
-					'related': related
-				}
-			}).success(function(data) {
+			var url = API_ROOT + '/feature/' + id;
+			if(related) {
+				url += '/_related';
+			}
+			
+			$http.get(url)
+			.success(function(data) {
 				
 				if(data && data.feature_id) {
 					check($scope, data);

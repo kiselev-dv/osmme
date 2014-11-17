@@ -20,7 +20,7 @@
 	<div class="details-more-like-this">
 		<h4 ng-bind="moreLikeThisH4"></h4>
 		<ul>
-			<li ng-repeat="f in moreLikeThis.features | filter:({'feature_id':'!'+objectDetails.feature_id})">
+			<li ng-repeat="f in objectDetails._related._same_poi_type">
 				<a href="javascript:void(0);" ng-click="navigate('fid', f.feature_id)">{{formatSearchResultTitle(f)}}</a>
 			</li>
 		</ul>
@@ -46,12 +46,7 @@
 	<div class="details-more-like-this">
 		<h4 ng-bind="translation['details.building.pois']"></h4>
 		<ul>
-			<li ng-repeat="f in buildingPois.match">
-				<a href="javascript:void(0);" ng-click="navigate('fid', f.feature_id)">{{formatSearchResultTitle(f)}}</a>
-			</li>
-		</ul>
-		<ul>
-			<li ng-repeat="f in buildingPois.near">
+			<li ng-repeat="f in objectDetails._related._same_building | filter : {'poi_addr_match':'!nearest'}">
 				<a href="javascript:void(0);" ng-click="navigate('fid', f.feature_id)">{{formatSearchResultTitle(f)}}</a>
 			</li>
 		</ul>

@@ -8,7 +8,7 @@
         <li ng-repeat="data in data.groups" ng-include="'PoiTreeItem.html'"></li>
 		<li class="feature" ng-repeat="feature in data.features">
 			<input type="checkbox" ng-model="feature.selected" ng-change="selectCathegory(feature, 'features');"></input>
-			<a ng-click="feature.selected = !!!feature.selected; selectCathegory(feature, 'features');">{{feature.title}}</a>
+			<a ng-click="feature.selected = !!!feature.selected; selectCathegory(feature, 'features');">{{feature.translated_title}}</a>
 		</li>
     </ul>
 </script>

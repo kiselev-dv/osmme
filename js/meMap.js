@@ -16,9 +16,18 @@ var MapModule = angular.module('meMap', [ 'ngCookies', 'meI18n' ]);
 				createMap: function($scope, lat, lon, z) {
 					
 					//default map viewport
-					lat = lat || $cookies.lat || 42.4564;
-					lon = lon || $cookies.lon || 18.5347;
-					z = z || $cookies.z || 15;
+					lat = lat || $cookies.lat || DEFAULT_LAT;
+					if(lat > 90 || lat < -90) {
+						lat = DEFAULT_LAT;
+					}
+					lon = lon || $cookies.lon || DEFAULT_LON;
+					if(lon > 180 || lon < -180) {
+						lon = DEFAULT_LON;
+					}
+					z = z || $cookies.z || DEFAULT_ZOOM;
+					if(z <= 0) {
+						z = DEFAULT_ZOOM;
+					}
 					
 					this.map = L.map('map').setView([lat, lon], z);
 					
@@ -102,7 +111,7 @@ var MapModule = angular.module('meMap', [ 'ngCookies', 'meI18n' ]);
 					if(!this.id2Feature[data.feature_id]) {
 						this.id2Feature[data.feature_id] = data;
 						
-						var m = L.marker(data.center_point);
+						var m = L.marker([data.center_point.lat, data.center_point.lon]);
 						this.id2Marker[data.feature_id] = m;
 						m.addTo(this.map).bindPopup(this.getPopUPHtml(data, data.feature_id, $scope));
 						m.feature_id = data.feature_id;
@@ -111,19 +120,18 @@ var MapModule = angular.module('meMap', [ 'ngCookies', 'meI18n' ]);
 				
 				openPopUP: function($scope, id, c) {
 					if(this.id2Marker[id]) {
-						this.id2Marker[id].openPopup();
-//						if($scope.content == 'map') {
-//							this.id2Marker[id].openPopup();
-//						}
-//						else {
-//							var thisClosure = this;
-//							var ttl = c || 2;
-//							if(ttl > 0) {
-//								window.setTimeout(function(){
-//									thisClosure.openPopUP.apply(thisClosure, [$scope, id, ttl]);
-//								}, 500);
-//							}
-//						}
+						if(!angular.element(this.map.getContainer()).hasClass('ng-hide')) {
+							this.id2Marker[id].openPopup();
+						}
+						else {
+							var thisClosure = this;
+							var ttl = c || 2;
+							if(ttl > 0) {
+								window.setTimeout(function(){
+									thisClosure.openPopUP.apply(thisClosure, [$scope, id, ttl]);
+								}, 100);
+							}
+						}
 					}
 				},
 				
@@ -179,19 +187,25 @@ var MapModule = angular.module('meMap', [ 'ngCookies', 'meI18n' ]);
 				getStateString: function() {
 					var c = this.map.getCenter();
 					var z = this.map.getZoom();
-					return z + ',' + roundNumber(c.lat, 4) + ',' + roundNumber(c.lng, 4);
+					if(z > 0 && c.lat < 90.0 && c.lat > -90.0 && c.lng > -180.0 && c.lng < 180.0 ) {
+						return z + ',' + roundNumber(c.lat, 4) + ',' + roundNumber(c.lng, 4);
+					}
+					
+					return null;
 				},
 				
 				saveStateToCookie: function() {
 					var c = this.map.getCenter();
 					var z = this.map.getZoom();
-					$cookies.lat = c.lat;
-					$cookies.lon = c.lng;
-					$cookies.z = z;
+					if(z > 0 && c.lat < 90.0 && c.lat > -90.0 && c.lng > -180.0 && c.lng < 180.0) {
+						$cookies.lat = c.lat;
+						$cookies.lon = c.lng;
+						$cookies.z = z;
+					}
 				},
 				
 				setView: function(lat, lon, z) {
-					if(z > 0 && z < 19) {
+					if(z > 0 && lat < 90.0 && lat > -90.0 && lon > -180.0 && lon < 180.0) {
 						this.map.setView([lat, lon], z);
 					}
 				}

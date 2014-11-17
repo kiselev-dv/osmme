@@ -100,23 +100,29 @@ app.controller('MapController',['$scope', '$cookies', 'i18nService', 'mapService
 		$scope.activeFeatureID = ls['fid'];
 		$scope.explain = ls['explain'];
 		
-		if($scope.activeFeatureID) {
-			details.showPopup($scope, $scope.activeFeatureID);
-		}
-		else if(oldId) {
-			details.closePopup($scope, oldId);
-		}
-		
 		$scope.content = (ls['details'] === undefined) ? 'map' : 'details';
 		if($scope.content == 'details') {
 			$location.search('map', null);
 			details.showDetails($scope, $scope.activeFeatureID);
+			if(oldId) {
+				details.closePopup($scope, oldId);
+			}
+		}
+		else {
+			if($scope.activeFeatureID) {
+				details.showPopup($scope, $scope.activeFeatureID);
+			}
+			else if(oldId) {
+				details.closePopup($scope, oldId);
+			}
 		}
 		
 	});
 	
 	$scope.$on('PopupClose', function(evnt, fid) {
-		$location.search('fid', null);
+		if($scope.content == 'map') {
+			$location.search('fid', null);
+		}
 	});
 	
 	$scope.$on('PopupOpen', function(evnt, fid) {
