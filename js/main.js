@@ -244,6 +244,12 @@ app.controller('MapController',['$scope', '$cookies', 'i18nService', 'mapService
 	$scope.formatSearchResultAddress = function(f) {
 		var order = $scope.translation ? 
 				$scope.translation['addr.order'] : 'hn-street-city';
+		return getAddress(f, order)[0];
+	};
+	
+	$scope.getAddress = function(f) {
+		var order = $scope.translation ? 
+				$scope.translation['addr.order'] : 'hn-street-city';
 		return getAddress(f, order);
 	};
 	
@@ -341,28 +347,41 @@ function getWHTable($scope, t, i18nService) {
 function getAddress(f, order) {
 	
 	if(!f) {
-		return '';
+		return [''];
 	}
 	
-	a = {};
+	var multy = true;
+	if(f.addresses && f.addrTexts) {
+		multy = (f.addresses.length == f.addrTexts.length); 
+	}
+		
+	if(f.addrTexts && multy) {
+		return f.addrTexts;
+	}
 	
 	if(f.address) {
-		a = f;
+		var addrArray = getAddrArray(f);
+		if(order == 'city-street-hn') {
+			addrArray.reverse();
+		}
+		f.addrTexts = [addrArray.join(', ')];
 	}
 	else if(f.addresses) {
-		a = f.addresses[0];
+		f.addrTexts = [];
+		angular.forEach(f.addresses, function(fa){
+			var addrArray = getAddrArray(fa);
+			if(order == 'city-street-hn') {
+				addrArray.reverse();
+			}
+			f.addrTexts.push(addrArray.join(', '));
+		});
 	}
 	
-	var addrArray = getAddrArray(a);
+	return f.addrTexts;
 	
-	if(order == 'city-street-hn') {
-		addrArray.reverse();
-	}
-	
-	return addrArray.join(', ');
 }
 
-function getAddrArray(adrObj) {
+function getAddrArray(a) {
 	var addrArray = [];
 	
 	if(a.housenumber) {

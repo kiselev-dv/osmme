@@ -151,7 +151,7 @@ var MapModule = angular.module('meMap', [ 'ngCookies', 'meI18n' ]);
 
 					var order = $scope.translation ? 
 							$scope.translation['addr.order'] : 'hn-street-city';
-					var address = getAddress(f, order);
+					var address = getAddress(f, order)[0];
 					
 					var moreLink = '<a class="more-link" href="javascript:void(0);">' + 
 						i18nService.tr($scope, 'map.js.popup.more') + '</a>';

@@ -7,7 +7,7 @@
 		ng-bind="translation['details.back-to-map']"></a></span>	
 	</h3>
 	<div class="details-address">
-		<span ng-bind="formatSearchResultAddress(objectDetails)"></span>
+		<div ng-repeat="a in getAddress(objectDetails)">{{a}}</div>
 	</div>
 	<div class="details-info" ng-show="objectDetails.more_tags">
 		<table>
@@ -40,7 +40,7 @@
 		ng-bind="translation['details.back-to-map']"></a></span>
 	</h3>
 	<div class="details-address">
-		<span ng-bind="formatSearchResultAddress(objectDetails)"></span>
+		<div ng-repeat="a in getAddress(objectDetails)">{{a}}</div>
 	</div>
 	<div class="details-info" ng-show="objectDetails.tags && objectDetails.tags['building:levels']">
 		<table>
