@@ -121,6 +121,7 @@ var MapModule = angular.module('meMap', [ 'ngCookies', 'meI18n' ]);
 				openPopUP: function($scope, id, c) {
 					if(this.id2Marker[id]) {
 						if(!angular.element(this.map.getContainer()).hasClass('ng-hide')) {
+							this.map.invalidateSize(false);
 							this.id2Marker[id].openPopup();
 						}
 						else {
@@ -129,7 +130,7 @@ var MapModule = angular.module('meMap', [ 'ngCookies', 'meI18n' ]);
 							if(ttl > 0) {
 								window.setTimeout(function(){
 									thisClosure.openPopUP.apply(thisClosure, [$scope, id, ttl]);
-								}, 100);
+								}, 250);
 							}
 						}
 					}
