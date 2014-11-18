@@ -242,7 +242,9 @@ app.controller('MapController',['$scope', '$cookies', 'i18nService', 'mapService
 	};
 	
 	$scope.formatSearchResultAddress = function(f) {
-		return getAddress(f);
+		var order = $scope.translation ? 
+				$scope.translation['addr.order'] : 'hn-street-city';
+		return getAddress(f, order);
 	};
 	
 	$scope.selectRow = function(f) {
@@ -336,13 +338,11 @@ function getWHTable($scope, t, i18nService) {
 	return table;
 }
 
-function getAddress(f) {
+function getAddress(f, order) {
 	
 	if(!f) {
 		return '';
 	}
-	
-	var addrArray = [];
 	
 	a = {};
 	
@@ -352,6 +352,18 @@ function getAddress(f) {
 	else if(f.addresses) {
 		a = f.addresses[0];
 	}
+	
+	var addrArray = getAddrArray(a);
+	
+	if(order == 'city-street-hn') {
+		addrArray.reverse();
+	}
+	
+	return addrArray.join(', ');
+}
+
+function getAddrArray(adrObj) {
+	var addrArray = [];
 	
 	if(a.housenumber) {
 		addrArray.push(a.housenumber);
@@ -384,5 +396,19 @@ function getAddress(f) {
 		addrArray.push(a.admin0_name);
 	}
 	
-	return addrArray.join(', ');
+	addrArray = merdgeAddrLevels(addrArray);
+	
+	return addrArray;
+}
+
+function merdgeAddrLevels(arr) {
+	
+    var ret = [arr[0]];
+    for (var i = 1; i < arr.length; i++) { 
+        if (arr[i-1].indexOf(arr[i]) < 0 && arr[i].indexOf(arr[i-1]) < 0) {
+            ret.push(arr[i]);
+        }
+    }
+    
+    return ret;
 }

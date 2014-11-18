@@ -149,14 +149,16 @@ var MapModule = angular.module('meMap', [ 'ngCookies', 'meI18n' ]);
 				getPopUPHtml: function(f, activeFeatureID, $scope) {
 					var title = $scope.formatSearchResultTitle(f);
 
-					var address = getAddress(f);
+					var order = $scope.translation ? 
+							$scope.translation['addr.order'] : 'hn-street-city';
+					var address = getAddress(f, order);
 					
 					var moreLink = '<a class="more-link" href="javascript:void(0);">' + 
 						i18nService.tr($scope, 'map.js.popup.more') + '</a>';
 					
 					if(title) {
 						return '<div class="fpopup"><h2>' + title + '</h2>' +
-						'<div>' + address + '</div>' + moreLink + '</div>';
+						'<div>' + address + '</div><div>' + moreLink + '</div>';
 					}
 					
 					return '<div>' + address + '</div>' + moreLink;

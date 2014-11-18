@@ -1,4 +1,5 @@
 {
+		"addr.order":"city-street-hn",
 		"map.js.layer.relief": "Рельеф",
 		"map.js.layer.contours": "Изолинии",
 		"map.js.copy.data": "Данные карты",
@@ -20,5 +21,6 @@
 		"details.poi.tag.values.wh.evryday": "Ежедневно, ",
 		"details.adr.building": "Здание",
 		"details.building.levels": "Этажи: ",
-		"details.building.pois": "Организации"
+		"details.building.pois": "Организации",
+		"details.building.pois.pois": "Другие организации в том же здании"
 }

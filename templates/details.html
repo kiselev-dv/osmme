@@ -17,7 +17,14 @@
 			</tr>
 		</table>
 	</div>
+	
 	<div class="details-more-like-this">
+		<h4 ng-bind="translation['details.building.pois.pois']"></h4>
+		<ul>
+			<li ng-repeat="f in objectDetails._related._same_building | filter : {'poi_addr_match':'!nearest'}">
+				<a href="javascript:void(0);" ng-click="navigate('fid', f.feature_id)">{{formatSearchResultTitle(f)}}</a>
+			</li>
+		</ul>
 		<h4 ng-bind="moreLikeThisH4"></h4>
 		<ul>
 			<li ng-repeat="f in objectDetails._related._same_poi_type">
