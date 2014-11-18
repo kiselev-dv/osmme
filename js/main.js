@@ -330,7 +330,7 @@ function getWHTable($scope, t, i18nService) {
 		
 		if(time) {
 			if(time[2]) {
-				row.push({'text': time[0] + '-' + time[1] + '<br>' + time[2] + '-' + time[3]});
+				row.push({'text': time[0] + '-' + time[time.length - 1] + '<br>' + time[1] + '-' + time[2]});
 			}
 			else {
 				row.push({'text': time[0] + '-' + time[1]});
