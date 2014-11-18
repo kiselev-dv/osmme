@@ -34,7 +34,7 @@ meDetails.factory('details', ['$http', 'mapService', 'i18nService', function($ht
 		showDetails: function($scope, id){
 			if(id) {
 				$scope.moreLikeThis = null;
-				if(this.cache.get(id)) {
+				if(this.cache.get(id) && this.cache.get(id)._related) {
 					$scope.objectDetails = this.cache.get(id);
 					$scope.content = 'details';
 					$scope.moreLikeThisH4 = i18nService.tr($scope, 'details.poi.more')
