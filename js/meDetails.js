@@ -52,7 +52,7 @@ meDetails.factory('details', ['$http', 'mapService', 'i18nService', function($ht
 		},
 		
 		_load: function($scope, id, related, callback) {
-			var url = API_ROOT + '/feature/' + id;
+			var url = API_ROOT + '/location/' + id;
 			if(related) {
 				url += '/_related';
 			}

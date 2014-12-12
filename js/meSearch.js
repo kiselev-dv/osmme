@@ -50,7 +50,7 @@ meSearch.factory('search', ['$http', 'mapService', 'docTree',
 					return;
 				}
 				
-				$http.get(API_ROOT + '/feature/_search', {
+				$http.get(API_ROOT + '/location/_search', {
 					'params' : {
 						'q':$scope.searchQuerry,
 						'poiclass': docTree.cathegories.features,
@@ -106,7 +106,7 @@ meSearch.factory('search', ['$http', 'mapService', 'docTree',
 					return;
 				}
 				
-				$http.get(API_ROOT + '/feature/_search', {
+				$http.get(API_ROOT + '/location/_search', {
 					'params' : {
 						'q':$scope.searchQuerry,
 						'poiclass':docTree.cathegories.features,
