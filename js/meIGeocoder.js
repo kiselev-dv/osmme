@@ -1,111 +1,46 @@
-var meIGeocoder = angular.module('meIGeocoder', [ 'ngResource' ]);
+var meIGeocoder = angular.module('meIGeocoder', [ 'ngResource', 'meMap', 'meDetails' ]);
 
 (function(ng, module){
-	module.factory('iGeocoder', ['$http', function($http) {  
+	
+	module.factory('iGeocoder', ['$http', 'mapService', 'details', function($http, mapService, details) {  
 		return {
 			
 			create: function($scope, map) {
-				this.control = new LGeocodeControl();
-				this.control.addTo(map);
-				
-				this.map = map;
-				
 				var service = this;
-				this.map.on('moveend', function(){
-					if(service.control.active) {
-						service.sendRequest.apply(service, []);
-					}
+				map.on('click', function(e){
+					service.sendRequest(e.latlng.lng, e.latlng.lat);
 				});
-				
-				this.control.attach(function(state) {
-					if(state) {
-						service.sendRequest.apply(service, []);
-					}
-				});
-				
+				this.scope = $scope;
 			},
 			
-			sendRequest:function() {
-				var c = this.map.getCenter();
+			sendRequest:function(lon, lat) {
 				var service = this;
-				$http.get(API_ROOT + '/_inverse', {
-					'params' : {
-						'lat':c.lat,
-						'lon':c.lng
-					}
-				}).success(function(data) {
-					if(data.text) {
-						service.control.setText.apply(service.control, [data.text]);
-					}
+				$http.get(API_ROOT + '/location/latlon/' + lat + '/' + lon + '/_related').success(function(data) {
+					service.showAnswer.apply(service, [data]);
 				});
+			},
+			
+			showAnswer: function(data) {
+				if(data && data.feature_id) {
+					var html = mapService.getPopUPHtml(data, data.feature_id, this.scope);
+					
+					var popup = L.popup()
+					    .setLatLng(L.latLng(data.center_point.lat, data.center_point.lon))
+					    .setContent(html)
+					    .openOn(mapService.map);
+					
+					details.cache.put.apply(details.cache, [data.feature_id, data]);
+					
+					this.scope.activeFeatureID = data.feature_id;
+					popup.feature_id = data.feature_id;
+					this.scope.$broadcast('PopupOpen', data.feature_id);
+					
+				}
 			}
 			
 		}
 	}]);
 	
-	var LGeocodeControl = L.Control.extend({
-        options: {
-            position: 'bottomleft'
-        },
 
-        onAdd: function (map) {
-            this.container = L.DomUtil.create('div', 'geocode-control');
-            
-            this.dot = L.DomUtil.create('div', 'view-dot');
-            map._controlCorners.topleft.appendChild(this.dot);
-            map._controlCorners.topleft.style.width='50%';
-            map._controlCorners.topleft.style.height='50%';
-
-            this.dotSwitch = L.DomUtil.create('span', 'geocode-dot-switch');
-            this.text = L.DomUtil.create('span', 'geocode-text');
-            this.text.style.display='none';
-            this.container.appendChild(this.text);
-            this.container.appendChild(this.dotSwitch);
-            
-            var gcontrol = this;
-            this.dotSwitch.innerHTML = '<img src="' + HTML_ROOT + '/img/geocode.png"></img>';
-            this.dotSwitch.onclick = function() {
-            	if(gcontrol.dotShown) {
-            		gcontrol.hideDot();
-            		if(gcontrol.changeStateCallback) {
-            			gcontrol.changeStateCallback(false);
-            		}
-            	}
-            	else {
-            		gcontrol.showDot();
-            		if(gcontrol.changeStateCallback) {
-            			gcontrol.changeStateCallback(true);
-            		}
-            	}
-            }
-            
-            this.active = false;
-
-            return this.container;
-        },
-        
-        attach: function(changeStateCallback) {
-        	this.changeStateCallback = changeStateCallback;
-        },
-        
-        setText: function (text) {
-        	this.text.innerHTML = text;
-        },
-
-        showDot: function () {
-        	this.dotShown = true;
-        	this.dot.innerHTML = '<img src="' + HTML_ROOT + '/img/dot.png"></img>';
-        	this.text.style.display='';
-        	this.active = true;
-        },
-        
-        hideDot: function () {
-        	this.dotShown = false;
-        	this.dot.innerHTML = '';
-        	this.text.style.display='none';
-        	this.active = false;
-        }
-        
-    });
 	
 })(angular, meIGeocoder);

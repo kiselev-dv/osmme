@@ -89,16 +89,19 @@ var MapModule = angular.module('meMap', [ 'ngCookies', 'meI18n' ]);
 						});
 						
 						angular.element(e.popup._container).find('a').on('click', function(){
-							$scope.$broadcast('PopUPDetailsLinkClick', e.popup._source.feature_id);
+							var fid = (e.popup._source ? e.popup._source.feature_id : e.popup.feature_id);
+							$scope.$broadcast('PopUPDetailsLinkClick', fid);
 							$rootScope.$$phase || $rootScope.$apply();
 						});
-
-						$scope.$broadcast('PopupOpen', e.popup._source.feature_id);
+						
+						var fid = (e.popup._source ? e.popup._source.feature_id : e.popup.feature_id);
+						$scope.$broadcast('PopupOpen', fid);
 						$rootScope.$$phase || $rootScope.$apply();
 					});
 
 					this.map.on('popupclose', function(e) {
-						$scope.$broadcast('PopupClose', e.popup._source.feature_id);
+						var fid = (e.popup._source ? e.popup._source.feature_id : e.popup.feature_id);
+						$scope.$broadcast('PopupClose', fid);
 						$rootScope.$$phase || $rootScope.$apply();
 					});
 					
