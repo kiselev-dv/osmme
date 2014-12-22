@@ -4,6 +4,8 @@ meSearch.factory('search', ['$http', 'mapService', 'docTree',
     function($http, mapService, docTree) {  
 	
 	    var service = {
+	    		
+	    	resetMap: false,
 	    	
 	    	attach: function($scope) {
 	    		$scope.$on('MapViewChanged', function(event) {
@@ -31,6 +33,10 @@ meSearch.factory('search', ['$http', 'mapService', 'docTree',
 
 	    		$scope.$on('SelectFeature', function(evnt, f) {
 	    			mapService.openPopUP($scope, f.feature_id);
+	    		});
+	    		
+	    		$scope.$watch('searchQuerry', function(){
+	    			service.suggest($scope);
 	    		});
 
 	    		$scope.searchResultsPage = {};
@@ -89,10 +95,30 @@ meSearch.factory('search', ['$http', 'mapService', 'docTree',
 							pointsArray.push(f.center_point);
 						});
 						
-						mapService.map.fitBounds(L.latLngBounds(pointsArray));
+						if(service.resetMap && pointsArray && pointsArray.length > 0){
+							mapService.map.fitBounds(L.latLngBounds(pointsArray));
+						}
+
 						this.pagesMode = true;
 					}
 				}
+			},
+			
+			suggest: function($scope) {
+				if(!$scope.searchQuerry || $scope.searchQuerry.length < 3) {
+					return;
+				}
+				
+				$http.get(API_ROOT + '/location/_suggest', {
+					'params' : {
+						'q':$scope.searchQuerry,
+						'size':50,
+						'mark': this.getHash($scope),
+						'hierarchy':'osm-ru'
+					}
+				}).success(function(data) {
+					service.searchSuccess.apply(service, [$scope, data]);
+				});
 			},
 			
 			getHash: function($scope) {
