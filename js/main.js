@@ -218,6 +218,17 @@ app.controller('MapController',['$scope', '$cookies', 'i18nService', 'mapService
 	$scope.navigate = function(key, val) {
 		$location.search(key, val);
 	};
+	
+	$scope.searchKeyDown = function($event) {
+		if($event.keyCode == 38){ 
+			$event.stopPropagation();
+			$event.preventDefault();
+			$scope.$broadcast('SearchKeyUp');
+		} 
+		else if($event.keyCode == 40) {
+			$scope.$broadcast('SearchKeyDown');
+		}
+	}; 
 
 	$scope.formatSearchResultTitle = function(f) {
 		

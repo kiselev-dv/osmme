@@ -6,6 +6,9 @@ meSearch.factory('search', ['$http', 'mapService', 'docTree',
 	    var service = {
 	    		
 	    	resetMap: false,
+	    	selectedSuggestion: -1,
+	    	queryHead: null,
+	    	userSearchInput: '',
 	    	
 	    	attach: function($scope) {
 	    		$scope.$on('MapViewChanged', function(event) {
@@ -31,12 +34,25 @@ meSearch.factory('search', ['$http', 'mapService', 'docTree',
 	    			service.search.apply(service, [$scope, 1]);
 	    		});
 
+	    		$scope.$on('SearchKeyUp', function() {
+	    			service.moveUp.apply(service, [$scope]);
+	    		});
+
+	    		$scope.$on('SearchKeyDown', function() {
+	    			service.moveDown.apply(service, [$scope]);
+	    		});
+
 	    		$scope.$on('SelectFeature', function(evnt, f) {
 	    			mapService.openPopUP($scope, f.feature_id);
 	    		});
 	    		
 	    		$scope.$watch('searchQuerry', function(){
-	    			service.suggest($scope);
+	    			if(service.suppressOnSearchQuerry) {
+	    				service.suppressOnSearchQuerry = false
+	    			}
+	    			else {
+	    				service.suggest($scope);
+	    			}
 	    		});
 
 	    		$scope.searchResultsPage = {};
@@ -51,6 +67,8 @@ meSearch.factory('search', ['$http', 'mapService', 'docTree',
 	    	},
 	    	
 			search: function($scope, page) {
+				
+				service.userSearchInput = '';
 				
 				if(!$scope.searchQuerry) {
 					return;
@@ -75,6 +93,7 @@ meSearch.factory('search', ['$http', 'mapService', 'docTree',
 
 			searchSuccess: function($scope, data) {
 				if(data.result == 'success') {
+					
 					var curentHash = this.getHash($scope);
 					if(data.mark == curentHash) {
 						
@@ -105,20 +124,28 @@ meSearch.factory('search', ['$http', 'mapService', 'docTree',
 			},
 			
 			suggest: function($scope) {
+				
 				if(!$scope.searchQuerry || $scope.searchQuerry.length < 3) {
 					return;
 				}
 				
-				$http.get(API_ROOT + '/location/_suggest', {
-					'params' : {
-						'q':$scope.searchQuerry,
-						'size':50,
-						'mark': this.getHash($scope),
-						'hierarchy':'osm-ru'
-					}
-				}).success(function(data) {
-					service.searchSuccess.apply(service, [$scope, data]);
-				});
+				service.selectedSuggestion = -1;
+				$scope.selectedSuggestion = -1;
+				
+				if(!service.waitForAnswer) {
+					service.waitForAnswer = true;
+					$http.get(API_ROOT + '/location/_suggest', {
+						'params' : {
+							'q':$scope.searchQuerry,
+							'size':10,
+							'mark': this.getHash($scope),
+							'hierarchy':'osm-ru'
+						}
+					}).success(function(data) {
+						service.waitForAnswer = false;
+						service.searchSuccess.apply(service, [$scope, data]);
+					});
+				}
 			},
 			
 			getHash: function($scope) {
@@ -207,6 +234,62 @@ meSearch.factory('search', ['$http', 'mapService', 'docTree',
     			rarr.sort(function (a, b) { return a.p - b.p; });
     			
     			$scope.srPages = rarr;
+    		},
+    		
+    		moveUp: function($scope) {
+    			service.selectedSuggestion--;
+
+    			if(service.selectedSuggestion <= -1) {
+    				service.selectedSuggestion = -1;
+    			}
+    			$scope.selectedSuggestion = service.selectedSuggestion;
+    			
+    			if(service.selectedSuggestion == -1) {
+    				$scope.searchQuerry = service.userSearchInput;
+    				return;
+    			}
+    			
+    			var split = $scope.searchQuerry.split(/[\s,;.]+/);
+
+    			var suggestedFeature = $scope.searchResultsPage.features[service.selectedSuggestion];
+    			var suggestedToken = suggestedFeature.name || suggestedFeature.housenumber;
+    			
+    			var delim = ((service.queryHead.slice(-1) === ' ') ? '' : ' ');
+    			var newValue = service.queryHead + delim + suggestedToken;
+    			newValue = (newValue.slice(-1) === ' ') ? newValue : (newValue + ' ');
+    			
+    			service.suppressOnSearchQuerry = true;
+    			$scope.searchQuerry = newValue;
+    		},
+    		
+    		moveDown: function($scope) {
+    			
+    			var split = $scope.searchQuerry.split(/[\s,;.]+/);
+
+    			if(service.selectedSuggestion == -1) {
+    				service.userSearchInput = $scope.searchQuerry;
+    				split.pop();
+    				service.queryHead = split.join(' ');
+    			}
+    			
+    			service.selectedSuggestion++;
+    			if($scope.searchResultsPage 
+    					&& service.selectedSuggestion >= $scope.searchResultsPage.features.length) {
+    				service.selectedSuggestion = $scope.searchResultsPage.features.length - 1;
+    			}
+
+    			$scope.selectedSuggestion = service.selectedSuggestion;
+    			
+    			var suggestedFeature = $scope.searchResultsPage.features[service.selectedSuggestion];
+    			var suggestedToken = suggestedFeature.name || suggestedFeature.housenumber;
+    			
+    			var delim = ((service.queryHead.slice(-1) === ' ') ? '' : ' ');
+    			var newValue = service.queryHead + delim + suggestedToken;
+    			newValue = (newValue.slice(-1) === ' ') ? newValue : (newValue + ' ');
+    			
+    			service.suppressOnSearchQuerry = true;
+    			$scope.searchQuerry = newValue;
+    			
     		}
 	    };
 	    
