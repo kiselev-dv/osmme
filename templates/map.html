@@ -35,10 +35,19 @@
     	<div id="splitter">
 			<div id="sidebar" style="width:450px;">
 				<pre id="explanation" ng-show="explanation">{{explanation}}</pre>
+				<div id="serch-types" ng-show="searchResultsPage.matched_type">
+					<ul>
+						<li ng-repeat="f in searchResultsPage.matched_type" 
+							ng-class="{'suggested': f.name == selectedSuggestion}" 
+							class="search-result" >
+							<div class="title" ng-show="f.translated_title">{{f.translated_title[0]}}</div>
+						</li>
+					</ul>
+				</div>
 				<div id="search-results" ng-show="searchResultsPage.features">
 					<ul>
 						<li ng-repeat="f in searchResultsPage.features" 
-							ng-class="{'selected': f.feature_id == activeFeatureID, 'suggested': f.feature_id == searchResultsPage.features[selectedSuggestion].feature_id}" 
+							ng-class="{'selected': f.feature_id == activeFeatureID, 'suggested': f.feature_id == selectedSuggestion}" 
 							class="search-result" ng-click="selectRow(f);">
 							<div class="title" ng-show="f.name || f.poi_keywords">{{formatSearchResultTitle(f)}}</div>
 							<div class="address">{{formatSearchResultAddress(f)}}</div>

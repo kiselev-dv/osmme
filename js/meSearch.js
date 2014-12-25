@@ -242,17 +242,19 @@ meSearch.factory('search', ['$http', 'mapService', 'docTree',
     			if(service.selectedSuggestion <= -1) {
     				service.selectedSuggestion = -1;
     			}
-    			$scope.selectedSuggestion = service.selectedSuggestion;
     			
     			if(service.selectedSuggestion == -1) {
     				$scope.searchQuerry = service.userSearchInput;
     				return;
     			}
     			
+    			var page = $scope.searchResultsPage.matched_type.slice(0);
+    			page = page.concat($scope.searchResultsPage.features);
+    			
     			var split = $scope.searchQuerry.split(/[\s,;.]+/);
 
-    			var suggestedFeature = $scope.searchResultsPage.features[service.selectedSuggestion];
-    			var suggestedToken = suggestedFeature.name || suggestedFeature.housenumber;
+    			var suggestedFeature = page[service.selectedSuggestion];
+    			var suggestedToken = service.getToken(suggestedFeature);
     			
     			var delim = ((service.queryHead.slice(-1) === ' ') ? '' : ' ');
     			var newValue = service.queryHead + delim + suggestedToken;
@@ -260,6 +262,8 @@ meSearch.factory('search', ['$http', 'mapService', 'docTree',
     			
     			service.suppressOnSearchQuerry = true;
     			$scope.searchQuerry = newValue;
+    			
+    			$scope.selectedSuggestion = service.getId(suggestedFeature);
     		},
     		
     		moveDown: function($scope) {
@@ -272,16 +276,16 @@ meSearch.factory('search', ['$http', 'mapService', 'docTree',
     				service.queryHead = split.join(' ');
     			}
     			
+    			var page = $scope.searchResultsPage.matched_type.slice(0);
+    			page = page.concat($scope.searchResultsPage.features);
+    			
     			service.selectedSuggestion++;
-    			if($scope.searchResultsPage 
-    					&& service.selectedSuggestion >= $scope.searchResultsPage.features.length) {
-    				service.selectedSuggestion = $scope.searchResultsPage.features.length - 1;
+    			if(service.selectedSuggestion >= page.length) {
+    				service.selectedSuggestion = page.length - 1;
     			}
 
-    			$scope.selectedSuggestion = service.selectedSuggestion;
-    			
-    			var suggestedFeature = $scope.searchResultsPage.features[service.selectedSuggestion];
-    			var suggestedToken = suggestedFeature.name || suggestedFeature.housenumber;
+    			var suggestedFeature = page[service.selectedSuggestion];
+    			var suggestedToken = service.getToken(suggestedFeature);
     			
     			var delim = ((service.queryHead.slice(-1) === ' ') ? '' : ' ');
     			var newValue = service.queryHead + delim + suggestedToken;
@@ -289,7 +293,20 @@ meSearch.factory('search', ['$http', 'mapService', 'docTree',
     			
     			service.suppressOnSearchQuerry = true;
     			$scope.searchQuerry = newValue;
-    			
+    			$scope.selectedSuggestion = service.getId(suggestedFeature);
+    		},
+    		
+    		getToken: function(f) {
+    			if(f.type) {
+    				return f.name || f.housenumber;
+    			}
+    			else {
+    				return f.translated_title[0];
+    			}
+    		},
+    		
+    		getId: function(f) {
+    			return f.feature_id || f.name;
     		}
 	    };
 	    

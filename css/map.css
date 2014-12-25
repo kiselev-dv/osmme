@@ -133,7 +133,7 @@ input, textarea, form:active, input:focus {
 #search-results .selected {
 	background-color: #FFD296;
 }
-#search-results .suggested {
+.suggested {
 	background-color: #aaa;
 }
 .search-result:HOVER {
