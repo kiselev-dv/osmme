@@ -33,6 +33,10 @@ var meOSMDoc = angular.module('meOSMDoc', [ 'meMap' ]);
 					obj.expanded = !!!obj.expanded;
 				};
 				
+				$scope.selectPoiType = function(typeName) {
+					service.selectPoiType.apply(service, [$scope, typeName]);
+				},
+				
 				$scope.selectCathegory = function(obj, type) {
 					if(obj.selected) {
 						service.addSelection.apply(service, [$scope, obj, type]);
@@ -86,6 +90,10 @@ var meOSMDoc = angular.module('meOSMDoc', [ 'meMap' ]);
 					return result;
 				};
 				
+			},
+			
+			selectPoiType: function($scope, type) {
+				this.addSelection($scope, $scope.name2FClass[type], 'features');
 			},
 			
 			loadTree: function($scope, lang, hierarchy) {

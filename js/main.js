@@ -268,6 +268,24 @@ app.controller('MapController',['$scope', '$cookies', 'i18nService', 'mapService
 		$scope.$broadcast('SelectFeature', f);
 	}; 
 	
+	$scope.searchInputEnter = function() {
+		if($scope.suggestedFeature) {
+			
+			//location
+			if($scope.suggestedFeature.feature_id) {
+				$scope.$broadcast('SelectFeature', $scope.suggestedFeature);
+			}
+			
+			//poi type
+			else {
+				$scope.selectPoiType($scope.suggestedFeature.name);
+			}
+		}
+		else {
+			$scope.$broadcast('Search', $scope.searchQuerry);
+		}
+	};
+	
 }]);
 
 function whTableSpan(table) {

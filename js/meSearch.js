@@ -245,6 +245,8 @@ meSearch.factory('search', ['$http', 'mapService', 'docTree',
     			
     			if(service.selectedSuggestion == -1) {
     				$scope.searchQuerry = service.userSearchInput;
+    				$scope.selectedSuggestion = null;
+        			$scope.suggestedFeature = null;
     				return;
     			}
     			
@@ -264,6 +266,7 @@ meSearch.factory('search', ['$http', 'mapService', 'docTree',
     			$scope.searchQuerry = newValue;
     			
     			$scope.selectedSuggestion = service.getId(suggestedFeature);
+    			$scope.suggestedFeature = suggestedFeature;
     		},
     		
     		moveDown: function($scope) {
@@ -294,6 +297,7 @@ meSearch.factory('search', ['$http', 'mapService', 'docTree',
     			service.suppressOnSearchQuerry = true;
     			$scope.searchQuerry = newValue;
     			$scope.selectedSuggestion = service.getId(suggestedFeature);
+    			$scope.suggestedFeature = suggestedFeature;
     		},
     		
     		getToken: function(f) {

@@ -23,7 +23,7 @@
 	    		<input id="serch-input" class="field ui-autocomplete-input ui-widget" 
 	    			type="search" placeholder="{{translation['map.js.input.search.placeholder']}}" 
 	    			autofocus="" autocomplete="off" name="q" ng-model="searchQuerry"
-	    			ng-enter="$broadcast('Search', searchQuerry);"
+	    			ng-enter="searchInputEnter();"
 	    			ng-keydown="searchKeyDown($event);">
 	    		<input type="submit" id="search-button" 
 	    			value="{{translation['map.js.button.search']}}"
@@ -40,7 +40,8 @@
 						<li ng-repeat="f in searchResultsPage.matched_type" 
 							ng-class="{'suggested': f.name == selectedSuggestion}" 
 							class="search-result" >
-							<div class="title" ng-show="f.translated_title">{{f.translated_title[0]}}</div>
+							<input type="checkbox" ng-model="f.selected"></input>
+							<span class="title" ng-show="f.translated_title">{{f.translated_title[0]}}</span>
 						</li>
 					</ul>
 				</div>
