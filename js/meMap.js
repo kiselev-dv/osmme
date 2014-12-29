@@ -3,10 +3,35 @@ var MapModule = angular.module('meMap', [ 'ngCookies', 'meI18n' ]);
 //Hide from common namespace
 (function( ng, module ) {
 	
-	module.factory('mapService', [ 'i18nService', '$rootScope', '$cookies', 
-   		function(i18nService, $rootScope, $cookies) {
+	module.factory('mapService', [ 'i18nService', '$rootScope', '$cookies', '$compile', '$http', 
+   		function(i18nService, $rootScope, $cookies, $compile, $http) {
 		
-			var service = {
+		var SearchControl = L.Control.extend({
+		    
+			container: null,
+
+			options: {
+		        position: 'topleft'
+		    },
+		    
+		    setScope: function(scope) {
+		    	this.scope = scope;
+		    	return this;
+		    },
+		    
+		    setContainer: function(inner) {
+		    	var el = L.DomUtil.create('div', 'search-control');
+		    	el.innerHTML = inner;
+		    	this.container = el;
+		    },
+		    
+		    onAdd: function (map) {
+		    	return this.container;
+		    }
+		    
+		});
+		
+		var service = {
 					
 				id2Feature: {},
 				id2Marker: {},
@@ -29,7 +54,8 @@ var MapModule = angular.module('meMap', [ 'ngCookies', 'meI18n' ]);
 						z = DEFAULT_ZOOM;
 					}
 					
-					this.map = L.map('map').setView([lat, lon], z);
+					this.map = L.map('map', {'zoomControl':false})
+						.setView([lat, lon], z);
 					
 					var msAttrString = i18nService.tr($scope, 'map.js.copy.data') + 
 						' &copy; <a href="http://osm.org">' + 
@@ -106,6 +132,18 @@ var MapModule = angular.module('meMap', [ 'ngCookies', 'meI18n' ]);
 					});
 					
 					this.ready = true;
+					
+					
+					this.searchControl = new SearchControl().setScope($scope);
+					var searchControl = this.searchControl;
+					
+					$http.get(HTML_ROOT + '/templates/search_control.html').success(function(data){
+
+						searchControl.setContainer(data);
+
+						searchControl.addTo(mapClosure);
+						$compile(searchControl.container)($scope);
+					});
 					
 					return this.map;
 				},
@@ -219,10 +257,9 @@ var MapModule = angular.module('meMap', [ 'ngCookies', 'meI18n' ]);
 			};
 		
    			return service;
-   			
    		} 
 	]);
-
+	
 	function roundNumber(number, digits) {
         var multiple = Math.pow(10, digits);
         var rndedNum = Math.round(number * multiple) / multiple;

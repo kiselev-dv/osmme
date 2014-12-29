@@ -13,62 +13,23 @@
     </ul>
 </script>
 
+<div id="map" class="content" ng-show="content == 'map'"></div>
+<div id="details" class="content" style="left:450px;" 
+	ng-show="content == 'details' && objectDetails" ng-include="'templates/details.html'"></div>
+
+<!-- 
 <div id="wrap">
-    <div id="header">
-    	<div id="logo-wrapper">
-    		&nbsp;
-    	</div>
-    	<div id="header-content">
-	    	<form id="search-form">
-	    		<input id="serch-input" class="field ui-autocomplete-input ui-widget" 
-	    			type="search" placeholder="{{translation['map.js.input.search.placeholder']}}" 
-	    			autofocus="" autocomplete="off" name="q" ng-model="searchQuerry"
-	    			ng-enter="searchInputEnter();"
-	    			ng-keydown="searchKeyDown($event);">
-	    		<input type="submit" id="search-button" 
-	    			value="{{translation['map.js.button.search']}}"
-	    			class="button" ng-click="$broadcast('Search', searchQuerry);"/> 
-			</form>    	 
-    	</div>
-    </div>
     <div id="page">
     	<div id="splitter">
 			<div id="sidebar" style="width:450px;">
 				<pre id="explanation" ng-show="explanation">{{explanation}}</pre>
-				<div id="serch-types" ng-show="searchResultsPage.matched_type">
-					<ul>
-						<li ng-repeat="f in searchResultsPage.matched_type" 
-							ng-class="{'suggested': f.name == selectedSuggestion}" 
-							class="search-result" >
-							<input type="checkbox" ng-model="f.selected"></input>
-							<span class="title" ng-show="f.translated_title">{{f.translated_title[0]}}</span>
-						</li>
-					</ul>
-				</div>
-				<div id="search-results" ng-show="searchResultsPage.features">
-					<ul>
-						<li ng-repeat="f in searchResultsPage.features" 
-							ng-class="{'selected': f.feature_id == activeFeatureID, 'suggested': f.feature_id == selectedSuggestion}" 
-							class="search-result" ng-click="selectRow(f);">
-							<div class="title" ng-show="f.name || f.poi_keywords">{{formatSearchResultTitle(f)}}</div>
-							<div class="address">{{formatSearchResultAddress(f)}}</div>
-						</li>
-					</ul>
-					<div>
-						<span>{{translation['map.js.search.result.pages']}}</span>
-						<span class="page-number" ng-class="{current:pn.active}" 
-							ng-repeat="pn in srPages" ng-click="goPage(pn)">{{pn.p}}</span>
-					</div>
-				</div>
+				
 				<ul id="cathegories-tree">
 	    			<li ng-repeat="data in hierarchy.groups" ng-include="'PoiTreeItem.html'"></li>
 				</ul>
 			</div>
-			<!-- style="left:450px;" inprinted for further sidebar animation -->
-			<div id="map" class="content" style="left:450px;" ng-show="content == 'map'"></div>
-			<div id="details" class="content" style="left:450px;" 
-				ng-show="content == 'details' && objectDetails" ng-include="'templates/details.html'"></div>
 		</div>
     </div>
 	<div style="clear: both;"></div>	
 </div>
+ -->
