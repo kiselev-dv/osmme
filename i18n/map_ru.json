@@ -1,5 +1,8 @@
 {
 		"addr.order":"city-street-hn",
+		"map.aboutus": "О нас",
+		"map.catalog": "Каталог",
+		"map.note": "Ошибки",
 		"map.js.layer.relief": "Рельеф",
 		"map.js.layer.contours": "Изолинии",
 		"map.js.copy.data": "Данные карты",

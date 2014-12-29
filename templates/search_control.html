@@ -1,0 +1,42 @@
+<div id="search-control" class="search-control">
+	<form id="search-form">
+		<input id="serch-input" class="field ui-autocomplete-input ui-widget" 
+			type="search" placeholder="{{translation['map.js.input.search.placeholder']}}" 
+			autofocus="" autocomplete="off" name="q" ng-model="searchQuerry"
+			ng-enter="searchInputEnter();"
+			ng-keydown="searchKeyDown($event);">
+		<input type="submit" id="search-button" value="" 
+			ng-style="{'background-image': HTML_ROOT + '/img/magnifier12.png'}"
+			class="button" ng-click="$broadcast('Search', searchQuerry);"/> 
+	</form>
+</div>
+<div id="links">
+	<a href="javascript:void(0);" ng-bind="translation['map.catalog']"></a>
+	<a href="{{HTML_ROOT}}/about.html" ng-bind="translation['map.aboutus']"></a>
+	<a href="javascript:void(0);" ng-bind="translation['map.note']"></a>
+</div>
+<div id="serch-types" ng-show="searchResultsPage.matched_type">
+	<ul>
+		<li ng-repeat="f in searchResultsPage.matched_type" 
+			ng-class="{'suggested': f.name == selectedSuggestion}" 
+			class="search-result" >
+			<input type="checkbox" ng-model="f.selected"></input>
+			<span class="title" ng-show="f.translated_title">{{f.translated_title[0]}}</span>
+		</li>
+	</ul>
+</div>
+<div id="search-results" ng-show="searchResultsPage.features">
+	<ul>
+		<li ng-repeat="f in searchResultsPage.features" 
+			ng-class="{'selected': f.feature_id == activeFeatureID, 'suggested': f.feature_id == selectedSuggestion}" 
+			class="search-result" ng-click="selectRow(f);">
+			<div class="title" ng-show="f.name || f.poi_keywords">{{formatSearchResultTitle(f)}}</div>
+			<div class="address">{{formatSearchResultAddress(f)}}</div>
+		</li>
+	</ul>
+	<div>
+		<span>{{translation['map.js.search.result.pages']}}</span>
+		<span class="page-number" ng-class="{current:pn.active}" 
+			ng-repeat="pn in srPages" ng-click="goPage(pn)">{{pn.p}}</span>
+	</div>
+</div>
