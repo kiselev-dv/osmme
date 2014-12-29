@@ -112,7 +112,8 @@ app.controller('MapController',['$scope', '$cookies', 'i18nService', 'mapService
 			if($scope.activeFeatureID) {
 				details.showPopup($scope, $scope.activeFeatureID);
 			}
-			else if(oldId) {
+			else if(oldId !== undefined && oldId != $scope.activeFeatureID) {
+				console.log(oldId);
 				details.closePopup($scope, oldId);
 			}
 		}

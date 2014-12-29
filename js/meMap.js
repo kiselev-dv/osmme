@@ -21,6 +21,7 @@ var MapModule = angular.module('meMap', [ 'ngCookies', 'meI18n' ]);
 		    
 		    setContainer: function(inner) {
 		    	var el = L.DomUtil.create('div', 'search-control');
+		    	L.DomEvent.disableClickPropagation(el);
 		    	el.innerHTML = inner;
 		    	this.container = el;
 		    },
@@ -160,7 +161,7 @@ var MapModule = angular.module('meMap', [ 'ngCookies', 'meI18n' ]);
 				},
 				
 				openPopUP: function($scope, id, c) {
-					if(this.id2Marker[id]) {
+					if(id && this.id2Marker[id]) {
 						if(!angular.element(this.map.getContainer()).hasClass('ng-hide')) {
 							this.map.invalidateSize(false);
 							this.id2Marker[id].openPopup();
@@ -178,13 +179,13 @@ var MapModule = angular.module('meMap', [ 'ngCookies', 'meI18n' ]);
 				},
 				
 				closePopUP: function($scope, id) {
-					if(this.id2Marker[id]) {
+					if(id && this.id2Marker[id]) {
 						this.id2Marker[id].closePopup();
 					}
 				},
 				
 				isPopUPExists: function($scope, id) {
-					return !!this.id2Marker[id];
+					return id && !!this.id2Marker[id];
 				},
 				
 				getPopUPHtml: function(f, activeFeatureID, $scope) {

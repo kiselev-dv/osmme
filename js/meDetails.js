@@ -26,7 +26,7 @@ meDetails.factory('details', ['$http', 'mapService', 'i18nService', function($ht
 		},
 		
 		closePopup: function($scope, id) {
-			if(mapService.isPopUPExists($scope, id)) {
+			if(id && mapService.isPopUPExists($scope, id)) {
 				mapService.closePopUP($scope, id);
 			}
 		},
