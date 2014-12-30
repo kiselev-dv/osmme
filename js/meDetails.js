@@ -1,7 +1,8 @@
 var meDetails = angular.module('meDetails', [ 'meMap', 'meI18n' ]);
 
 meDetails.factory('details', ['$http', 'mapService', 'i18nService', function($http, mapService, i18nService) {  
-	service = {
+	
+	var service = {
 		
 		cache: new FixedSizeFIFOCache(),
 		

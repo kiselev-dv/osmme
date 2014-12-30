@@ -78,10 +78,13 @@ input, textarea, form:active, input:focus {
 	cursor: pointer;
 }
 #cathegories-tree ul {
-	padding-left: 4px;
+	padding-left: 22px;
 }
 #cathegories-tree {
 	padding-left: 5px;
+}
+#cathegories-tree input {
+	vertical-align: middle;
 }
 #search-results {
 	border-bottom: 3px solid #FF9D1C;
@@ -156,4 +159,13 @@ input, textarea, form:active, input:focus {
 }
 #links a:HOVER {
 	color: #666;
+}
+.y-scroll {
+	overflow-y: auto; 
+}
+#cathegories-tree .expand {
+	vertical-align: middle;
+}
+#cathegories-tree a {
+	cursor: pointer;
 }

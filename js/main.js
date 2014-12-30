@@ -53,6 +53,32 @@ app.directive('ngEnter', function() {
 	};
 });
 
+app.directive('meResize', function ($window) {
+    return function (scope, element) {
+    	var w = angular.element($window);
+        scope.getWindowDimensions = function () {
+        	var body = document.body;
+            var html = document.documentElement;
+
+            var height = Math.max( body.scrollHeight, body.offsetHeight, 
+                    html.clientHeight, html.scrollHeight, html.offsetHeight );
+            var width = Math.max( body.scrollWidth, body.offsetWidth, 
+            		html.clientWidth, html.scrollWidth, html.offsetWidth );
+            
+        	return { 'h': height, 'w': width };
+        };
+        
+        scope.$watch(scope.getWindowDimensions, function (newValue, oldValue) {
+            scope.windowHeight = newValue.h;
+            scope.windowWidth = newValue.w;
+        }, true);
+
+        w.bind('resize', function () {
+            scope.$apply();
+        });
+    }
+});
+
 app.controller('MapController',['$scope', '$cookies', 'i18nService', 'mapService', 'search',
                        	     'docTree', 'details', 'iGeocoder', '$location', 
  function ($scope, $cookies, i18nService, mapService, search, 
