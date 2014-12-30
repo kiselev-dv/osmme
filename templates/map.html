@@ -1,18 +1,5 @@
-<script type="text/ng-template"  id="PoiTreeItem.html">
-	<input type="checkbox" ng-model="data.selected" ng-change="selectCathegory(data, 'groups')"></input>
-    <a ng-click="expand(data);" 
-		ng-class="{'not-empty':(data.groups.length!=0 || data.features.length!=0)}">
-		{{data.title}}
-	</a>
-    <ul ng-show="data.expanded">
-        <li ng-repeat="data in data.groups" ng-include="'PoiTreeItem.html'"></li>
-		<li class="feature" ng-repeat="feature in data.features">
-			<input type="checkbox" ng-model="feature.selected" ng-change="selectCathegory(feature, 'features');"></input>
-			<a ng-click="feature.selected = !!!feature.selected; selectCathegory(feature, 'features');">{{feature.translated_title}}</a>
-		</li>
-    </ul>
-</script>
+<div id="map" class="content" ng-show="content.indexOf('map') == 0"></div>
 
-<div id="map" class="content" ng-show="content == 'map'"></div>
 <div id="details" class="content" style="left:450px;" 
-	ng-show="content == 'details' && objectDetails" ng-include="'templates/details.html'"></div>
+	ng-show="content.indexOf('details') == 0 && objectDetails" 
+	ng-include="'templates/details.html'"></div>

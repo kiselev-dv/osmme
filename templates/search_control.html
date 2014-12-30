@@ -11,7 +11,7 @@
 	</form>
 </div>
 <div id="links">
-	<a href="javascript:void(0);" ng-bind="translation['map.catalog']"></a>
+	<a href="javascript:void(0);" ng-bind="translation['map.catalog']" ng-click="showCatalog = !showCatalog"></a>
 	<a href="{{HTML_ROOT}}/about.html" ng-bind="translation['map.aboutus']"></a>
 	<a href="javascript:void(0);" ng-bind="translation['map.note']"></a>
 </div>
@@ -20,9 +20,14 @@
 		<li ng-repeat="f in searchResultsPage.matched_type" 
 			ng-class="{'suggested': f.name == selectedSuggestion}" 
 			class="search-result" >
-			<input type="checkbox" ng-model="f.selected"></input>
-			<span class="title" ng-show="f.translated_title">{{f.translated_title[0]}}</span>
+			<input type="checkbox" ng-model="f.selected" ng-change=""></input>
+			<span class="title" ng-show="f.translated_title" ng-click="">{{f.translated_title[0]}}</span>
 		</li>
+	</ul>
+</div>
+<div id="catalog" ng-show="!searchResultsPage.features && showCatalog">
+	<ul>
+		<li ng-repeat="data in hierarchy.groups" ng-include="'PoiTreeItem.html'"></li>
 	</ul>
 </div>
 <div id="search-results" ng-show="searchResultsPage.features">
@@ -40,3 +45,18 @@
 			ng-repeat="pn in srPages" ng-click="goPage(pn)">{{pn.p}}</span>
 	</div>
 </div>
+
+<script type="text/ng-template"  id="PoiTreeItem.html">
+	<input type="checkbox" ng-model="data.selected" ng-change="selectCathegory(data, 'groups')"></input>
+    <a ng-click="expand(data);" 
+		ng-class="{'not-empty':(data.groups.length!=0 || data.features.length!=0)}">
+		{{data.title}}
+	</a>
+    <ul ng-show="data.expanded">
+        <li ng-repeat="data in data.groups" ng-include="'PoiTreeItem.html'"></li>
+		<li class="feature" ng-repeat="feature in data.features">
+			<input type="checkbox" ng-model="feature.selected" ng-change="selectCathegory(feature, 'features');"></input>
+			<a ng-click="feature.selected = !!!feature.selected; selectCathegory(feature, 'features');">{{feature.translated_title}}</a>
+		</li>
+    </ul>
+</script>

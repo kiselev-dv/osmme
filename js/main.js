@@ -58,6 +58,8 @@ app.controller('MapController',['$scope', '$cookies', 'i18nService', 'mapService
  function ($scope, $cookies, i18nService, mapService, search, 
 		 docTree, details, iGeocoder, $location) {
 	
+	$scope.HTML_ROOT = HTML_ROOT;
+	
 	var ls = $location.search();
 
 	$scope.name2FClass = {};

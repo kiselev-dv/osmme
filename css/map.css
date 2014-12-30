@@ -127,10 +127,23 @@ input, textarea, form:active, input:focus {
 	font-weight: bold;
 	padding-right: 5px;
 }
+
+.leaflet-control-container, .leaflet-top {
+	height: 100%;
+}
 .search-control {
 	width: 450px;
 	background-color: white;
+	max-height: 95%;
+	overflow: hidden;
+	white-space: nowrap;
 }
+#catalog {
+	overflow-y: auto;
+	bottom: 0;
+	clear: both;
+}
+
 #links {
 	padding: 1px 4px 1px 4px;
 }
