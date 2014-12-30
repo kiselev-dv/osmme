@@ -79,12 +79,13 @@ app.directive('meResize', function ($window) {
     }
 });
 
-app.controller('MapController',['$scope', '$cookies', 'i18nService', 'mapService', 'search',
+app.controller('MapController',['$rootScope', '$scope', '$cookies', 'i18nService', 'mapService', 'search',
                        	     'docTree', 'details', 'iGeocoder', '$location', 
- function ($scope, $cookies, i18nService, mapService, search, 
+ function ($rootScope, $scope, $cookies, i18nService, mapService, search, 
 		 docTree, details, iGeocoder, $location) {
 	
 	$scope.HTML_ROOT = HTML_ROOT;
+	$rootScope.HTML_ROOT = HTML_ROOT;
 	
 	var ls = $location.search();
 

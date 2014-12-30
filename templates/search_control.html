@@ -6,7 +6,7 @@
 			ng-enter="searchInputEnter();"
 			ng-keydown="searchKeyDown($event);">
 		<input type="submit" id="search-button" value="" 
-			ng-style="{'background-image': HTML_ROOT + '/img/magnifier12.png'}"
+			style="background-image:url('{{HTML_ROOT + '/img/magnifier12w.png'}}');"
 			class="button" ng-click="$broadcast('Search', searchQuerry);"/> 
 	</form>
 </div>
