@@ -33,7 +33,6 @@ html, body {
 div.leaflet-bottom div.leaflet-control-attribution {
 	margin-left:5px;
 }
-
 #search-button {
     background-color: #9b1;
     background-image: url("/img/magnifier12w.png");
@@ -130,7 +129,6 @@ input, textarea, form:active, input:focus {
 	font-weight: bold;
 	padding-right: 5px;
 }
-
 .leaflet-control-container, .leaflet-top {
 	height: 100%;
 }
@@ -139,14 +137,12 @@ input, textarea, form:active, input:focus {
 	background-color: white;
 	max-height: 95%;
 	overflow: hidden;
-	white-space: nowrap;
 }
 #catalog {
 	overflow-y: auto;
 	bottom: 0;
 	clear: both;
 }
-
 #links {
 	padding: 1px 4px 1px 4px;
 }
