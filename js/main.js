@@ -81,7 +81,7 @@ app.directive('meResize', function ($window) {
 
 app.controller('MapController',['$rootScope', '$scope', '$cookies', 'i18nService', 'mapService', 'search',
                        	     'docTree', 'details', 'iGeocoder', '$location', 
- function ($rootScope, $scope, $cookies, i18nService, mapService, search, 
+function ($rootScope, $scope, $cookies, i18nService, mapService, search, 
 		 docTree, details, iGeocoder, $location) {
 	
 	$scope.HTML_ROOT = HTML_ROOT;
@@ -490,3 +490,13 @@ function merdgeAddrLevels(arr) {
     
     return ret;
 }
+
+
+disqus_shortname = 'osmme'; // required: replace example with your forum shortname
+
+(function() {
+	var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+
