@@ -131,13 +131,7 @@ function ($rootScope, $scope, $cookies, i18nService, mapService, search,
 		
 		$scope.content = (ls['details'] === undefined) ? 'map' : 'details';
 		if($scope.content == 'details') {
-			DISQUS.reset({
-				reload: true,
-				config: function () {  
-				    this.page.identifier = $scope.activeFeatureID;  
-				    this.page.url = WEB_ROOT + "/#!/map?fid=" + $scope.activeFeatureID + "&details";
-				}
-			});
+			$scope.disqussPage();
 			$location.search('map', null);
 			details.showDetails($scope, $scope.activeFeatureID);
 			if(oldId) {
@@ -323,6 +317,16 @@ function ($rootScope, $scope, $cookies, i18nService, mapService, search,
 		}
 	};
 	
+	$scope.disqussPage = function() {
+		DISQUS.reset({
+			reload: true,
+			config: function () {  
+			    this.page.identifier = $scope.activeFeatureID;  
+			    this.page.url = $location.absUrl();
+			}
+		});
+	}
+	
 }]);
 
 function whTableSpan(table) {
@@ -499,11 +503,10 @@ function merdgeAddrLevels(arr) {
 }
 
 
-disqus_shortname = 'osmme'; // required: replace example with your forum shortname
+disqus_shortname = 'osmme';
 
 (function() {
 	var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
     dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
     (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
 })();
-
