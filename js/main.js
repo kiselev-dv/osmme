@@ -114,7 +114,7 @@ function ($rootScope, $scope, $cookies, i18nService, mapService, search,
 	$scope.content = (ls['details'] === undefined) ? 'map' : 'details';
 	
 	if($scope.activeFeatureID) {
-		window.disqus_category_id = $scope.activeFeatureID;
+		window.disqus_identifier = $scope.activeFeatureID;
 		if($scope.content == 'details') {
 			$location.search('map', null);
 			details.showDetails($scope, $scope.activeFeatureID);
