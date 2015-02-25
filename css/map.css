@@ -165,3 +165,6 @@ input, textarea, form:active, input:focus {
 #cathegories-tree a {
 	cursor: pointer;
 }
+#disqus_thread {
+	width:50%;
+}
