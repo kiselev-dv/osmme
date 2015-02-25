@@ -114,7 +114,6 @@ function ($rootScope, $scope, $cookies, i18nService, mapService, search,
 	$scope.content = (ls['details'] === undefined) ? 'map' : 'details';
 	
 	if($scope.activeFeatureID) {
-		window.disqus_identifier = $scope.activeFeatureID;
 		if($scope.content == 'details') {
 			$location.search('map', null);
 			details.showDetails($scope, $scope.activeFeatureID);
@@ -132,6 +131,13 @@ function ($rootScope, $scope, $cookies, i18nService, mapService, search,
 		
 		$scope.content = (ls['details'] === undefined) ? 'map' : 'details';
 		if($scope.content == 'details') {
+			DISQUS.reset({
+				reload: true,
+				config: function () {  
+				    this.page.identifier = $scope.activeFeatureID;  
+				    this.page.url = WEB_ROOT + "/#!/map?fid=" + $scope.activeFeatureID + "&details";
+				}
+			});
 			$location.search('map', null);
 			details.showDetails($scope, $scope.activeFeatureID);
 			if(oldId) {
