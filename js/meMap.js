@@ -232,7 +232,17 @@ var MapModule = angular.module('meMap', [ 'ngCookies', 'meI18n' ]);
 				var c = this.map.getCenter();
 				var z = this.map.getZoom();
 				if(z > 0 && c.lat < 90.0 && c.lat > -90.0 && c.lng > -180.0 && c.lng < 180.0 ) {
-					return z + ',' + roundNumber(c.lat, 4) + ',' + roundNumber(c.lng, 4);
+					return z + '/' + roundNumber(c.lat, 4) + '/' + roundNumber(c.lng, 4);
+				}
+				
+				return null;
+			},
+			
+			getStateArray: function() {
+				var c = this.map.getCenter();
+				var z = this.map.getZoom();
+				if(z > 0 && c.lat < 90.0 && c.lat > -90.0 && c.lng > -180.0 && c.lng < 180.0 ) {
+					return [z, roundNumber(c.lat, 4), roundNumber(c.lng, 4)];
 				}
 				
 				return null;
@@ -249,7 +259,7 @@ var MapModule = angular.module('meMap', [ 'ngCookies', 'meI18n' ]);
 			},
 			
 			setView: function(lat, lon, z) {
-				if(z > 0 && lat < 90.0 && lat > -90.0 && lon > -180.0 && lon < 180.0) {
+				if(z > 0 && lat < 90.0 && lat > -90.0 && lon > -180.0 && lon < 180.0 && this.map) {
 					this.map.setView([lat, lon], z);
 				}
 			}

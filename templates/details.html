@@ -22,17 +22,18 @@
 		<h4 ng-bind="translation['details.building.pois.pois']"></h4>
 		<ul>
 			<li ng-repeat="f in objectDetails._related._same_building | filter : {'poi_addr_match':'!nearest'}">
-				<a href="javascript:void(0);" ng-click="navigate('fid', f.feature_id)">{{formatSearchResultTitle(f)}}</a>
+				<a href="javascript:void(0);" ng-click="navigate('id', f.feature_id)">{{formatSearchResultTitle(f)}}</a>
 			</li>
 		</ul>
 		<h4 ng-bind="moreLikeThisH4"></h4>
 		<ul>
 			<li ng-repeat="f in objectDetails._related._same_poi_type">
-				<a href="javascript:void(0);" ng-click="navigate('fid', f.feature_id)">{{formatSearchResultTitle(f)}}</a>
+				<a href="javascript:void(0);" ng-click="navigate('id', f.feature_id)">{{formatSearchResultTitle(f)}}</a>
 			</li>
 		</ul>
 	</div>
 	<div id="disqus_thread"></div>
+	<div ng-bind="disqussPage()" style="display:none;"></div>
 </div>
 <div ng-show="objectDetails.type == 'adrpnt'">
 	<h3>
@@ -55,7 +56,7 @@
 		<h4 ng-bind="translation['details.building.pois']"></h4>
 		<ul>
 			<li ng-repeat="f in objectDetails._related._same_building | filter : {'poi_addr_match':'!nearest'}">
-				<a href="javascript:void(0);" ng-click="navigate('fid', f.feature_id)">{{formatSearchResultTitle(f)}}</a>
+				<a href="javascript:void(0);" ng-click="navigate('id', f.feature_id)">{{formatSearchResultTitle(f)}}</a>
 			</li>
 		</ul>
 	</div>

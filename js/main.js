@@ -17,27 +17,12 @@ String.prototype.format = function() {
 	});
 };
 
-var app = angular.module('Main', [ 'ngRoute', 'ngCookies', 'ngSanitize', 'meMap', 'meI18n', 
-                                   'meSearch', 'meOSMDoc', 'meIGeocoder', 'meDetails']);
+var app = angular.module('Main', [ 'ngCookies', 'ngSanitize', 'meMap', 'meI18n', 
+                                   'meSearch', 'meOSMDoc', 'meIGeocoder', 'meDetails', 'meRouter']);
 
 app.config(['$locationProvider', function($locationProvider) {
 	$locationProvider.hashPrefix('!');
 }]);
-
-app.config(function($routeProvider) {
-    $routeProvider
-    	.when('/map', {
-    		templateUrl: HTML_ROOT + '/templates/map.html', 
-    		controller:'MapController', 
-    		reloadOnSearch: false });
-
-    $routeProvider
-    	.when('/', {redirectTo: '/map'});
-    
-    $routeProvider.otherwise({
-    	redirectTo: '/map'
-    });
-});
 
 app.directive('ngEnter', function() {
 	return function(scope, element, attrs) {
@@ -80,14 +65,21 @@ app.directive('meResize', function ($window) {
 });
 
 app.controller('MapController',['$rootScope', '$scope', '$cookies', 'i18nService', 'mapService', 'search',
-                       	     'docTree', 'details', 'iGeocoder', '$location', 
+                       	     'docTree', 'details', 'iGeocoder', '$location', 'routeService',
 function ($rootScope, $scope, $cookies, i18nService, mapService, search, 
-		 docTree, details, iGeocoder, $location) {
+		 docTree, details, iGeocoder, $location, routeService) {
 	
 	$scope.HTML_ROOT = HTML_ROOT;
 	$rootScope.HTML_ROOT = HTML_ROOT;
 	
-	var ls = $location.search();
+	routeService.anonymous("lang");
+	routeService.parameter("id"); 
+	routeService.parameter("map", 3, true);
+	routeService.parameter("q");
+	routeService.flag("details");
+	routeService.flag("explain");
+	
+	var ls = routeService.getParameters();
 
 	$scope.name2FClass = {};
 	docTree.loadTree($scope, 'ru', 'osm-ru');
@@ -96,7 +88,7 @@ function ($rootScope, $scope, $cookies, i18nService, mapService, search,
 		
 		var zlatlon = [null, null, null];
 		if(ls['map']) {
-			zlatlon = ls['map'].split(',');
+			zlatlon = ls['map'];
 		}
 		
 		var map = mapService.createMap($scope, zlatlon[1], zlatlon[2], zlatlon[0]);
@@ -111,11 +103,10 @@ function ($rootScope, $scope, $cookies, i18nService, mapService, search,
 	
 	$scope.activeFeatureID = ls['fid'];
 	$scope.explain = ls['explain'];
-	$scope.content = (ls['details'] === undefined) ? 'map' : 'details';
+	$scope.content = ls['details'] ? 'details' : 'map';
 	
 	if($scope.activeFeatureID) {
 		if($scope.content == 'details') {
-			$location.search('map', null);
 			details.showDetails($scope, $scope.activeFeatureID);
 		}
 		else {
@@ -124,27 +115,32 @@ function ($rootScope, $scope, $cookies, i18nService, mapService, search,
 	}
 	
 	$scope.$on('$locationChangeSuccess', function(){
-		var ls = $location.search();
 		var oldId = $scope.activeFeatureID;
-		$scope.activeFeatureID = ls['fid'];
+		
+		var ls = routeService.getParameters();
+		
+		$scope.activeFeatureID = ls['id'];
 		$scope.explain = ls['explain'];
 		
-		$scope.content = (ls['details'] === undefined) ? 'map' : 'details';
+		$scope.content = ls['details'] ? 'details' : 'map';
 		if($scope.content == 'details') {
-			$scope.disqussPage();
-			$location.search('map', null);
 			details.showDetails($scope, $scope.activeFeatureID);
 			if(oldId) {
 				details.closePopup($scope, oldId);
 			}
+			//$scope.disqussPage();
 		}
 		else {
 			if($scope.activeFeatureID) {
 				details.showPopup($scope, $scope.activeFeatureID);
 			}
 			else if(oldId !== undefined && oldId != $scope.activeFeatureID) {
-				console.log(oldId);
 				details.closePopup($scope, oldId);
+			}
+			
+			if(routeService.getParameters()['map']) {
+				var zll = routeService.getParameters()['map'];
+				mapService.setView(zll[1], zll[2], zll[0]);
 			}
 		}
 		
@@ -152,22 +148,22 @@ function ($rootScope, $scope, $cookies, i18nService, mapService, search,
 	
 	$scope.$on('PopupClose', function(evnt, fid) {
 		if($scope.content == 'map') {
-			$location.search('fid', null);
+			routeService.update('id', null);
 		}
 	});
 	
 	$scope.$on('PopupOpen', function(evnt, fid) {
-		$location.search('fid', fid);
+		routeService.update('id', fid);
 	});
 	
 	$scope.$on('MapViewChanged', function() {
-		$location.search('map', mapService.getStateString()).replace();
+		routeService.update('map', mapService.getStateArray());
 	});
 
 	$scope.$on('PopUPDetailsLinkClick', function() {
 		if($scope.activeFeatureID) {
 			$scope.content = 'details';
-			$location.search('details', true);
+			routeService.update('details', true);
 		}
 	});
 	
@@ -247,7 +243,8 @@ function ($rootScope, $scope, $cookies, i18nService, mapService, search,
 	};
 
 	$scope.navigate = function(key, val) {
-		$location.search(key, val);
+		//$location.search(key, val);
+		routeService.update(key, val);
 	};
 	
 	$scope.searchKeyDown = function($event) {
@@ -318,13 +315,20 @@ function ($rootScope, $scope, $cookies, i18nService, mapService, search,
 	};
 	
 	$scope.disqussPage = function() {
-		DISQUS.reset({
-			reload: true,
-			config: function () {  
-			    this.page.identifier = $scope.activeFeatureID;  
-			    this.page.url = $location.absUrl();
+		if(document.getElementById('disqus_thread')) {
+			if($scope.activeFeatureID != $scope.disqussId) {
+				$scope.disqussId = $scope.activeFeatureID;
+				DISQUS.reset({
+					reload: true,
+					config: function () {  
+						this.page.identifier = $scope.activeFeatureID;  
+						this.page.url = $location.absUrl();
+					}
+				});
 			}
-		});
+			return $scope.disqussId;
+		}
+		return '';
 	}
 	
 }]);
@@ -504,9 +508,3 @@ function merdgeAddrLevels(arr) {
 
 
 disqus_shortname = 'osmme';
-
-(function() {
-	var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-})();
