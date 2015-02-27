@@ -72,6 +72,8 @@ function ($rootScope, $scope, $cookies, i18nService, mapService, search,
 	$scope.HTML_ROOT = HTML_ROOT;
 	$rootScope.HTML_ROOT = HTML_ROOT;
 	
+	var search = $location.search();
+	
 	routeService.anonymous("lang");
 	routeService.parameter("id"); 
 	routeService.parameter("map", 3, true);
@@ -79,8 +81,18 @@ function ($rootScope, $scope, $cookies, i18nService, mapService, search,
 	routeService.flag("details");
 	routeService.flag("explain");
 	
-	var ls = routeService.getParameters();
+	if(search.fid) {
+		var h = {};
+		h.id = search.fid;
+		if(search.details) {
+			h.details = true;
+		}
+		$location.search('');
+		$location.path('');
+		routeService.update(h);
+	}
 
+	var ls = routeService.getParameters();
 	$scope.name2FClass = {};
 	docTree.loadTree($scope, 'ru', 'osm-ru');
 	

@@ -148,7 +148,13 @@ router.factory('routeService', ['$location', function($location) {
 	
 	meRouter.prototype.update = function(key, val, forceSave) {
 		var obj = {};
-		obj[key] = val;
+		
+		if(val === undefined && forceSave === undefined) {
+			obj = key;
+		}
+		else {
+			obj[key] = val;
+		}
 		
 		var p = angular.extend(this.getParameters(), obj);
 		var pathS = this.createPath(p);
