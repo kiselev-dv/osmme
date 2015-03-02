@@ -72,6 +72,8 @@ function ($rootScope, $scope, $cookies, i18nService, mapService, search,
 	$scope.HTML_ROOT = HTML_ROOT;
 	$rootScope.HTML_ROOT = HTML_ROOT;
 	
+	$scope.mobile = window.matchMedia && window.matchMedia('(max-device-width: 960px)').matches || screen.width <= 960;
+	
 	var search = $location.search();
 	
 	routeService.anonymous("lang");

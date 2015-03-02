@@ -92,8 +92,10 @@ var MapModule = angular.module('meMap', [ 'ngCookies', 'meI18n' ]);
 					'MapSurfer': mapsurfer
 				};
 
-				this.layersControl = L.control.layers(base, overlays);
-				this.layersControl.addTo(this.map);
+				if(!$scope.mobile) {
+					this.layersControl = L.control.layers(base, overlays);
+					this.layersControl.addTo(this.map);
+				}
 				
 				var mapClosure = this.map;
 				this.map.on('viewreset', function() {

@@ -14,14 +14,6 @@ html, body {
 #search-form {
 	display: inline;
 }
-#serch-input {
-	font-size: 1.2em;
-	background: url("img/magnifier12.png") no-repeat scroll 98% center rgba(0, 0, 0, 0);
-    height: 32px;
-    margin: 1px 0px 1px 1px;
-    padding: 0 0 0 5px;
-    width:404px;
-}
 #logo-wrapper {
 	width:450px;
 	overflow: hidden;
@@ -132,20 +124,34 @@ input, textarea, form:active, input:focus {
 .leaflet-control-container, .leaflet-top {
 	height: 100%;
 }
-@media all and (max-width: 699px) {
+@media all and (max-width: 799px) {
 	.search-control {
-		width: 80%;
+		width: 300px;
+		max-height: 40%;
+	}
+	#serch-input {
+		width:254px;
 	}
 }
 @media all and (min-width: 800px) {
 	.search-control {
 		width: 450px;
+		max-height: 95%;
+	}
+	#serch-input {
+		width:404px;
 	}
 }
 .search-control {
 	background-color: white;
-	max-height: 95%;
 	overflow: hidden;
+}
+#serch-input {
+	font-size: 1.2em;
+	background: url("img/magnifier12.png") no-repeat scroll 98% center rgba(0, 0, 0, 0);
+    height: 32px;
+    margin: 1px 0px 1px 1px;
+    padding: 0 0 0 5px;
 }
 #catalog {
 	overflow-y: auto;
