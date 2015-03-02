@@ -74,7 +74,7 @@ function ($rootScope, $scope, $cookies, i18nService, mapService, search,
 	
 	$scope.mobile = ((window.innerWidth > 0) ? window.innerWidth : screen.width) < 800;
 	
-	var search = $location.search();
+	var searchParams = $location.search();
 	
 	routeService.anonymous("lang");
 	routeService.parameter("id"); 
@@ -83,10 +83,10 @@ function ($rootScope, $scope, $cookies, i18nService, mapService, search,
 	routeService.flag("details");
 	routeService.flag("explain");
 	
-	if(search.fid) {
+	if(searchParams.fid) {
 		var h = {};
-		h.id = search.fid;
-		if(search.details) {
+		h.id = searchParams.fid;
+		if(searchParams.details) {
 			h.details = true;
 		}
 		$location.search('');
