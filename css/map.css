@@ -132,8 +132,17 @@ input, textarea, form:active, input:focus {
 .leaflet-control-container, .leaflet-top {
 	height: 100%;
 }
+@media all and (max-width: 699px) {
+	.search-control {
+		width: 80%;
+	}
+}
+@media all and (min-width: 800px) {
+	.search-control {
+		width: 450px;
+	}
+}
 .search-control {
-	width: 450px;
 	background-color: white;
 	max-height: 95%;
 	overflow: hidden;
