@@ -38,7 +38,7 @@ app.directive('ngEnter', function() {
 	};
 });
 
-app.directive('meResize', function ($window) {
+app.directive('meResize', ['$window', function ($window) {
     return function (scope, element) {
     	var w = angular.element($window);
         scope.getWindowDimensions = function () {
@@ -62,7 +62,7 @@ app.directive('meResize', function ($window) {
             scope.$apply();
         });
     }
-});
+}]);
 
 app.controller('MapController',['$rootScope', '$scope', '$cookies', 'i18nService', 'mapService', 'search',
                        	     'docTree', 'details', 'iGeocoder', '$location', 'routeService',
@@ -76,11 +76,21 @@ function ($rootScope, $scope, $cookies, i18nService, mapService, search,
 	
 	var searchParams = $location.search();
 	
+	//language
 	routeService.anonymous("lang");
-	routeService.parameter("id"); 
+	//feature (POI) id
+	routeService.parameter("id");
+	//map view
 	routeService.parameter("map", 3, true);
+	//POI groups
+	routeService.parameter("pg");
+	//POI types
+	routeService.parameter("pt");
+	//search query
 	routeService.parameter("q");
+	//show details
 	routeService.flag("details");
+	//explain queries (debug)
 	routeService.flag("explain");
 	
 	if(searchParams.fid) {
@@ -95,10 +105,19 @@ function ($rootScope, $scope, $cookies, i18nService, mapService, search,
 	}
 
 	var ls = routeService.getParameters();
-	$scope.name2FClass = {};
-	docTree.loadTree($scope, 'ru', 'osm-ru');
 	
-	i18nService.getTranslation($scope, 'ru', true, function(){
+	if(!ls['lang']) {
+		routeService.update('lang', initLang());
+	}
+	
+	$scope.lng = ls['lang'];
+	$scope.hierarchy = 'osm-' + $scope.lng;
+	
+	$scope.name2FClass = {};
+	$scope.name2Group = {};
+	docTree.loadTree($scope, $scope.lng, $scope.hierarchy);
+	
+	i18nService.getTranslation($scope, $scope.lng, true, function(){
 		
 		var zlatlon = [null, null, null];
 		if(ls['map']) {
@@ -125,6 +144,38 @@ function ($rootScope, $scope, $cookies, i18nService, mapService, search,
 		}
 		else {
 			details.showPopup($scope, $scope.activeFeatureID);
+		}
+	}
+	
+	function updateCathegories() {
+		var ls = routeService.getParameters();
+		
+		var pg = [];
+		var pt = [];
+		
+		if(ls['pg']) {
+			ls['pg'].split(',').forEach(function(item) {
+				if(item) {
+					pg.push(item);
+				}
+			});
+		}
+
+		if(ls['pt']) {
+			ls['pt'].split(',').forEach(function(item) {
+				if(item) {
+					pt.push(item);
+				}
+			});
+		}
+		
+		if($scope.osmdocCat && (
+				!angular.equals(pg, $scope.osmdocCat.groups) 
+				|| !angular.equals(pt, $scope.osmdocCat.features))) {
+			
+			$scope.osmdocCat.groups = pg;
+			$scope.osmdocCat.features = pt;
+			$scope.$broadcast('SelectCathegoryTreeNode');
 		}
 	}
 	
@@ -157,8 +208,12 @@ function ($rootScope, $scope, $cookies, i18nService, mapService, search,
 				mapService.setView(zll[1], zll[2], zll[0]);
 			}
 		}
+
+		updateCathegories();
 		
 	});
+	
+	$scope.$on('HierarchyLoaded', updateCathegories);
 	
 	$scope.$on('PopupClose', function(evnt, fid) {
 		if($scope.content == 'map') {
@@ -180,6 +235,29 @@ function ($rootScope, $scope, $cookies, i18nService, mapService, search,
 			routeService.update('details', true);
 		}
 	});
+	
+	var osmdocCatH = function() {
+		if($scope.osmdocCat) {
+			if($scope.osmdocCat.features) {
+				routeService.update('pt', 
+						$scope.osmdocCat.features.join());
+			}
+			else {
+				routeService.update('pt', null);
+			}
+			
+			if($scope.osmdocCat.groups) {
+				routeService.update('pg', 
+						$scope.osmdocCat.groups.join());
+			}
+			else {
+				routeService.update('pg', null);
+			}
+		}
+	}
+
+	$scope.$on('SelectCathegoryTreeNode', osmdocCatH);
+	$scope.$on('UnselectCathegoryTreeNode', osmdocCatH);
 	
 	$scope.formatObjectType = function(f) {
 		if(f && f.poi_class) {
@@ -520,5 +598,8 @@ function merdgeAddrLevels(arr) {
     return ret;
 }
 
+function initLang() {
+	return 'ru';
+}
 
 disqus_shortname = 'osmme';

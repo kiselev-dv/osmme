@@ -1,0 +1,4 @@
+<div ng-show="osmdocCat.features || osmdocCat.groups">
+	<div ng-repeat="g in osmdocCat.groups"><span ng-bind="name2Group[g]['title']"></span></div>
+	<div ng-repeat="f in osmdocCat.features"><span ng-bind="name2FClass[f]['translated_title']"></span></div>
+</div>

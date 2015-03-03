@@ -15,7 +15,7 @@
 	<a href="{{HTML_ROOT}}/about.html" ng-bind="translation['map.aboutus']"></a>
 	<a href="javascript:void(0);" ng-bind="translation['map.note']"></a>
 </div>
-<div>{{rparams}}</div>
+<div ng-include="'templates/cathegories.html'"></div>
 <div class="y-scroll" ng-style="{'max-height': (windowHeight - windowHeight * 0.15) + 'px'}" me-resize >
 	<div id="serch-types" ng-show="searchResultsPage.matched_type">
 		<ul>

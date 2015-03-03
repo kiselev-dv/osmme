@@ -29,6 +29,8 @@ var meOSMDoc = angular.module('meOSMDoc', [ 'meMap' ]);
 
 			attach: function($scope) {
 				
+				$scope.osmdocCat = service.cathegories;
+				
 				$scope.expand = function(obj) {
 					obj.expanded = !!!obj.expanded;
 				};
@@ -106,8 +108,12 @@ var meOSMDoc = angular.module('meOSMDoc', [ 'meMap' ]);
 		        		traverseHierarchy($scope.hierarchy, {
 		        			feature: function(f) {
 		        				 $scope.name2FClass[f.name] = f;
+		        			},
+		        			group: function(g) {
+		        				 $scope.name2Group[g.name] = g;
 		        			}
-		        		}, []);    
+		        		}, []);
+		        		$scope.$broadcast('HierarchyLoaded');
 		            });
 	        	
 	        },        
