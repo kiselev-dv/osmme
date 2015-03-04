@@ -72,9 +72,9 @@ app.directive('meResize', ['$window', function ($window) {
 }]);
 
 app.controller('MapController',['$rootScope', '$scope', '$cookies', 'i18nService', 'mapService', 'search',
-                       	     'docTree', 'details', 'iGeocoder', '$location', 'routeService',
+                       	     'docTree', 'details', 'iGeocoder', '$location', 'routeService', 'Analytics',
 function ($rootScope, $scope, $cookies, i18nService, mapService, search, 
-		 docTree, details, iGeocoder, $location, routeService) {
+		 docTree, details, iGeocoder, $location, routeService, Analytics) {
 	
 	$scope.HTML_ROOT = HTML_ROOT;
 	$rootScope.HTML_ROOT = HTML_ROOT;
