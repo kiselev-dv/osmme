@@ -210,6 +210,9 @@ function ($rootScope, $scope, $cookies, i18nService, mapService, search,
 		}
 		else {
 			if($scope.activeFeatureID) {
+				if(ANALYTICS_CODE) {
+					Analytics.trackPage('/#!/' + $scope.lng + '/id/' + $scope.activeFeatureID);
+				}
 				details.showPopup($scope, $scope.activeFeatureID);
 			}
 			else if(oldId !== undefined && oldId != $scope.activeFeatureID) {
