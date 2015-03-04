@@ -1,63 +1,67 @@
-<div ng-show="objectDetails.type == 'poipnt'">
-	<h3>
-		<span class="details-name" ng-bind="objectDetails.name"></span><span 
-			ng-show="name2FClass && !nameContainsType(objectDetails)" 
-			class="details-type">&nbsp;({{formatObjectType(objectDetails)}})</span>
-		<span>&nbsp;<a href="javascript:void(0);" ng-click="navigate('details', null)" 
-		ng-bind="translation['details.back-to-map']"></a></span>	
-	</h3>
-	<div class="details-address">
-		<div ng-repeat="a in getAddress(objectDetails)">{{a}}</div>
-	</div>
-	<div class="details-info" ng-show="objectDetails.more_tags">
-		<table>
-			<tr ng-repeat="t in listMoreTags(objectDetails)">
-				<td class="attr-name" valign="top" ng-bind="t.name"></td>
-				<td ng-bind-html="tagValueHTML(t)"></td>
-			</tr>
-		</table>
-	</div>
-	
-	<div class="details-more-like-this">
-		<h4 ng-bind="translation['details.building.pois.pois']"></h4>
-		<ul>
-			<li ng-repeat="f in objectDetails._related._same_building | filter : {'poi_addr_match':'!nearest'}">
-				<a href="javascript:void(0);" ng-click="navigate('id', f.feature_id)">{{formatSearchResultTitle(f)}}</a>
-			</li>
-		</ul>
-		<h4 ng-bind="moreLikeThisH4"></h4>
-		<ul>
-			<li ng-repeat="f in objectDetails._related._same_poi_type">
-				<a href="javascript:void(0);" ng-click="navigate('id', f.feature_id)">{{formatSearchResultTitle(f)}}</a>
-			</li>
-		</ul>
-	</div>
-	<div id="disqus_thread"></div>
-	<div ng-bind="disqussPage()" style="display:none;"></div>
-</div>
-<div ng-show="objectDetails.type == 'adrpnt'">
-	<h3>
-		<span ng-bind="buildingType(objectDetails)"></span>
-		<span>&nbsp;<a href="javascript:void(0);" ng-click="navigate('details', null)" 
-		ng-bind="translation['details.back-to-map']"></a></span>
-	</h3>
-	<div class="details-address">
-		<div ng-repeat="a in getAddress(objectDetails)">{{a}}</div>
-	</div>
-	<div class="details-info" ng-show="objectDetails.tags && objectDetails.tags['building:levels']">
-		<table>
-			<tr>
-				<td class="attr-name" valign="top" ng-bind="translation['details.building.levels']"></td>
-				<td ng-bind="objectDetails.tags['building:levels']"></td>
-			</tr>
-		</table>
-	</div>
-	<div class="details-more-like-this">
-		<h4 ng-bind="translation['details.building.pois']"></h4>
-		<ul>
-			<li ng-repeat="f in objectDetails._related._same_building | filter : {'poi_addr_match':'!nearest'}">
-				<a href="javascript:void(0);" ng-click="navigate('id', f.feature_id)">{{formatSearchResultTitle(f)}}</a>
-			</li>
-		</ul>
+<div class="page-wrapper clearfix">
+	<div class="maincol">
+		<div ng-show="objectDetails.type == 'poipnt'">
+			<h3>
+				<span class="details-name" ng-bind="objectDetails.name"></span><span 
+					ng-show="name2FClass && !nameContainsType(objectDetails)" 
+					class="details-type">&nbsp;({{formatObjectType(objectDetails)}})</span>
+				<span>&nbsp;<a href="javascript:void(0);" ng-click="navigate('details', null)" 
+				ng-bind="translation['details.back-to-map']"></a></span>	
+			</h3>
+			<div class="details-address">
+				<div ng-repeat="a in getAddress(objectDetails)">{{a}}</div>
+			</div>
+			<div class="details-info" ng-show="objectDetails.more_tags">
+				<table>
+					<tr ng-repeat="t in listMoreTags(objectDetails)">
+						<td class="attr-name" valign="top" ng-bind="t.name"></td>
+						<td ng-bind-html="tagValueHTML(t)"></td>
+					</tr>
+				</table>
+			</div>
+			
+			<div class="details-more-like-this">
+				<h4 ng-bind="translation['details.building.pois.pois']"></h4>
+				<ul>
+					<li ng-repeat="f in objectDetails._related._same_building | filter : {'poi_addr_match':'!nearest'}">
+						<a href="javascript:void(0);" ng-click="navigate('id', f.feature_id)">{{formatSearchResultTitle(f)}}</a>
+					</li>
+				</ul>
+				<h4 ng-bind="moreLikeThisH4"></h4>
+				<ul>
+					<li ng-repeat="f in objectDetails._related._same_poi_type">
+						<a href="javascript:void(0);" ng-click="navigate('id', f.feature_id)">{{formatSearchResultTitle(f)}}</a>
+					</li>
+				</ul>
+			</div>
+			<div id="disqus_thread"></div>
+			<div ng-bind="disqussPage()" style="display:none;"></div>
+		</div>
+		<div ng-show="objectDetails.type == 'adrpnt'">
+			<h3>
+				<span ng-bind="buildingType(objectDetails)"></span>
+				<span>&nbsp;<a href="javascript:void(0);" ng-click="navigate('details', null)" 
+				ng-bind="translation['details.back-to-map']"></a></span>
+			</h3>
+			<div class="details-address">
+				<div ng-repeat="a in getAddress(objectDetails)">{{a}}</div>
+			</div>
+			<div class="details-info" ng-show="objectDetails.tags && objectDetails.tags['building:levels']">
+				<table>
+					<tr>
+						<td class="attr-name" valign="top" ng-bind="translation['details.building.levels']"></td>
+						<td ng-bind="objectDetails.tags['building:levels']"></td>
+					</tr>
+				</table>
+			</div>
+			<div class="details-more-like-this">
+				<h4 ng-bind="translation['details.building.pois']"></h4>
+				<ul>
+					<li ng-repeat="f in objectDetails._related._same_building | filter : {'poi_addr_match':'!nearest'}">
+						<a href="javascript:void(0);" ng-click="navigate('id', f.feature_id)">{{formatSearchResultTitle(f)}}</a>
+					</li>
+				</ul>
+			</div>
+		</div>
 	</div>
 </div>

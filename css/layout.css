@@ -1,0 +1,31 @@
+.pagewidth, #details {
+	width: 1000px;
+	text-align: left;
+	margin: 0 auto;
+	height: 100%;
+}
+.page-wrapper {
+	height: 100%;
+}
+.maincol {
+	background-color: #FFFFFF;
+	position: relative;
+	padding: 3%;
+	height: 100%;
+}
+.clearfix:after {
+	content: ".";
+	display: block;
+	height: 0;
+	clear: both;
+	visibility: hidden;
+}
+.clearfix {
+	display: inline-block;
+}
+* html .clearfix {
+	height: 1%;
+}
+.clearfix {
+	display: block;
+}

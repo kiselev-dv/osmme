@@ -181,7 +181,7 @@ input, textarea, form:active, input:focus {
 	cursor: pointer;
 }
 #disqus_thread {
-	width:50%;
+	width:100%;
 }
 .round-button {
     display:inline-block;

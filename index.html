@@ -18,7 +18,8 @@
 		<script src="//cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.js" type="text/javascript"></script>
 		<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.css">
 		
-		<link rel="stylesheet" href="css/map.css"></link>
+		<link rel="stylesheet" href="css/map.css" type="text/css" />
+		<link rel="stylesheet" href="css/layout.css" type="text/css" />
 	    
 	</head>
 
@@ -41,11 +42,14 @@
 		<script src="js/meSearch.js" type="text/javascript"></script>
 		<script src="js/meDetails.js" type="text/javascript"></script>
 		
+		<script src="js/lib/angular-google-analytics.min.js" type="text/javascript"></script>
+		
 		<div id="map" class="content" ng-show="content.indexOf('map') == 0"></div>
 
-		<div id="details" class="content" style="left:450px;" 
+		<div id="details" class="content pagewidth"  
 			ng-show="content.indexOf('details') == 0 && objectDetails" 
-			ng-include="'templates/details.html'"></div>
+			ng-include="'templates/details.html'">
+		</div>
 		
 	</body>
 </html>

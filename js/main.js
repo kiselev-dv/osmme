@@ -17,12 +17,19 @@ String.prototype.format = function() {
 	});
 };
 
-var app = angular.module('Main', [ 'ngCookies', 'ngSanitize', 'meMap', 'meI18n', 
+var app = angular.module('Main', [ 'ngCookies', 'ngSanitize', 'meMap', 'meI18n', 'angular-google-analytics',
                                    'meSearch', 'meOSMDoc', 'meIGeocoder', 'meDetails', 'meRouter']);
 
 app.config(['$locationProvider', function($locationProvider) {
 	$locationProvider.hashPrefix('!');
 }]);
+
+if(ANALYTICS_CODE) {
+	app.config(['AnalyticsProvider', function(AnalyticsProvider) {
+		AnalyticsProvider.setAccount(ANALYTICS_CODE);
+		
+	}]);
+}
 
 app.directive('ngEnter', function() {
 	return function(scope, element, attrs) {
@@ -193,6 +200,9 @@ function ($rootScope, $scope, $cookies, i18nService, mapService, search,
 		
 		$scope.content = ls['details'] ? 'details' : 'map';
 		if($scope.content == 'details') {
+			if(ANALYTICS_CODE) {
+				Analytics.trackPage('/#!/' + $scope.lng + '/id/' + $scope.activeFeatureID + '/details');
+			}
 			details.showDetails($scope, $scope.activeFeatureID);
 			if(oldId) {
 				details.closePopup($scope, oldId);
