@@ -110,7 +110,7 @@ function ($rootScope, $scope, $cookies, i18nService, mapService, search,
 		routeService.update('lang', initLang());
 	}
 	
-	$scope.lng = ls['lang'];
+	$scope.lng = ls['lang'] || initLang();
 	$scope.hierarchy = 'osm-' + $scope.lng;
 	
 	$scope.name2FClass = {};
@@ -169,12 +169,16 @@ function ($rootScope, $scope, $cookies, i18nService, mapService, search,
 			});
 		}
 		
+		pg = filterAndSort(pg);
+		pt = filterAndSort(pt);
+		
 		if($scope.osmdocCat && (
 				!angular.equals(pg, $scope.osmdocCat.groups) 
 				|| !angular.equals(pt, $scope.osmdocCat.features))) {
 			
 			$scope.osmdocCat.groups = pg;
 			$scope.osmdocCat.features = pt;
+			docTree.organizeCathegories();
 			$scope.$broadcast('SelectCathegoryTreeNode');
 		}
 	}
@@ -193,7 +197,6 @@ function ($rootScope, $scope, $cookies, i18nService, mapService, search,
 			if(oldId) {
 				details.closePopup($scope, oldId);
 			}
-			//$scope.disqussPage();
 		}
 		else {
 			if($scope.activeFeatureID) {
@@ -238,7 +241,8 @@ function ($rootScope, $scope, $cookies, i18nService, mapService, search,
 	
 	var osmdocCatH = function() {
 		if($scope.osmdocCat) {
-			if($scope.osmdocCat.features) {
+			docTree.organizeCathegories();
+			if($scope.osmdocCat.features.length > 0) {
 				routeService.update('pt', 
 						$scope.osmdocCat.features.join());
 			}
@@ -246,7 +250,7 @@ function ($rootScope, $scope, $cookies, i18nService, mapService, search,
 				routeService.update('pt', null);
 			}
 			
-			if($scope.osmdocCat.groups) {
+			if($scope.osmdocCat.groups.length > 0) {
 				routeService.update('pg', 
 						$scope.osmdocCat.groups.join());
 			}
@@ -421,6 +425,10 @@ function ($rootScope, $scope, $cookies, i18nService, mapService, search,
 			return $scope.disqussId;
 		}
 		return '';
+	}
+	
+	$scope.removeSelected = function(name, type){
+		docTree.removeSelection($scope, {'name': name}, type);
 	}
 	
 }]);

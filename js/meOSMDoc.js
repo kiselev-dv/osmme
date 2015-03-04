@@ -178,11 +178,28 @@ var meOSMDoc = angular.module('meOSMDoc', [ 'meMap' ]);
 				var ftypes = docTree.expandCathegories($scope);
 					
 				mapService.filterMarkersByTypes($scope, ftypes);
+			},
+			
+			organizeCathegories: function() {
+				service.cathegories.groups = filterAndSort(service.cathegories.groups);
+				service.cathegories.features = filterAndSort(service.cathegories.features);
 			}
+			
 		};
 		
 		return service;
 	}]);
 
 })(angular, meOSMDoc);
+
+function filterAndSort(arr) {
+	if(arr.length > 1) {
+		return a.sort().filter(function(item, pos) {
+	        return !pos || item != a[pos - 1];
+	    });
+	}
+	else {
+		return arr;
+	}
+}
 
