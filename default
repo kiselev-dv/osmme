@@ -1,0 +1,30 @@
+server {
+    listen       5.34.183.32:80;
+    server_name  gazetteer.osm.me;
+    client_max_body_size 1m;
+
+    root /home/dkiselev/web;
+    index index.html gui.html;
+
+    access_log  /var/log/nginx/access.log;
+
+    #netty redirect
+    location /api {
+        proxy_pass         http://localhost:8080;
+
+        proxy_set_header        X-Real-IP $remote_addr;
+        proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header        Host $http_host;
+
+    }
+
+    # SEO _escaped_fragment_
+    if ($args ~* "_escaped_fragment_=") {
+        rewrite ^ /api/snapshot/$uri last;
+    }
+    
+    # SEO noscript catalog
+    location ~ ^/([\w-]*/)?catalog\.html$ {
+    	rewrite ^/([\w-]*/)?catalog\.html$ /api/snapshot/hierarchy/$1 last;
+    }
+}
