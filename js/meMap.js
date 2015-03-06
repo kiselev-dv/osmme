@@ -154,7 +154,15 @@ var MapModule = angular.module('meMap', [ 'ngCookies', 'meI18n' ]);
 				if(!this.id2Feature[data.feature_id]) {
 					this.id2Feature[data.feature_id] = data;
 					
+					var pc = $scope.name2FClass[data.poi_class[0]];
+					if(pc && !pc.ll_icon) {
+						pc.ll_icon = this.createIcon(pc);
+					}
+					
 					var m = L.marker([data.center_point.lat, data.center_point.lon]);
+					if(pc && pc.ll_icon) {
+						var m = L.marker([data.center_point.lat, data.center_point.lon], {icon:pc.ll_icon});
+					}
 					this.id2Marker[data.feature_id] = m;
 					m.addTo(this.map).bindPopup(this.getPopUPHtml(data, data.feature_id, $scope));
 					m.feature_id = data.feature_id;
@@ -264,6 +272,36 @@ var MapModule = angular.module('meMap', [ 'ngCookies', 'meI18n' ]);
 				if(z > 0 && lat < 90.0 && lat > -90.0 && lon > -180.0 && lon < 180.0 && this.map) {
 					this.map.setView([lat, lon], z);
 				}
+			},
+			
+			existedIcons: {},
+			
+			createIcon: function(poi_class) {
+				var url = TYPE_ICONS_ROOT +'/' + poi_class.icon;
+				
+				if(this.iconExists(url)) {
+					return L.icon({
+						iconUrl: TYPE_ICONS_ROOT +'/' + poi_class.icon,
+						iconSize: [32, 37],
+						iconAnchor: [16, 37],
+						popupAnchor: [0, -38]
+					});
+				}
+				else {
+					return null;
+				}
+			},
+			
+			iconExists: function(url) {
+				if(this.existedIcons[url] !== undefined) {
+					return this.existedIcons[url];
+				}
+				
+				var img = new Image();
+				img.src = url;
+				
+				this.existedIcons[url] = (img.height != 0);
+				return this.existedIcons[url];
 			}
 		};
 	
