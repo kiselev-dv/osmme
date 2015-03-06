@@ -154,18 +154,19 @@ var MapModule = angular.module('meMap', [ 'ngCookies', 'meI18n' ]);
 				if(!this.id2Feature[data.feature_id]) {
 					this.id2Feature[data.feature_id] = data;
 					
-					var pc = $scope.name2FClass[data.poi_class[0]];
-					if(pc && !pc.ll_icon) {
-						pc.ll_icon = this.createIcon(pc);
+					var clazz = $scope.name2FClass[data.poi_class[0]];
+					if(clazz) {
+						var thisClosure = this;
+						this.loadIcon(clazz, function(){
+							var m = L.marker([data.center_point.lat, data.center_point.lon]);
+							if(clazz.ll_icon) {
+								var m = L.marker([data.center_point.lat, data.center_point.lon], {'icon': clazz.ll_icon});
+							}
+							thisClosure.id2Marker[data.feature_id] = m;
+							m.addTo(thisClosure.map).bindPopup(thisClosure.getPopUPHtml(data, data.feature_id, $scope));
+							m.feature_id = data.feature_id;
+						});
 					}
-					
-					var m = L.marker([data.center_point.lat, data.center_point.lon]);
-					if(pc && pc.ll_icon) {
-						var m = L.marker([data.center_point.lat, data.center_point.lon], {icon:pc.ll_icon});
-					}
-					this.id2Marker[data.feature_id] = m;
-					m.addTo(this.map).bindPopup(this.getPopUPHtml(data, data.feature_id, $scope));
-					m.feature_id = data.feature_id;
 				}
 			},
 			
@@ -274,34 +275,56 @@ var MapModule = angular.module('meMap', [ 'ngCookies', 'meI18n' ]);
 				}
 			},
 			
-			existedIcons: {},
+			imgWaiters: {},
 			
-			createIcon: function(poi_class) {
-				var url = TYPE_ICONS_ROOT +'/' + poi_class.icon;
+			loadIcon: function(poi_class, callback) {
 				
-				if(this.iconExists(url)) {
-					return L.icon({
-						iconUrl: TYPE_ICONS_ROOT +'/' + poi_class.icon,
-						iconSize: [32, 37],
-						iconAnchor: [16, 37],
-						popupAnchor: [0, -38]
-					});
+				if(poi_class.ll_icon === undefined) {
+					var url = TYPE_ICONS_ROOT +'/' + poi_class.icon;
+					if(this.imgWaiters[url] === undefined) {
+						thisClosure = this;
+						
+						this.imgWaiters[url] = [];
+						this.imgWaiters[url].push(callback);
+						
+						var img = new Image();
+						img.onload = function() {
+							
+							poi_class.ll_icon = L.icon({
+								iconUrl: url,
+								iconSize: [32, 37],
+								iconAnchor: [16, 37],
+								popupAnchor: [0, -38]
+							});
+							
+							for(var i = 0; i < thisClosure.imgWaiters[url].length; i++) {
+								thisClosure.imgWaiters[url][i]();
+							}
+							
+							thisClosure.imgWaiters[url] = null;
+						}
+						
+						img.onerror = function() {
+							poi_class.ll_icon = null;
+							for(var i = 0; i < thisClosure.imgWaiters[url].length; i++) {
+								thisClosure.imgWaiters[url][i]();
+							}
+							
+							thisClosure.imgWaiters[url] = null;
+						}
+						
+						img.src = url;
+					}
+					else if (this.imgWaiters[url] === null) {
+						callback();
+					} 
+					else {
+						this.imgWaiters[url].push(callback);
+					}
 				}
 				else {
-					return null;
+					callback();
 				}
-			},
-			
-			iconExists: function(url) {
-				if(this.existedIcons[url] !== undefined) {
-					return this.existedIcons[url];
-				}
-				
-				var img = new Image();
-				img.src = url;
-				
-				this.existedIcons[url] = (img.height != 0);
-				return this.existedIcons[url];
 			}
 		};
 	
