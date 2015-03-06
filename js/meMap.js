@@ -154,19 +154,18 @@ var MapModule = angular.module('meMap', [ 'ngCookies', 'meI18n' ]);
 				if(!this.id2Feature[data.feature_id]) {
 					this.id2Feature[data.feature_id] = data;
 					
-					var clazz = $scope.name2FClass[data.poi_class[0]];
-					if(clazz) {
-						var thisClosure = this;
-						this.loadIcon(clazz, function(){
-							var m = L.marker([data.center_point.lat, data.center_point.lon]);
-							if(clazz.ll_icon) {
-								var m = L.marker([data.center_point.lat, data.center_point.lon], {'icon': clazz.ll_icon});
-							}
-							thisClosure.id2Marker[data.feature_id] = m;
-							m.addTo(thisClosure.map).bindPopup(thisClosure.getPopUPHtml(data, data.feature_id, $scope));
-							m.feature_id = data.feature_id;
-						});
-					}
+					var clazz = data.poi_class ? $scope.name2FClass[data.poi_class[0]] : null;
+					
+					var thisClosure = this;
+					this.loadIcon(clazz, function(){
+						var m = L.marker([data.center_point.lat, data.center_point.lon]);
+						if(clazz.ll_icon) {
+							var m = L.marker([data.center_point.lat, data.center_point.lon], {'icon': clazz.ll_icon});
+						}
+						thisClosure.id2Marker[data.feature_id] = m;
+						m.addTo(thisClosure.map).bindPopup(thisClosure.getPopUPHtml(data, data.feature_id, $scope));
+						m.feature_id = data.feature_id;
+					});
 				}
 			},
 			
@@ -280,6 +279,10 @@ var MapModule = angular.module('meMap', [ 'ngCookies', 'meI18n' ]);
 			imgWaiters: {},
 			
 			loadIcon: function(poi_class, callback) {
+				if(!poi_class) {
+					callback();
+					return;
+				}
 				
 				if(poi_class.ll_icon === undefined) {
 					var url = TYPE_ICONS_ROOT +'/' + poi_class.icon;
