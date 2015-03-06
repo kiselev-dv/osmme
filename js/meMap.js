@@ -218,9 +218,11 @@ var MapModule = angular.module('meMap', [ 'ngCookies', 'meI18n' ]);
 			
 			remove: function($scope, id) {
 				if(this.id2Feature[id] !== undefined){
-					this.map.removeLayer(this.id2Marker[id]);
+					if(this.id2Marker[id]) {
+						this.map.removeLayer(this.id2Marker[id]);
+						delete this.id2Marker[id];
+					}
 					delete this.id2Feature[id];
-					delete this.id2Marker[id];
 					$scope.activeFeatureID = null;
 				}
 			},
