@@ -159,7 +159,7 @@ var MapModule = angular.module('meMap', [ 'ngCookies', 'meI18n' ]);
 					var thisClosure = this;
 					this.loadIcon(clazz, function(){
 						var m = L.marker([data.center_point.lat, data.center_point.lon]);
-						if(clazz.ll_icon) {
+						if(clazz && clazz.ll_icon) {
 							var m = L.marker([data.center_point.lat, data.center_point.lon], {'icon': clazz.ll_icon});
 						}
 						thisClosure.id2Marker[data.feature_id] = m;
