@@ -37,7 +37,7 @@
 			<li ng-repeat="f in searchResultsPage.features" 
 				ng-class="{'selected': f.feature_id == activeFeatureID, 'suggested': f.feature_id == selectedSuggestion}" 
 				class="search-result" ng-click="selectRow(f);">
-				<div class="title" ng-show="f.name || f.poi_keywords">{{formatSearchResultTitle(f)}}</div>
+				<div class="title">{{formatSearchResultTitle(f)}}</div>
 				<div class="address">{{formatSearchResultAddress(f)}}</div>
 			</li>
 		</ul>

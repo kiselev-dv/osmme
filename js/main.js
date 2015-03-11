@@ -370,7 +370,7 @@ function ($rootScope, $scope, $cookies, i18nService, mapService, search,
 	$scope.formatSearchResultTitle = function(f) {
 		
 		if(f.type == 'adrpnt') {
-			return i18nService.tr('map.js.search.title.adrpnt');
+			return i18nService.tr($scope, 'map.js.search.title.adrpnt');
 		}
 		
 		if(f.name || f.poi_class) {
