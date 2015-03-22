@@ -74,18 +74,24 @@ meSearch.factory('search', ['$http', 'mapService', 'docTree',
 					return;
 				}
 				
+				var prm = {
+					'q':$scope.searchQuerry,
+					'poiclass': docTree.cathegories.features,
+					'poigroup': docTree.cathegories.groups,
+					'lat':this.pagesCenter.lat,
+					'lon':this.pagesCenter.lng,
+					'mark':this.getHash($scope),
+					'page':page,
+					'explain':$scope.explain,
+					'hierarchy':'osm-ru'
+				};
+				
+				if($scope.strictSearch) {
+					prm['strict'] = true;
+				}
+				
 				$http.get(API_ROOT + '/location/_search', {
-					'params' : {
-						'q':$scope.searchQuerry,
-						'poiclass': docTree.cathegories.features,
-						'poigroup': docTree.cathegories.groups,
-						'lat':this.pagesCenter.lat,
-						'lon':this.pagesCenter.lng,
-						'mark':this.getHash($scope),
-						'page':page,
-						'explain':$scope.explain,
-						'hierarchy':'osm-ru'
-					}
+					'params' : prm
 				}).success(function(data) {
 					service.searchSuccess.apply(service, [$scope, data]);
 				});
@@ -134,13 +140,17 @@ meSearch.factory('search', ['$http', 'mapService', 'docTree',
 				
 				if(!service.waitForAnswer) {
 					service.waitForAnswer = true;
+					var prm = {
+						'q':$scope.searchQuerry,
+						'size':10,
+						'mark': this.getHash($scope),
+						'hierarchy':'osm-ru'
+					};
+					if($scope.strictSearch) {
+						prm['strict'] = true;
+					}
 					$http.get(API_ROOT + '/location/_suggest', {
-						'params' : {
-							'q':$scope.searchQuerry,
-							'size':10,
-							'mark': this.getHash($scope),
-							'hierarchy':'osm-ru'
-						}
+						'params' : prm 
 					}).success(function(data) {
 						service.waitForAnswer = false;
 						service.searchSuccess.apply(service, [$scope, data]);

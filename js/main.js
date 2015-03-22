@@ -18,7 +18,7 @@ String.prototype.format = function() {
 };
 
 var app = angular.module('Main', [ 'ngCookies', 'ngSanitize', 'meMap', 'meI18n', 'angular-google-analytics',
-                                   'meSearch', 'meOSMDoc', 'meIGeocoder', 'meDetails', 'meRouter']);
+                                   'meSearch', 'meOSMDoc', 'meIGeocoder', 'meDetails', 'meRouter', 'ngDisqus']);
 
 app.config(['$locationProvider', function($locationProvider) {
 	$locationProvider.hashPrefix('!');
@@ -95,6 +95,8 @@ function ($rootScope, $scope, $cookies, i18nService, mapService, search,
 	routeService.parameter("pt");
 	//search query
 	routeService.parameter("q");
+	//use strict requests
+	routeService.flag("strict");
 	//show details
 	routeService.flag("details");
 	//explain queries (debug)
@@ -223,6 +225,10 @@ function ($rootScope, $scope, $cookies, i18nService, mapService, search,
 				var zll = routeService.getParameters()['map'];
 				mapService.setView(zll[1], zll[2], zll[0]);
 			}
+		}
+		
+		if(ls.strict) {
+			$scope.strictSearch = true;
 		}
 
 		updateCathegories();
@@ -422,23 +428,6 @@ function ($rootScope, $scope, $cookies, i18nService, mapService, search,
 			$scope.$broadcast('Search', $scope.searchQuerry);
 		}
 	};
-	
-	$scope.disqussPage = function() {
-		if(document.getElementById('disqus_thread')) {
-			if($scope.activeFeatureID != $scope.disqussId) {
-				$scope.disqussId = $scope.activeFeatureID;
-				DISQUS.reset({
-					reload: true,
-					config: function () {  
-						this.page.identifier = $scope.activeFeatureID;  
-						this.page.url = $location.absUrl();
-					}
-				});
-			}
-			return $scope.disqussId;
-		}
-		return '';
-	}
 	
 	$scope.removeSelected = function(name, type){
 		docTree.removeSelection($scope, {'name': name}, type);
