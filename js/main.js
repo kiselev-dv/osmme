@@ -231,8 +231,16 @@ function ($rootScope, $scope, $cookies, i18nService, mapService, search,
 			$scope.strictSearch = true;
 		}
 
+		if(ls.q) {
+			$scope.searchQuerry = ls.q;
+		}
+
 		updateCathegories();
 		
+	});
+	
+	$scope.$on('Search', function() {
+		routeService.update('q', $scope.searchQuerry);
 	});
 	
 	$scope.$on('HierarchyLoaded', updateCathegories);
