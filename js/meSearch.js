@@ -46,7 +46,7 @@ meSearch.factory('search', ['$http', 'mapService', 'docTree',
 	    			mapService.openPopUP($scope, f.feature_id);
 	    		});
 	    		
-	    		$scope.$watch('searchQuerry', function(){
+	    		$scope.$watch('searchQuerry', function(newValue, oldValue){
 	    			if(service.suppressOnSearchQuerry) {
 	    				service.suppressOnSearchQuerry = false
 	    			}

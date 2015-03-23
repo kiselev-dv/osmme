@@ -231,11 +231,9 @@ function ($rootScope, $scope, $cookies, i18nService, mapService, search,
 			$scope.strictSearch = true;
 		}
 
-		if(ls.q) {
-			if($scope.searchQuerry != ls.q) {
-				$scope.searchQuerry = ls.q;
-				$scope.$broadcast('Search', ls.q);
-			}
+		if(ls.q && $scope.searchQuerry == null && $scope.searchQuerry != ls.q) {
+			$scope.searchQuerry = ls.q;
+			$scope.$broadcast('Search', ls.q);
 		}
 
 		updateCathegories();
@@ -358,6 +356,16 @@ function ($rootScope, $scope, $cookies, i18nService, mapService, search,
 			$scope.$broadcast('SearchKeyDown');
 		}
 	}; 
+	
+	$scope.$watch('searchQuerry', function(newValue, oldValue){
+		if(oldValue != "" && newValue == "") {
+			$scope.$broadcast('CleanSearchInput');
+		}
+	});
+	
+	$scope.$on('CleanSearchInput', function() {
+		routeService.update('q', null);
+	});
 
 	$scope.formatSearchResultTitle = function(f) {
 		
