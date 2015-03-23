@@ -34,7 +34,9 @@
 					</li>
 				</ul>
 			</div>
-			<div disqus="activeFeatureID"></div>
+			<div id="disqus_thread" 
+				disqus="(objectDetails && objectDetails.type == 'poipnt') ? activeFeatureID : null" 
+				title="objectDetails.name"></div>
 		</div>
 		<div ng-show="objectDetails.type == 'adrpnt'">
 			<h3>

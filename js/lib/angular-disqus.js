@@ -6,7 +6,7 @@
  */
 (function (angular, window) {
   'use strict';
-
+  
   var disqusModule = angular.module('ngDisqus', [ ]);
 
   /**
@@ -113,12 +113,14 @@
      * @param  {String} $location location service
      * @param  {String} id Thread id
      */
-    function resetCommit($location, id) {
+    function resetCommit($location, id, url, newTitle) {
+      console.log('DISQUS reset:' + id);	
       window.DISQUS.reset({
         reload: true,
         config : function() {
-          this.page.identifier = id;
-          this.page.url        = $location.absUrl();
+        	this.page.identifier = id;
+        	this.page.url = newUrl;
+        	this.page.title = newTitle;
         }
       });
     }
@@ -144,6 +146,8 @@
       if (hasScriptTagInPlace(container, scriptSrc)) {
         return;
       }
+      
+      console.log('DISQUS add script tag');
 
       // Build the script tag and append it to container
       container.appendChild(buildScriptTag(scriptSrc));
@@ -167,7 +171,7 @@
        *
        * @param  {String} id required thread id
        */
-      function commit(id) {
+      function commit(id, title) {
         var shortname = getShortname();
 
         if (!angular.isDefined(shortname)) {
@@ -175,9 +179,9 @@
         } else if (!angular.isDefined(id)) {
           throw new Error('No disqus thread id defined');
         } else if (angular.isDefined(window.DISQUS)) {
-          resetCommit($location, id);
+          resetCommit($location, id, 'http://osm.me/ru/id/' + id + '/details', title);
         } else {
-          setGlobals(id, $location.absUrl(), shortname);
+          setGlobals(id, 'http://osm.me', shortname);
           addScriptTag(shortname, TYPE_EMBED);
         }
       }
@@ -205,28 +209,29 @@
       };
     }];
   });
-
+  
   /**
    * Disqus thread comment directive.
    * Used to display the comments block for a thread.
    */
   disqusModule.directive('disqus', [ '$disqus', function($disqus) {
 
-    return {
-      restrict : 'AC',
-      replace  : true,
-      scope    : {
-        id : '=disqus',
-      },
-      template : '<div id="disqus_thread"></div>',
-      link: function link(scope) {
-        scope.$watch('id', function(id) {
-          if (angular.isDefined(id)) {
-            $disqus.commit(id);
-          }
-        });
-      }
-    };
+	    return {
+		      restrict : 'AC',
+		      replace  : true,
+		      scope    : {
+		        id : '=disqus',
+		        title: '=title'
+		      },
+		      template : '<div id="disqus_thread"></div>',
+		      link: function link($scope, element, attrs) {
+		    	  	$scope.$watch('id', function(id) {
+						if (angular.isDefined(id) && id) {
+							$disqus.commit(id, $scope.title);
+						}
+					});
+		  	  }
+	    };
   }]);
 
   /**
@@ -241,5 +246,6 @@
       }
     };
   }]);
+  
 
 })(angular, this);
