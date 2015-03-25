@@ -78,16 +78,19 @@ meSearch.factory('search', ['$http', 'mapService', 'docTree',
 					'q':$scope.searchQuerry,
 					'poiclass': docTree.cathegories.features,
 					'poigroup': docTree.cathegories.groups,
-					'lat':this.pagesCenter.lat,
-					'lon':this.pagesCenter.lng,
-					'mark':this.getHash($scope),
-					'page':page,
-					'explain':$scope.explain,
-					'hierarchy':'osm-ru'
+					'mark': service.getHash($scope),
+					'page': page,
+					'explain': $scope.explain,
+					'hierarchy': $scope.hierarchyCode
 				};
 				
 				if($scope.strictSearch) {
 					prm['strict'] = true;
+				}
+				
+				if(service.pagesCenter) {
+					prm['lat'] = service.pagesCenter.lat;
+					prm['lon'] = service.pagesCenter.lng;
 				}
 				
 				$http.get(API_ROOT + '/location/_search', {
@@ -141,10 +144,10 @@ meSearch.factory('search', ['$http', 'mapService', 'docTree',
 				if(!service.waitForAnswer) {
 					service.waitForAnswer = true;
 					var prm = {
-						'q':$scope.searchQuerry,
-						'size':10,
+						'q': $scope.searchQuerry,
+						'size': 10,
 						'mark': this.getHash($scope),
-						'hierarchy':'osm-ru'
+						'hierarchy': $scope.hierarchyCode
 					};
 					if($scope.strictSearch) {
 						prm['strict'] = true;

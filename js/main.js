@@ -120,11 +120,11 @@ function ($rootScope, $scope, $cookies, i18nService, mapService, search,
 	}
 	
 	$scope.lng = ls['lang'] || initLang();
-	$scope.hierarchy = 'osm-' + $scope.lng;
+	$scope.hierarchyCode = 'osm-' + $scope.lng;
 	
 	$scope.name2FClass = {};
 	$scope.name2Group = {};
-	docTree.loadTree($scope, $scope.lng, $scope.hierarchy);
+	docTree.loadTree($scope, $scope.lng, $scope.hierarchyCo);
 	
 	i18nService.getTranslation($scope, $scope.lng, true, function(){
 		
@@ -241,6 +241,10 @@ function ($rootScope, $scope, $cookies, i18nService, mapService, search,
 	});
 	
 	$scope.$on('Search', function() {
+		routeService.update('q', $scope.searchQuerry);
+	});
+	
+	$scope.$on('SelectFeature', function() {
 		routeService.update('q', $scope.searchQuerry);
 	});
 	

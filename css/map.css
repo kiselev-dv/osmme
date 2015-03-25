@@ -209,3 +209,8 @@ input, textarea, form:active, input:focus {
 .selected-type .round-button {
 	margin-right: 5px;
 }
+#not-strict-results-alert {
+	font-weight: bold;
+	margin: 3px 0 3px 0;
+	padding-left: 5px;
+}
