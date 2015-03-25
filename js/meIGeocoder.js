@@ -8,7 +8,9 @@ var meIGeocoder = angular.module('meIGeocoder', [ 'ngResource', 'meMap', 'meDeta
 			create: function($scope, map) {
 				var service = this;
 				map.on('click', function(e){
-					service.sendRequest(e.latlng.lng, e.latlng.lat);
+					if(map.getZoom() > 14) {
+						service.sendRequest(e.latlng.lng, e.latlng.lat);
+					}
 				});
 				this.scope = $scope;
 			},
