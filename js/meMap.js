@@ -99,15 +99,25 @@ var MapModule = angular.module('meMap', [ 'ngCookies', 'meI18n' ]);
 				
 				var mapClosure = this.map;
 				this.map.on('viewreset', function() {
-					service.saveStateToCookie.apply(service, []);
-					$scope.$broadcast('MapViewChanged', mapClosure.getCenter(), mapClosure.getZoom());
-					$rootScope.$$phase || $rootScope.$apply();
+					// do not block map
+					window.setTimeout(function() {
+						service.saveStateToCookie.apply(service, []);
+						service.broadcastAction = true;
+						$scope.$broadcast('MapViewChanged', mapClosure.getCenter(), mapClosure.getZoom());
+						$rootScope.$$phase || $rootScope.$apply();
+						service.broadcastAction = false;
+					}, 0);
 				});
 
 				this.map.on('moveend', function() {
-					service.saveStateToCookie.apply(service, []);
-					$scope.$broadcast('MapViewChanged', mapClosure.getCenter(), mapClosure.getZoom());
-					$rootScope.$$phase || $rootScope.$apply();
+					// do not block map
+					window.setTimeout(function() {
+						service.saveStateToCookie.apply(service, []);
+						service.broadcastAction = true;
+						$scope.$broadcast('MapViewChanged', mapClosure.getCenter(), mapClosure.getZoom());
+						$rootScope.$$phase || $rootScope.$apply();
+						service.broadcastAction = false;
+					}, 0);
 				});
 
 				this.map.on('popupopen', function(e) {
@@ -244,7 +254,7 @@ var MapModule = angular.module('meMap', [ 'ngCookies', 'meI18n' ]);
 				var c = this.map.getCenter();
 				var z = this.map.getZoom();
 				if(z > 0 && c.lat < 90.0 && c.lat > -90.0 && c.lng > -180.0 && c.lng < 180.0 ) {
-					return z + '/' + roundNumber(c.lat, 4) + '/' + roundNumber(c.lng, 4);
+					return z + '/' + roundNumber(c.lat, 5) + '/' + roundNumber(c.lng, 5);
 				}
 				
 				return null;
@@ -254,7 +264,7 @@ var MapModule = angular.module('meMap', [ 'ngCookies', 'meI18n' ]);
 				var c = this.map.getCenter();
 				var z = this.map.getZoom();
 				if(z > 0 && c.lat < 90.0 && c.lat > -90.0 && c.lng > -180.0 && c.lng < 180.0 ) {
-					return [z, roundNumber(c.lat, 4), roundNumber(c.lng, 4)];
+					return [z, roundNumber(c.lat, 5), roundNumber(c.lng, 5)];
 				}
 				
 				return null;

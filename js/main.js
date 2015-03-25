@@ -223,7 +223,9 @@ function ($rootScope, $scope, $cookies, i18nService, mapService, search,
 			
 			if(routeService.getParameters()['map']) {
 				var zll = routeService.getParameters()['map'];
-				mapService.setView(zll[1], zll[2], zll[0]);
+				if(!mapService.broadcastAction) {
+					mapService.setView(zll[1], zll[2], zll[0]);
+				}
 			}
 		}
 		
