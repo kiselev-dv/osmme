@@ -259,7 +259,7 @@ function ($rootScope, $scope, $cookies, i18nService, mapService, search,
 	});
 	
 	$scope.$on('PopupOpen', function(evnt, fid) {
-		routeService.update('id', fid);
+		routeService.update({'id': fid, 'map': null});
 	});
 	
 	$scope.$on('MapViewChanged', function() {

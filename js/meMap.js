@@ -22,6 +22,13 @@ var MapModule = angular.module('meMap', [ 'ngCookies', 'meI18n' ]);
 		    setContainer: function(inner) {
 		    	var el = L.DomUtil.create('div', 'search-control');
 		    	L.DomEvent.disableClickPropagation(el);
+		    	L.DomEvent.addListener(el, 'mousewheel', function (e) {
+		    		var scrollPane = document.getElementById('r-scroll-pane');
+		    		if (scrollPane) {
+		    			scrollPane.scrollTop -= (L.DomEvent.getWheelDelta(e) * 20);
+		    		}
+		    	    L.DomEvent.stopPropagation(e);
+		    	});
 		    	el.innerHTML = inner;
 		    	this.container = el;
 		    },
@@ -106,7 +113,7 @@ var MapModule = angular.module('meMap', [ 'ngCookies', 'meI18n' ]);
 						$scope.$broadcast('MapViewChanged', mapClosure.getCenter(), mapClosure.getZoom());
 						$rootScope.$$phase || $rootScope.$apply();
 						service.broadcastAction = false;
-					}, 0);
+					}, 10);
 				});
 
 				this.map.on('moveend', function() {
@@ -117,7 +124,7 @@ var MapModule = angular.module('meMap', [ 'ngCookies', 'meI18n' ]);
 						$scope.$broadcast('MapViewChanged', mapClosure.getCenter(), mapClosure.getZoom());
 						$rootScope.$$phase || $rootScope.$apply();
 						service.broadcastAction = false;
-					}, 0);
+					}, 10);
 				});
 
 				this.map.on('popupopen', function(e) {
@@ -182,16 +189,18 @@ var MapModule = angular.module('meMap', [ 'ngCookies', 'meI18n' ]);
 			openPopUP: function($scope, id, c) {
 				if(id && this.id2Marker[id]) {
 					if(!angular.element(this.map.getContainer()).hasClass('ng-hide')) {
-						this.map.invalidateSize(false);
-						this.id2Marker[id].openPopup();
+						if(!this.id2Marker[id]._popup._isOpen) {
+							this.map.invalidateSize(false);
+							this.id2Marker[id].openPopup();
+						}
 					}
 					else {
 						var thisClosure = this;
-						var ttl = c || 2;
+						var ttl = c || 5;
 						if(ttl > 0) {
 							window.setTimeout(function(){
 								thisClosure.openPopUP.apply(thisClosure, [$scope, id, ttl]);
-							}, 250);
+							}, 100);
 						}
 					}
 				}

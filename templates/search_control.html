@@ -16,7 +16,7 @@
 	<a href="javascript:void(0);" ng-bind="translation['map.note']"></a>
 </div>
 <div ng-include="'templates/cathegories.html'"></div>
-<div class="y-scroll" ng-style="{'max-height': (windowHeight - windowHeight * 0.15) + 'px'}" me-resize >
+<div id="r-scroll-pane" class="y-scroll" ng-style="{'max-height': (windowHeight - windowHeight * 0.15) + 'px'}" me-resize >
 	<div id="serch-types" ng-show="searchResultsPage.matched_type">
 		<ul>
 			<li ng-repeat="f in searchResultsPage.matched_type" 
