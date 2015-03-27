@@ -9,6 +9,7 @@ meSearch.factory('search', ['$http', 'mapService', 'docTree',
 	    	selectedSuggestion: -1,
 	    	queryHead: null,
 	    	userSearchInput: '',
+	    	restrictWithBBOX: false,
 	    	
 	    	attach: function($scope) {
 	    		$scope.$on('MapViewChanged', function(event) {
@@ -68,6 +69,7 @@ meSearch.factory('search', ['$http', 'mapService', 'docTree',
 	    	
 			search: function($scope, page) {
 				
+				service.restrictWithBBOX = false;
 				service.userSearchInput = '';
 				
 				if(!$scope.searchQuerry) {
@@ -76,13 +78,19 @@ meSearch.factory('search', ['$http', 'mapService', 'docTree',
 				
 				var prm = {
 					'q':$scope.searchQuerry,
-					'poiclass': docTree.cathegories.features,
-					'poigroup': docTree.cathegories.groups,
 					'mark': service.getHash($scope),
 					'page': page,
-					'explain': $scope.explain,
-					'hierarchy': $scope.hierarchyCode
+					'hierarchy': $scope.hierarchyCode,
+					'explain': $scope.explain
 				};
+
+				// docTree.cathegories.groups and $scope.osmdocCat.groups 
+				// actually points to the same array,
+				// just use names like in template
+				if($scope.osmdocCat && ($scope.osmdocCat.features || $scope.osmdocCat.groups)) {
+					prm['poiclass'] = $scope.osmdocCat.features;
+					prm['poigroup'] = $scope.osmdocCat.groups;
+				}
 				
 				if($scope.strictSearch) {
 					prm['strict'] = true;
@@ -126,8 +134,6 @@ meSearch.factory('search', ['$http', 'mapService', 'docTree',
 						if(service.resetMap && pointsArray && pointsArray.length > 0){
 							mapService.map.fitBounds(L.latLngBounds(pointsArray));
 						}
-
-						this.pagesMode = true;
 					}
 				}
 			},
@@ -161,9 +167,6 @@ meSearch.factory('search', ['$http', 'mapService', 'docTree',
 				}
 			},
 			
-			getHash: function($scope) {
-				return ('' + docTree.cathegories + $scope.searchQuerry).hashCode();
-			},
 			
 			listPOI:function($scope, page) {
 
@@ -172,32 +175,45 @@ meSearch.factory('search', ['$http', 'mapService', 'docTree',
 					return;
 				}
 				
+				service.restrictWithBBOX = true;
+				
 				$http.get(API_ROOT + '/location/_search', {
 					'params' : {
-						'q':$scope.searchQuerry,
-						'poiclass':docTree.cathegories.features,
-						'poigroup':docTree.cathegories.groups,
-						'bbox':mapService.map.getBounds().toBBoxString(),
-						'size':50,
-						'page':page,
-						'mark': this.getHash($scope),
-						'hierarchy':'osm-ru'
+						'q': $scope.searchQuerry,
+						'poiclass': docTree.cathegories.features,
+						'poigroup': docTree.cathegories.groups,
+						'bbox': mapService.map.getBounds().toBBoxString(),
+						'size': 20,
+						'page': page,
+						'mark': service.getHash($scope),
+						'hierarchy': $scope.hierarchyCode
 					}
 				}).success(function(data) {
 					if(data.result == 'success') {
-						var curentHash = service.getHash($scope);
-						if(data.mark == curentHash) {
-							angular.forEach(data.features, function(f, index){
-								mapService.createPopUP($scope, f);
-							});
-							
-							//load data paged but no more than 1000 items
-							if(data.page * data.size < data.hits && data.page < 20) {
-								service.listPOI($scope, data.page + 1);
-							}
-						}
+						service.listPOISuccess.apply(service, [data, $scope]);
 					}
 				});
+			},
+			
+			listPOISuccess: function(data, $scope) {
+				var curentHash = service.getHash($scope);
+				if(data.mark == curentHash) {
+					angular.forEach(data.features, function(f, index){
+						mapService.createPopUP($scope, f);
+					});
+					
+					//load data paged but no more than 10 pages
+					if(data.page * data.size < data.hits && data.page < 10) {
+						service.listPOI($scope, data.page + 1);
+					}
+				}
+			},
+
+			getHash: function($scope) {
+				return ('' + { 
+					'poiclass': $scope.osmdocCat.features,
+					'poigroup': $scope.osmdocCat.groups,
+					'query': $scope.searchQuerry}).hashCode();
 			},
 			
 			listPages: function($scope) {

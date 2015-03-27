@@ -94,7 +94,7 @@ var MapModule = angular.module('meMap', [ 'ngCookies', 'meI18n' ]);
 					maxZoom: 18
 				});
 				
-				base = {
+				var base = {
 					'Mapnik': mapnik,
 					'MapSurfer': mapsurfer
 				};
@@ -246,6 +246,7 @@ var MapModule = angular.module('meMap', [ 'ngCookies', 'meI18n' ]);
 			},
 			
 			filterMarkersByTypes: function($scope, ftypes) {
+				
 				var remove = [];
 				
 				angular.forEach(this.id2Feature, function(f, id){

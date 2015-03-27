@@ -174,10 +174,17 @@ var meOSMDoc = angular.module('meOSMDoc', [ 'meMap' ]);
 				$scope.$broadcast('UnselectCathegoryTreeNode');
 			},
 			
-			filterMap: function($scope) {
-				var ftypes = docTree.expandCathegories($scope);
+			updateSelections: function($scope) {
+				traverseHierarchy($scope.hierarchy, {
+					group: function(g) {
+						g.selected = (service.cathegories.groups.indexOf(g.name) >= 0); 
+					},
 					
-				mapService.filterMarkersByTypes($scope, ftypes);
+					feature: function(f, gstack) {
+						f.selected = (service.cathegories.features.indexOf(f.name) >= 0);
+					}
+					
+				}, []);
 			},
 			
 			organizeCathegories: function() {

@@ -188,6 +188,7 @@ function ($rootScope, $scope, $cookies, i18nService, mapService, search,
 			$scope.osmdocCat.groups = pg;
 			$scope.osmdocCat.features = pt;
 			docTree.organizeCathegories();
+			docTree.updateSelections($scope);
 			$scope.$broadcast('SelectCathegoryTreeNode');
 		}
 	}
@@ -291,6 +292,9 @@ function ($rootScope, $scope, $cookies, i18nService, mapService, search,
 			else {
 				routeService.update('pg', null);
 			}
+			
+			mapService.filterMarkersByTypes($scope, docTree.expandCathegories($scope)); 
+			docTree.updateSelections($scope);
 		}
 	}
 
