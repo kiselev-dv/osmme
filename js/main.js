@@ -124,7 +124,7 @@ function ($rootScope, $scope, $cookies, i18nService, mapService, search,
 	
 	$scope.name2FClass = {};
 	$scope.name2Group = {};
-	docTree.loadTree($scope, $scope.lng, $scope.hierarchyCo);
+	docTree.loadTree($scope, $scope.lng, $scope.hierarchyCode);
 	
 	i18nService.getTranslation($scope, $scope.lng, true, function(){
 		
