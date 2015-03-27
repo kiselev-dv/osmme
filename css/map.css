@@ -214,3 +214,6 @@ input, textarea, form:active, input:focus {
 	margin: 3px 0 3px 0;
 	padding-left: 5px;
 }
+#close-search-results {
+	float: right;
+}

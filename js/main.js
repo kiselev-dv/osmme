@@ -297,6 +297,16 @@ function ($rootScope, $scope, $cookies, i18nService, mapService, search,
 			docTree.updateSelections($scope);
 		}
 	}
+	
+	$scope.$on('CloseSearchResults', closeSearchResults);
+	
+	function closeSearchResults() {
+		$scope.searchQuerry = '';
+		$scope.searchResultsPage = null;
+		$scope.srPages = null;
+		mapService.filterMarkersByTypes($scope, docTree.expandCathegories($scope)); 
+		docTree.updateSelections($scope);
+	}
 
 	$scope.$on('SelectCathegoryTreeNode', osmdocCatH);
 	$scope.$on('UnselectCathegoryTreeNode', osmdocCatH);
