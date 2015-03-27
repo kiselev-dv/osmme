@@ -389,6 +389,10 @@ function ($rootScope, $scope, $cookies, i18nService, mapService, search,
 
 	$scope.formatSearchResultTitle = function(f) {
 		
+		if(!f) {
+			return '';
+		}
+		
 		if(f.type == 'adrpnt') {
 			return i18nService.tr($scope, 'map.js.search.title.adrpnt');
 		}
@@ -410,6 +414,10 @@ function ($rootScope, $scope, $cookies, i18nService, mapService, search,
 	};
 	
 	$scope.formatSearchResultAddress = function(f) {
+		if(!f) {
+			return '';
+		}
+		
 		var order = $scope.translation ? 
 				$scope.translation['addr.order'] : 'hn-street-city';
 		return getAddress(f, order)[0];

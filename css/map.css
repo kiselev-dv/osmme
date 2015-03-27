@@ -217,3 +217,17 @@ input, textarea, form:active, input:focus {
 #close-search-results {
 	float: right;
 }
+#inverse-geocode-results {
+	padding-left: 5px;
+	padding-right: 5px;
+}
+#inverse-geocode-results ul {
+	padding-left: 22px;
+}
+#inverse-geocode-results li {
+	list-style: none;
+}
+#inverse-geocode-results li:HOVER {
+	background-color: #A1BB6C;
+	cursor: pointer;
+}

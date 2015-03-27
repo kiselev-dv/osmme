@@ -13,6 +13,11 @@ var meIGeocoder = angular.module('meIGeocoder', [ 'ngResource', 'meMap', 'meDeta
 					}
 				});
 				this.scope = $scope;
+				
+				$scope.$on('CloseInverseGeocodeResults', function(){
+					$scope.inverseGeocodeResults = null;
+					mapService.filterMarkersByTypes($scope, []);
+				});
 			},
 			
 			sendRequest:function(lon, lat) {
@@ -24,18 +29,30 @@ var meIGeocoder = angular.module('meIGeocoder', [ 'ngResource', 'meMap', 'meDeta
 			
 			showAnswer: function(data) {
 				if(data && data.feature_id) {
-					var html = mapService.getPopUPHtml(data, data.feature_id, this.scope);
+
+					this.scope.$broadcast('CloseSearchResults', data.feature_id);
+					this.scope.inverseGeocodeResults = data;
+					var $scope = this.scope;
 					
-					var popup = L.popup()
-					    .setLatLng(L.latLng(data.center_point.lat, data.center_point.lon))
-					    .setContent(html)
-					    .openOn(mapService.map);
+					mapService.createPopUP($scope, data);
 					
-					details.cache.put.apply(details.cache, [data.feature_id, data]);
-					
-					this.scope.activeFeatureID = data.feature_id;
-					popup.feature_id = data.feature_id;
-					this.scope.$broadcast('PopupOpen', data.feature_id);
+					if(data._related && data._related._same_building) {
+						angular.forEach(data._related._same_building, function(obj) {
+							mapService.createPopUP($scope, obj);
+						});
+					}
+
+					if(data._eclosed) {
+						angular.forEach(data._eclosed, function(obj) {
+							mapService.createPopUP($scope, obj);
+						});
+					}
+
+					if(data._neighbours) {
+						angular.forEach(data._neighbours, function(obj) {
+							mapService.createPopUP($scope, obj);
+						});
+					}
 					
 				}
 			}

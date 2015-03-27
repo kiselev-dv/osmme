@@ -245,6 +245,10 @@ var MapModule = angular.module('meMap', [ 'ngCookies', 'meI18n' ]);
 				}
 			},
 			
+			clearAllMarkers: function($scope) {
+				this.filterMarkersByTypes($scope, []);
+			},
+			
 			filterMarkersByTypes: function($scope, ftypes) {
 				
 				var remove = [];
