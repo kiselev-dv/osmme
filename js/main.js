@@ -27,7 +27,6 @@ app.config(['$locationProvider', function($locationProvider) {
 if(ANALYTICS_CODE) {
 	app.config(['AnalyticsProvider', function(AnalyticsProvider) {
 		AnalyticsProvider.setAccount(ANALYTICS_CODE);
-		
 	}]);
 }
 
@@ -78,6 +77,10 @@ function ($rootScope, $scope, $cookies, i18nService, mapService, search,
 	
 	$scope.HTML_ROOT = HTML_ROOT;
 	$rootScope.HTML_ROOT = HTML_ROOT;
+	
+	if(ANALYTICS_CODE) {
+		Analytics.trackPage('/#!/' + $scope.lng + '/);
+	}
 	
 	$scope.mobile = ((window.innerWidth > 0) ? window.innerWidth : screen.width) < 800;
 	
