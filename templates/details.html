@@ -5,7 +5,7 @@
 				<span class="details-name" ng-bind="objectDetails.name"></span><span 
 					ng-show="name2FClass && !nameContainsType(objectDetails)" 
 					class="details-type">&nbsp;({{formatObjectType(objectDetails)}})</span>
-				<span>&nbsp;<a href="javascript:void(0);" ng-click="navigate('details', null)" 
+				<span>&nbsp;<a href="{{mergeIntoPath('details', null)}}" 
 				ng-bind="translation['details.back-to-map']"></a></span>	
 			</h3>
 			<div class="details-address">
@@ -24,13 +24,13 @@
 				<h4 ng-bind="translation['details.building.pois.pois']"></h4>
 				<ul>
 					<li ng-repeat="f in objectDetails._related._same_building | filter : {'poi_addr_match':'!nearest'}">
-						<a href="javascript:void(0);" ng-click="navigate('id', f.feature_id)">{{formatSearchResultTitle(f)}}</a>
+						<a href="{{mergeIntoPath('id', f.feature_id)}}" >{{formatSearchResultTitle(f)}}</a>
 					</li>
 				</ul>
 				<h4 ng-bind="moreLikeThisH4"></h4>
 				<ul>
 					<li ng-repeat="f in objectDetails._related._same_poi_type">
-						<a href="javascript:void(0);" ng-click="navigate('id', f.feature_id)">{{formatSearchResultTitle(f)}}</a>
+						<a href="{{mergeIntoPath('id', f.feature_id)}}" >{{formatSearchResultTitle(f)}}</a>
 					</li>
 				</ul>
 			</div>
@@ -41,7 +41,7 @@
 		<div ng-show="objectDetails.type == 'adrpnt'">
 			<h3>
 				<span ng-bind="buildingType(objectDetails)"></span>
-				<span>&nbsp;<a href="javascript:void(0);" ng-click="navigate('details', null)" 
+				<span>&nbsp;<a href="{{mergeIntoPath('details', null)}}"  
 				ng-bind="translation['details.back-to-map']"></a></span>
 			</h3>
 			<div class="details-address">
@@ -59,7 +59,7 @@
 				<h4 ng-bind="translation['details.building.pois']"></h4>
 				<ul>
 					<li ng-repeat="f in objectDetails._related._same_building | filter : {'poi_addr_match':'!nearest'}">
-						<a href="javascript:void(0);" ng-click="navigate('id', f.feature_id)">{{formatSearchResultTitle(f)}}</a>
+						<a href="{{mergeIntoPath('id', f.feature_id)}}" >{{formatSearchResultTitle(f)}}</a>
 					</li>
 				</ul>
 			</div>

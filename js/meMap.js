@@ -134,11 +134,11 @@ var MapModule = angular.module('meMap', [ 'ngCookies', 'meI18n' ]);
 						animate : false
 					});
 					
-					angular.element(e.popup._container).find('a').on('click', function(){
-						var fid = (e.popup._source ? e.popup._source.feature_id : e.popup.feature_id);
-						$scope.$broadcast('PopUPDetailsLinkClick', fid);
-						$rootScope.$$phase || $rootScope.$apply();
-					});
+//					angular.element(e.popup._container).find('a').on('click', function(){
+//						var fid = (e.popup._source ? e.popup._source.feature_id : e.popup.feature_id);
+//						$scope.$broadcast('PopUPDetailsLinkClick', fid);
+//						$rootScope.$$phase || $rootScope.$apply();
+//					});
 					
 					var fid = (e.popup._source ? e.popup._source.feature_id : e.popup.feature_id);
 					$scope.$broadcast('PopupOpen', fid);
@@ -223,7 +223,8 @@ var MapModule = angular.module('meMap', [ 'ngCookies', 'meI18n' ]);
 						$scope.translation['addr.order'] : 'hn-street-city';
 				var address = getAddress(f, order)[0];
 				
-				var moreLink = '<a class="more-link" href="javascript:void(0);">' + 
+				var moreLink = '<a class="more-link" href="' 
+					+ $scope.mergeIntoPath({'details': true, 'id': activeFeatureID}) + '">' + 
 					i18nService.tr($scope, 'map.js.popup.more') + '</a>';
 				
 				if(title) {

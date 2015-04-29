@@ -79,7 +79,7 @@ function ($rootScope, $scope, $cookies, i18nService, mapService, search,
 	$rootScope.HTML_ROOT = HTML_ROOT;
 	
 	if(ANALYTICS_CODE) {
-		Analytics.trackPage('/#!/' + $scope.lng + '/);
+		Analytics.trackPage('/#!/' + $scope.lng + '/');
 	}
 	
 	$scope.mobile = ((window.innerWidth > 0) ? window.innerWidth : screen.width) < 800;
@@ -270,13 +270,6 @@ function ($rootScope, $scope, $cookies, i18nService, mapService, search,
 		routeService.update('map', mapService.getStateArray());
 	});
 
-	$scope.$on('PopUPDetailsLinkClick', function() {
-		if($scope.activeFeatureID) {
-			$scope.content = 'details';
-			routeService.update('details', true);
-		}
-	});
-	
 	var osmdocCatH = function() {
 		if($scope.osmdocCat) {
 			docTree.organizeCathegories();
@@ -364,9 +357,8 @@ function ($rootScope, $scope, $cookies, i18nService, mapService, search,
 		return i18nService.tr($scope, 'details.adr.building');
 	};
 
-	$scope.navigate = function(key, val) {
-		//$location.search(key, val);
-		routeService.update(key, val);
+	$scope.mergeIntoPath = function(key, val) {
+		return '/#!' + routeService.mergeIntoPath(key, val);
 	};
 	
 	$scope.searchKeyDown = function($event) {

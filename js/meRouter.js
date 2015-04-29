@@ -165,7 +165,21 @@ router.factory('routeService', ['$location', function($location) {
 		}
 		
 		return r;
-	}
+	};
+	
+	meRouter.prototype.mergeIntoPath = function(key, val) {
+		var obj = {};
+		
+		if(val === undefined) {
+			obj = key;
+		}
+		else {
+			obj[key] = val;
+		}
+		
+		var p = angular.extend(this.getParameters(), obj);
+		return this.createPath(p);
+	};
 	
 	return new meRouter();
 }]);

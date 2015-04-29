@@ -10,6 +10,7 @@ meSearch.factory('search', ['$http', 'mapService', 'docTree',
 	    	queryHead: null,
 	    	userSearchInput: '',
 	    	restrictWithBBOX: false,
+	    	suggestTimer: null,
 	    	
 	    	attach: function($scope) {
 	    		$scope.$on('MapViewChanged', function(event) {
@@ -52,7 +53,10 @@ meSearch.factory('search', ['$http', 'mapService', 'docTree',
 	    				service.suppressOnSearchQuerry = false
 	    			}
 	    			else {
-	    				service.suggest($scope);
+	    				if(service.suggestTimer) {
+	    					window.clearTimeout(service.suggestTimer);
+	    				}
+	    				service.suggestTimer = window.setTimeout(function(){service.suggest($scope);}, 300); 
 	    			}
 	    		});
 
