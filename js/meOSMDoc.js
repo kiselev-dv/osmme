@@ -22,6 +22,8 @@ var meOSMDoc = angular.module('meOSMDoc', [ 'meMap' ]);
 		
 		var service = {
 				
+			SUPPORTED_HIERARCHIES: ['osm-ru'],	
+				
 			cathegories: {
 				features:[],
 				groups:[]
@@ -185,6 +187,16 @@ var meOSMDoc = angular.module('meOSMDoc', [ 'meMap' ]);
 					}
 					
 				}, []);
+			},
+			
+			getHierarchyCode: function(langCode) {
+				var code = 'osm-' + langCode;
+				
+				if(service.SUPPORTED_HIERARCHIES.indexOf(code) < 0) {
+					return service.SUPPORTED_HIERARCHIES[0];
+				}
+				
+				return code;
 			},
 			
 			organizeCathegories: function() {

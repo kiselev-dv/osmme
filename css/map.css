@@ -159,7 +159,11 @@ input, textarea, form:active, input:focus {
 	clear: both;
 }
 #links {
-	padding: 1px 4px 1px 4px;
+	padding: 6px 4px 1px 4px;
+	height: 30px;
+}
+#languages {
+	float: right;
 }
 #links a {
 	color: #aaa;

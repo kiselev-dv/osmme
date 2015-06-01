@@ -181,5 +181,9 @@ router.factory('routeService', ['$location', function($location) {
 		return this.createPath(p);
 	};
 	
+	meRouter.prototype.reload = function() {
+		window.location.reload();
+	};
+	
 	return new meRouter();
 }]);

@@ -119,11 +119,14 @@ function ($rootScope, $scope, $cookies, i18nService, mapService, search,
 	var ls = routeService.getParameters();
 	
 	if(!ls['lang']) {
-		routeService.update('lang', initLang());
+		routeService.update('lang', initLang($cookies));
 	}
 	
-	$scope.lng = ls['lang'] || initLang();
-	$scope.hierarchyCode = 'osm-' + $scope.lng;
+	
+	$scope.lng = ls['lang'] || initLang($cookies);
+	$scope.hierarchyCode = docTree.getHierarchyCode($scope.lng);
+
+	$scope.langsAvaible = ['en', 'ru'];
 	
 	$scope.name2FClass = {};
 	$scope.name2Group = {};
@@ -200,6 +203,11 @@ function ($rootScope, $scope, $cookies, i18nService, mapService, search,
 		var oldId = $scope.activeFeatureID;
 		
 		var ls = routeService.getParameters();
+		
+		if($scope.lng != ls['lang']) {
+			$cookies.lang = ls['lang'];
+			routeService.reload();
+		}
 		
 		$scope.activeFeatureID = ls['id'];
 		$scope.explain = ls['explain'];
@@ -452,7 +460,10 @@ function ($rootScope, $scope, $cookies, i18nService, mapService, search,
 	
 }]);
 
-function initLang() {
+function initLang($cookies) {
+	if($cookies.lang) {
+		return $cookies.lang;
+	}
 	return 'ru';
 }
 
