@@ -3,8 +3,8 @@ String.prototype.hashCode = function(){
 	var hash = 0;
 	if (this.length == 0) return hash;
 	for (i = 0; i < this.length; i++) {
-		char = this.charCodeAt(i);
-		hash = ((hash<<5)-hash)+char;
+		c = this.charCodeAt(i);
+		hash = ((hash<<5)-hash) + c;
 		hash = hash & hash; // Convert to 32bit integer
 	}
 	return hash;
@@ -17,20 +17,20 @@ String.prototype.format = function() {
 	});
 };
 
-var app = angular.module('Main', [ 'ngCookies', 'ngSanitize', 'meMap', 'meI18n', 'angular-google-analytics',
+var OSMmeApp = angular.module('OSMmeApp', [ 'ngCookies', 'ngSanitize', 'meMap', 'meI18n', 'angular-google-analytics',
                                    'meSearch', 'meOSMDoc', 'meIGeocoder', 'meDetails', 'meRouter', 'ngDisqus']);
 
-app.config(['$locationProvider', function($locationProvider) {
+OSMmeApp.config(['$locationProvider', function($locationProvider) {
 	$locationProvider.hashPrefix('!');
 }]);
 
 if(ANALYTICS_CODE) {
-	app.config(['AnalyticsProvider', function(AnalyticsProvider) {
+	OSMmeApp.config(['AnalyticsProvider', function(AnalyticsProvider) {
 		AnalyticsProvider.setAccount(ANALYTICS_CODE);
 	}]);
 }
 
-app.directive('ngEnter', function() {
+OSMmeApp.directive('ngEnter', function() {
 	return function(scope, element, attrs) {
 		element.bind("keydown keypress", function(event) {
 			if (event.which === 13) {
@@ -44,7 +44,7 @@ app.directive('ngEnter', function() {
 	};
 });
 
-app.directive('meResize', ['$window', function ($window) {
+OSMmeApp.directive('meResize', ['$window', function ($window) {
     return function (scope, element) {
     	var w = angular.element($window);
         scope.getWindowDimensions = function () {
@@ -70,7 +70,7 @@ app.directive('meResize', ['$window', function ($window) {
     }
 }]);
 
-app.controller('MapController',['$rootScope', '$scope', '$cookies', 'i18nService', 'mapService', 'search',
+OSMmeApp.controller('MapController', ['$rootScope', '$scope', '$cookies', 'i18nService', 'mapService', 'search',
                        	     'docTree', 'details', 'iGeocoder', '$location', 'routeService', 'Analytics',
 function ($rootScope, $scope, $cookies, i18nService, mapService, search, 
 		 docTree, details, iGeocoder, $location, routeService, Analytics) {
