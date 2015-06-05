@@ -316,11 +316,19 @@ function ($rootScope, $scope, $cookies, i18nService, mapService, search,
 	$scope.$on('UnselectCathegoryTreeNode', osmdocCatH);
 	
 	$scope.formatObjectType = function(f) {
-		if(f && f.poi_class) {
-			var typeNames = $scope.translateTypeNames(f);
 
-			if(typeNames.length > 0) {
-				return typeNames.join(', ');
+		if(f) {
+		
+			if(f.poi_type) {
+				var typeNames = $scope.translateTypeNames(f);
+				
+				if(typeNames.length > 0) {
+					return typeNames.join(', ');
+				}
+			}
+			
+			if(f.weight_base_type) {
+				return i18nService.tr($scope, 'weight_base_type.' + f.weight_base_type);
 			}
 		}
 		

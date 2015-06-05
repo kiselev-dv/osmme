@@ -1,5 +1,11 @@
 {
 		"addr.order":"city-street-hn",
+		"weight_base_type.city": "Город",
+		"weight_base_type.place:town": "Городок",
+		"weight_base_type.place:village": "Деревня",
+		"weight_base_type.adrpnt": "Здание",
+		"weight_base_type.hghnet": "Улица",
+		"weight_base_type.hghway": "Улица",
 		"map.aboutus": "О нас",
 		"map.catalog": "Каталог",
 		"map.note": "Ошибки",

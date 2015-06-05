@@ -1,5 +1,11 @@
 {
 		"addr.order":"hn-street-city",
+		"weight_base_type.city": "City",
+		"weight_base_type.place:town": "Town",
+		"weight_base_type.place:village": "Village",
+		"weight_base_type.adrpnt": "Address",
+		"weight_base_type.hghnet": "Street",
+		"weight_base_type.hghway": "Street",
 		"map.aboutus": "About us",
 		"map.catalog": "Catalog",
 		"map.note": "Notes",

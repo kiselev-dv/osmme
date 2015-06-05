@@ -220,6 +220,7 @@ input, textarea, form:active, input:focus {
 }
 #close-search-results {
 	float: right;
+	margin-right: 5px;
 }
 #inverse-geocode-results {
 	padding-left: 5px;
@@ -234,4 +235,21 @@ input, textarea, form:active, input:focus {
 #inverse-geocode-results li:HOVER {
 	background-color: #A1BB6C;
 	cursor: pointer;
+}
+.search-result-type {
+	float: right;
+	font-size: 10px;
+}
+.search-result-name {
+	float: left;
+	font-weight: bold;
+	font-size: 12px;
+	color: #222;
+}
+.title {
+	margin-bottom: 5px;
+}
+.address {
+	float: left;
+	width: 75%;
 }

@@ -168,16 +168,16 @@ function getAddrArray(a) {
 	else if(a.nearest_place) {
 		addrArray.push(a.nearest_place.name);
 	}
-	if(a.local_admin_name) {
+	if(a.local_admin_name && ADDR_LOCAL_ADMIN) {
 		addrArray.push(a.local_admin_name);
 	}
-	if(a.admin2_name) {
+	if(a.admin2_name && ADDR_ADMIN2) {
 		addrArray.push(a.admin2_name);
 	}
-	if(a.admin1_name) {
+	if(a.admin1_name && ADDR_ADMIN1) {
 		addrArray.push(a.admin1_name);
 	}
-	if(a.admin0_name) {
+	if(a.admin0_name && ADDR_ADMIN0) {
 		addrArray.push(a.admin0_name);
 	}
 	
