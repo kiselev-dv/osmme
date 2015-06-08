@@ -8,6 +8,10 @@
 		<input type="submit" id="search-button" value="" 
 			style="background-image:url('{{HTML_ROOT + '/img/magnifier12w.png'}}');"
 			class="button" ng-click="$broadcast('Search', searchQuerry);"/> 
+		<div id="search-addresses-only">
+			<input  ng-model="searchAddressesOnly" type="checkbox" />
+			<span ng-bind="translation['map.search.addressesOnly']"></span>
+		</div>
 	</form>
 </div>
 <div id="links">

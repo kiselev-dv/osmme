@@ -253,3 +253,11 @@ input, textarea, form:active, input:focus {
 	float: left;
 	width: 75%;
 }
+#search-addresses-only {
+	padding: 0 5px 0 2px;
+	margin-top: 5px;
+}
+#search-addresses-only input {
+	vertical-align: text-bottom;
+	margin: 0;
+}

@@ -100,6 +100,10 @@ meSearch.factory('search', ['$http', 'mapService', 'docTree',
 					prm['strict'] = true;
 				}
 				
+				if($scope.searchAddressesOnly) {
+					prm['only_address'] = true;
+				}
+				
 				if(service.pagesCenter) {
 					prm['lat'] = service.pagesCenter.lat;
 					prm['lon'] = service.pagesCenter.lng;
@@ -161,6 +165,9 @@ meSearch.factory('search', ['$http', 'mapService', 'docTree',
 					};
 					if($scope.strictSearch) {
 						prm['strict'] = true;
+					}
+					if($scope.searchAddressesOnly) {
+						prm['only_address'] = true;
 					}
 					$http.get(API_ROOT + '/location/_suggest', {
 						'params' : prm 

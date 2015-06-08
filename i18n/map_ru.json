@@ -6,6 +6,7 @@
 		"weight_base_type.adrpnt": "Здание",
 		"weight_base_type.hghnet": "Улица",
 		"weight_base_type.hghway": "Улица",
+		"map.search.addressesOnly": "Искать только адреса",
 		"map.aboutus": "О нас",
 		"map.catalog": "Каталог",
 		"map.note": "Ошибки",
