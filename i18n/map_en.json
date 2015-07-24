@@ -7,6 +7,7 @@
 		"weight_base_type.adrpnt": "Address",
 		"weight_base_type.hghnet": "Street",
 		"weight_base_type.hghway": "Street",
+		"weight_base_type.poipnt": "POI",
 		"map.search.addressesOnly": "Search only addresses",
 		"map.aboutus": "About us",
 		"map.catalog": "Catalog",

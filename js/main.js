@@ -319,7 +319,7 @@ function ($rootScope, $scope, $cookies, i18nService, mapService, search,
 
 		if(f) {
 		
-			if(f.poi_type) {
+			if(f.poi_class) {
 				var typeNames = $scope.translateTypeNames(f);
 				
 				if(typeNames.length > 0) {
