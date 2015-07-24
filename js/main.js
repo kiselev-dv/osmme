@@ -472,6 +472,12 @@ function initLang($cookies) {
 	if($cookies.lang) {
 		return $cookies.lang;
 	}
+	
+	var lang = $window.navigator.language || $window.navigator.userLanguage; 
+	if (lang === 'en-US') {
+		return 'en';
+	}
+	
 	return 'ru';
 }
 
