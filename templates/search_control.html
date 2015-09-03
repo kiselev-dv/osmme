@@ -23,6 +23,16 @@
 		<a ng-repeat="l in langsAvaible | filter: '!' + lng" href="{{mergeIntoPath('lang', l)}}" ng-bind="l"></a>
 	</span>
 </div>
+<div id="browserGeocode" ng-show="!!browserGeoLocation">
+	<div>
+		<span ng-bind="translation['map.youAreHere']"></span>
+		<span ng-bind="browserGeoLocation.text"></span>
+		<a class="button browserGeocode-button" ng-bind="translation['map.youAreHere.move']" 
+			ng-click="moveToBrowserGeoLocation(browserGeoLocation); browserGeoLocation = null;"></a>
+		<a class="button browserGeocode-button" ng-bind="translation['map.youAreHere.hide']" 
+			ng-click="browserGeoLocation = null;"></a>
+	</div>
+</div>
 <div ng-include="'templates/cathegories.html'"></div>
 <div id="r-scroll-pane" class="y-scroll" ng-style="{'max-height': (windowHeight - windowHeight * 0.15) + 'px'}" me-resize >
 	<div id="serch-types" ng-show="searchResultsPage.matched_type">

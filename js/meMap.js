@@ -301,6 +301,12 @@ var MapModule = angular.module('meMap', [ 'ngCookies', 'meI18n' ]);
 				}
 			},
 			
+ 			enquirePosition: function(callback) {
+ 				if ("geolocation" in navigator) {
+ 					navigator.geolocation.getCurrentPosition(callback);
+ 				}
+ 			},
+
 			imgWaiters: {},
 			
 			loadIcon: function(poi_class, callback) {

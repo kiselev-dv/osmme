@@ -147,6 +147,23 @@ function ($rootScope, $scope, $cookies, i18nService, mapService, search,
 		
 		$scope.dayNames = i18nService.tr($scope, 'details.poi.tag.values.wh.days').split(' ');
 		
+		mapService.enquirePosition(function(position){
+			if(position) {
+				var lat = position.coords.latitude;
+				var lon = position.coords.longitude;
+				
+				iGeocoder.sendRequest(lon, lat, false, function(data){
+					if(data && data.text) {
+						data.lat = lat;
+						data.lon = lon;
+						$scope.browserGeoLocation = data;
+					}
+					else if($scope.browserGeoLocation) {
+						delete $scope.browserGeoLocation;
+					}
+				});
+			}
+		});
 	});
 	
 	$scope.activeFeatureID = ls['fid'];
@@ -464,7 +481,12 @@ function ($rootScope, $scope, $cookies, i18nService, mapService, search,
 	
 	$scope.removeSelected = function(name, type){
 		docTree.removeSelection($scope, {'name': name}, type);
-	}
+	};
+	
+	$scope.moveToBrowserGeoLocation = function(position) {
+		mapService.setView(position.lat, position.lon, 14);
+		mapService.saveStateToCookie();
+	};
 	
 }]);
 

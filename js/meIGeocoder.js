@@ -20,11 +20,27 @@ var meIGeocoder = angular.module('meIGeocoder', [ 'ngResource', 'meMap', 'meDeta
 				});
 			},
 			
-			sendRequest:function(lon, lat) {
+			
+			sendRequest: function(lon, lat, related, callback) {
 				var service = this;
-				$http.get(API_ROOT + '/location/latlon/' + lat + '/' + lon + '/_related').success(function(data) {
-					service.showAnswer.apply(service, [data]);
-				});
+				
+				var path = API_ROOT + '/location/latlon/' + lat + '/' + lon;
+				
+				// true if missed
+				if(undefined == related || related) {
+					path += '/_related';
+				}
+				
+				if(undefined == callback) {
+					$http.get(path).success(function(data) {
+						service.showAnswer.apply(service, [data]);
+					});
+				}
+				else {
+					path += '?' + 'largest_level=all&max_neighbours=0&full_geometry=false'; 
+					$http.get(path).success(callback);
+				}
+
 			},
 			
 			showAnswer: function(data) {

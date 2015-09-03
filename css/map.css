@@ -41,6 +41,7 @@ div.leaflet-bottom div.leaflet-control-attribution {
     font-size: 12pt;
     padding: 5px;
     text-align: center;
+    cursor: pointer;
 }
 .ui-widget {
     font-family: Verdana,Arial,sans-serif;
@@ -260,4 +261,9 @@ input, textarea, form:active, input:focus {
 #search-addresses-only input {
 	vertical-align: text-bottom;
 	margin: 0;
+}
+#browserGeocode {
+	padding-left: 4px;
+	color: black;
+	font-size: 12pt;
 }
