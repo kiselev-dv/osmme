@@ -473,7 +473,7 @@ function initLang($cookies) {
 		return $cookies.lang;
 	}
 	
-	var lang = $window.navigator.language || $window.navigator.userLanguage; 
+	var lang = window.navigator.language || window.navigator.userLanguage; 
 	if (lang === 'en-US') {
 		return 'en';
 	}
