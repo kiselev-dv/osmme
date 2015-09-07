@@ -152,16 +152,18 @@ function ($rootScope, $scope, $cookies, i18nService, mapService, search,
 				var lat = position.coords.latitude;
 				var lon = position.coords.longitude;
 				
-				iGeocoder.sendRequest(lon, lat, false, function(data){
-					if(data && data.text) {
-						data.lat = lat;
-						data.lon = lon;
-						$scope.browserGeoLocation = data;
-					}
-					else if($scope.browserGeoLocation) {
-						delete $scope.browserGeoLocation;
-					}
-				});
+				if(map.distanceTo([lat, lon]) > 500) {
+					iGeocoder.sendRequest(lon, lat, false, function(data){
+						if(data && data.text) {
+							data.lat = lat;
+							data.lon = lon;
+							$scope.browserGeoLocation = data;
+						}
+						else if($scope.browserGeoLocation) {
+							delete $scope.browserGeoLocation;
+						}
+					});
+				}
 			}
 		});
 	});
