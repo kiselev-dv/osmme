@@ -1,0 +1,31 @@
+.search-control {
+	width: 100%;
+	max-height: 95%;
+}
+#serch-input {
+	width: -moz-calc(100% - 56px);
+    width: -webkit-calc(100% - 56px);
+    width: calc(100% - 56px);
+    float: right;
+    margin-right: 4px;
+    height: 33px;
+    margin-top:  2px;
+    background-color: white;
+    font-size: 16px;
+}
+#mobile-head {
+	height: 41px;
+	border-bottom: 1px solid green;
+	background-color: #AAA;
+}
+#mob-menu-button {
+	width: 36px;
+	height: 36px;
+	margin-top:  2px;
+	margin-left: 2px;
+	padding: 0;
+  	border: 0;
+  	background-repeat: no-repeat;
+  	background-color: transparent;
+  	background-position: 6px 6px;
+}

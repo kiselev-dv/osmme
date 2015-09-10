@@ -30,9 +30,6 @@ div.leaflet-bottom div.leaflet-control-attribution {
     background-image: url("/img/magnifier12w.png");
     background-repeat: no-repeat;
     background-position: center center;
-    height: 24px;
-    width: 24px;
-    margin: 1px 1px 1px 2px;
     position: absolute;
 }
 .button {
@@ -124,24 +121,6 @@ input, textarea, form:active, input:focus {
 }
 .leaflet-control-container, .leaflet-top {
 	height: 100%;
-}
-@media all and (max-width: 799px) {
-	.search-control {
-		width: 300px;
-		max-height: 40%;
-	}
-	#serch-input {
-		width:254px;
-	}
-}
-@media all and (min-width: 800px) {
-	.search-control {
-		width: 450px;
-		max-height: 95%;
-	}
-	#serch-input {
-		width:404px;
-	}
 }
 .search-control {
 	background-color: white;

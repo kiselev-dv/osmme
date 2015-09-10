@@ -116,6 +116,7 @@ router.factory('routeService', ['$location', function($location) {
 					lastArgI++;
 					break;
 				}
+				lastArgI++;
 			}
 		}
 		return result;

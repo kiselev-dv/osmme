@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 
 <head>
+<meta content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" 
+			name="viewport" />
 <meta name="fragment" content="!">
 <title>[TEST] map.osm.me</title>
 
@@ -34,6 +36,10 @@
 		
 		<script src="js/lib/angular-google-analytics.js" type="text/javascript"></script>
 		<script src="js/lib/angular-disqus.js" type="text/javascript"></script>
+		
+		<div id="mobile-head" ng-show="mobile">
+			<ng-include src="HTML_ROOT + 'templates/search_control_mobile.html'" ></ng-include>
+		</div> 
 		
 		<div id="map" class="content" ng-show="content.indexOf('map') == 0"></div>
 

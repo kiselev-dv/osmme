@@ -153,16 +153,18 @@ var MapModule = angular.module('meMap', [ 'ngCookies', 'meI18n' ]);
 				
 				this.ready = true;
 				
-				this.searchControl = new SearchControl().setScope($scope);
-				var searchControl = this.searchControl;
-				
-				$http.get(HTML_ROOT + '/templates/search_control.html').success(function(data){
-
-					searchControl.setContainer(data);
-
-					searchControl.addTo(mapClosure);
-					$compile(searchControl.container)($scope);
-				});
+				if(!$scope.mobile) {
+					this.searchControl = new SearchControl().setScope($scope);
+					var searchControl = this.searchControl;
+					
+					$http.get(HTML_ROOT + '/templates/search_control.html').success(function(data){
+						
+						searchControl.setContainer(data);
+						
+						searchControl.addTo(mapClosure);
+						$compile(searchControl.container)($scope);
+					});
+				}
 				
 				return this.map;
 			},

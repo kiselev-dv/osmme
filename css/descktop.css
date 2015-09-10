@@ -1,0 +1,12 @@
+#search-button {
+	height: 24px;
+    width: 24px;
+    margin: 1px 1px 1px 2px;
+}
+.search-control {
+	width: 450px;
+	max-height: 95%;
+}
+#serch-input {
+	width:404px;
+}

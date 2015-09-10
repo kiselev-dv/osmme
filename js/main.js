@@ -86,6 +86,8 @@ function ($rootScope, $scope, $cookies, i18nService, mapService, search,
 	
 	var searchParams = $location.search();
 	
+	//mobile
+	routeService.flag("m");
 	//language
 	routeService.anonymous("lang");
 	//feature (POI) id
@@ -122,6 +124,15 @@ function ($rootScope, $scope, $cookies, i18nService, mapService, search,
 		routeService.update('lang', initLang($cookies));
 	}
 	
+	$scope.mobile = ls['m'];
+	if(ls['m'] != isMobile()) {
+		routeService.update('m', isMobile());
+	}
+
+	angular.element(document.getElementsByTagName('head')[0])
+		.append('<link rel="stylesheet" type="text/css" href="css/' 
+			+ ($scope.mobile ? 'mobile' : 'descktop') 
+			+ '.css" />');
 	
 	$scope.lng = ls['lang'] || initLang($cookies);
 	$scope.hierarchyCode = docTree.getHierarchyCode($scope.lng);
