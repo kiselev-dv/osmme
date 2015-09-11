@@ -1,114 +1,124 @@
 <div>
-	<button id="mob-menu-button" style="background-image:url('{{HTML_ROOT + '/img/menu48.png'}}');"></button>
+	<button id="mob-menu-button" ng-switch="!!searchResultsPage.features" 
+		ng-click="searchForm.showSlider = !searchForm.showSlider;" >
+		<img id="search-img" ng-switch-when="false"
+			src="{{HTML_ROOT + '/img/menu48.png'}}" ></img>
+		<img id="search-img" ng-switch-when="true"
+			src="{{HTML_ROOT + '/img/menu48g.png'}}" ></img>
+	</button>	
 	<form id="search-form">
 		<input id="serch-input" class="field ui-autocomplete-input ui-widget" 
 			type="search" placeholder="{{translation['map.js.input.search.placeholder']}}" 
-			autofocus="" autocomplete="off" name="q" ng-model="searchQuerry"
+			autofocus="" autocomplete="off" name="q" ng-model="searchForm.q"
 			ng-enter="searchInputEnter();"
 			ng-keydown="searchKeyDown($event);">
-<!-- 		<input type="submit" id="search-button" value=""  -->
-<!-- 			style="background-image:url('{{HTML_ROOT + '/img/magnifier12w.png'}}');" -->
-<!-- 			class="button" ng-click="$broadcast('Search', searchQuerry);"/>  -->
-<!-- 		<div id="search-addresses-only"> -->
-<!-- 			<input  ng-model="searchAddressesOnly" type="checkbox" /> -->
-<!-- 			<span ng-bind="translation['map.search.addressesOnly']"></span> -->
-<!-- 		</div> -->
 	</form>
 </div>
-<div id="browserGeocode" ng-show="!!browserGeoLocation">
-	<div>
-		<span ng-bind="translation['map.youAreHere']"></span>
-		<span ng-bind="browserGeoLocation.text"></span>
-		<a class="button browserGeocode-button" ng-bind="translation['map.youAreHere.move']" 
-			ng-click="moveToBrowserGeoLocation(browserGeoLocation); browserGeoLocation = null;"></a>
-		<a class="button browserGeocode-button" ng-bind="translation['map.youAreHere.hide']" 
-			ng-click="browserGeoLocation = null;"></a>
+
+<div id="m-m-slider" ng-show="searchForm.showSlider" >
+	<div id="links">
+		<a href="javascript:void(0);" ng-bind="translation['map.catalog']" ng-click="showCatalog = !showCatalog"></a>
+		<a href="{{HTML_ROOT}}/{{lng}}/about.html" ng-bind="translation['map.aboutus']"></a>
+		<!-- <a href="javascript:void(0);" ng-bind="translation['map.note']"></a> -->
+		
+		<span id="languages">
+			<a ng-repeat="l in langsAvaible | filter: '!' + lng" href="{{mergeIntoPath('lang', l)}}" ng-bind="l"></a>
+		</span>
 	</div>
-</div>
-<div ng-include="'templates/cathegories.html'"></div>
-<div id="r-scroll-pane" class="y-scroll" ng-style="{'max-height': (windowHeight - windowHeight * 0.15) + 'px'}" me-resize >
-	<div id="serch-types" ng-show="searchResultsPage.matched_type">
-		<ul>
-			<li ng-repeat="f in searchResultsPage.matched_type" 
-				ng-class="{'suggested': f.name == selectedSuggestion}" 
-				class="search-result" >
-				<input type="checkbox" ng-model="f.selected" ng-change=""></input>
-				<span class="title" ng-show="f.translated_title" ng-click="">{{f.translated_title[0]}}</span>
-			</li>
-		</ul>
-	</div>
-	<div id="catalog" ng-show="!searchResultsPage.features && showCatalog">
-		<ul id="cathegories-tree">
-			<li ng-repeat="data in hierarchy.groups" ng-include="'PoiTreeItem.html'" ></li>
-		</ul>
-	</div>
-	<div id="search-results" ng-show="searchResultsPage.features">
+	<div id="browserGeocode" ng-show="!!browserGeoLocation">
 		<div>
-			<a id="close-search-results" ng-click="$broadcast('CloseSearchResults');" 
-				ng-bind="translation['map.js.search.result.close']"></a>
-			<div style="clear: both;"></div>	
-		</div>
-		<div id="not-strict-results-alert" ng-show="!searchResultsPage.strict">{{translation['map.js.search.result.not_strict']}}</div>
-		<ul>
-			<li ng-repeat="f in searchResultsPage.features" 
-				ng-class="{'selected': f.feature_id == activeFeatureID, 'suggested': f.feature_id == selectedSuggestion}" 
-				class="search-result" ng-click="selectRow(f);">
-				<div class="title">
-					<span class="search-result-type" ng-bind="formatObjectType(f)"></span>
-					<span class="search-result-name" ng-bind="f.name"></span>
-				</div>
-				<div ng-show="f.name" style="clear: both;"></div>
-				<div class="address">{{formatSearchResultAddress(f)}}</div>
-				<div style="clear: both;"></div>
-			</li>
-		</ul>
-		<div>
-			<span>{{translation['map.js.search.result.pages']}}</span>
-			<span class="page-number" ng-class="{current:pn.active}" 
-				ng-repeat="pn in srPages" ng-click="goPage(pn)">{{pn.p}}</span>
+			<span ng-bind="translation['map.youAreHere']"></span>
+			<span ng-bind="browserGeoLocation.text"></span>
+			<a class="button browserGeocode-button" ng-bind="translation['map.youAreHere.move']" 
+				ng-click="moveToBrowserGeoLocation(browserGeoLocation); browserGeoLocation = null;"></a>
+			<a class="button browserGeocode-button" ng-bind="translation['map.youAreHere.hide']" 
+				ng-click="browserGeoLocation = null;"></a>
 		</div>
 	</div>
-	<div id="inverse-geocode-results" ng-show="inverseGeocodeResults">
-		<div>
-			<a id="close-search-results" ng-click="$broadcast('CloseInverseGeocodeResults');" 
-				ng-bind="translation['map.js.search.result.close']"></a>
-			<div style="clear: both;"></div>	
-		</div>
-		<h4 ng-bind="translation['map.js.igeocode.title']"></h4>
-		<div ng-class="{'selected': inverseGeocodeResults.feature_id == activeFeatureID}" 
-			ng-click="selectRow(inverseGeocodeResults);">
-			<div class="title" ng-bind="formatSearchResultTitle(inverseGeocodeResults)"></div>
-			<div class="address" ng-bind="formatSearchResultAddress(inverseGeocodeResults)"></div>
-		</div>
-		<div ng-show="inverseGeocodeResults._related && inverseGeocodeResults._related._same_building">
-			<h5 ng-bind="translation['details.building.pois.pois']"></h5>
-			<ul ng-show="inverseGeocodeResults._eclosed">
-				<li ng-repeat="r in inverseGeocodeResults._eclosed" 
-					ng-class="{'selected': r.feature_id == activeFeatureID}" 
-					ng-click="selectRow(r);">
-					<div class="title" ng-bind="formatSearchResultTitle(r)"></div>
-					<div class="address" ng-bind="formatSearchResultAddress(r)"></div>
-				</li>
-			</ul>
+	<div ng-include="'templates/cathegories.html'"></div>
+	<div id="r-scroll-pane" class="y-scroll" ng-style="{'max-height': (windowHeight - windowHeight * 0.15) + 'px'}" me-resize >
+		<div id="serch-types" ng-show="searchResultsPage.matched_type">
 			<ul>
-				<li ng-repeat="r in inverseGeocodeResults._related._same_building" 
-					ng-class="{'selected': r.feature_id == activeFeatureID}" 
-					ng-click="selectRow(r);">
-					<div class="title" ng-bind="formatSearchResultTitle(r)"></div>
-					<div class="address" ng-bind="formatSearchResultAddress(r)"></div>
-				</li>			
-			</ul>
-		</div>
-		<div ng-show="inverseGeocodeResults._neighbours">
-			<h5 ng-bind="translation['map.js.igeocode.neigbours']"></h5>
-			<ul ng-show="inverseGeocodeResults._neighbours">
-				<li ng-repeat="r in inverseGeocodeResults._neighbours" 
-					ng-class="{'selected': r.feature_id == activeFeatureID}" 
-					ng-click="selectRow(r);">
-					<div class="title" ng-bind="formatSearchResultTitle(r)"></div>
-					<div class="address" ng-bind="formatSearchResultAddress(r)"></div>
+				<li ng-repeat="f in searchResultsPage.matched_type" 
+					ng-class="{'suggested': f.name == selectedSuggestion}" 
+					class="search-result" >
+					<input type="checkbox" ng-model="f.selected" ng-change=""></input>
+					<span class="title" ng-show="f.translated_title" ng-click="">{{f.translated_title[0]}}</span>
 				</li>
 			</ul>
+		</div>
+		<div id="catalog" ng-show="!searchResultsPage.features && showCatalog">
+			<ul id="cathegories-tree">
+				<li ng-repeat="data in hierarchy.groups" ng-include="'PoiTreeItem.html'" ></li>
+			</ul>
+		</div>
+		<div id="search-results" ng-show="searchResultsPage.features">
+			<div>
+				<a id="close-search-results" ng-click="$broadcast('CloseSearchResults');" 
+					ng-bind="translation['map.js.search.result.close']"></a>
+				<div style="clear: both;"></div>	
+			</div>
+			<ul>
+				<li ng-repeat="f in searchResultsPage.features" 
+					ng-class="{'selected': f.feature_id == activeFeatureID, 'suggested': f.feature_id == selectedSuggestion}" 
+					class="search-result" ng-click="selectRow(f);">
+					<div class="title">
+						<span class="search-result-type" ng-bind="formatObjectType(f)"></span>
+						<span class="search-result-name" ng-bind="f.name"></span>
+					</div>
+					<div ng-show="f.name" style="clear: both;"></div>
+					<div class="address">{{formatSearchResultAddress(f)}}</div>
+					<div style="clear: both;"></div>
+				</li>
+			</ul>
+			<div>
+				<span>{{translation['map.js.search.result.pages']}}</span>
+				<span class="page-number" ng-class="{current:pn.active}" 
+					ng-repeat="pn in srPages" ng-click="goPage(pn)">{{pn.p}}</span>
+			</div>
+		</div>
+		<div id="inverse-geocode-results" ng-show="inverseGeocodeResults">
+			<div>
+				<a id="close-search-results" ng-click="$broadcast('CloseInverseGeocodeResults');" 
+					ng-bind="translation['map.js.search.result.close']"></a>
+				<div style="clear: both;"></div>	
+			</div>
+			<h4 ng-bind="translation['map.js.igeocode.title']"></h4>
+			<div ng-class="{'selected': inverseGeocodeResults.feature_id == activeFeatureID}" 
+				ng-click="selectRow(inverseGeocodeResults);">
+				<div class="title" ng-bind="formatSearchResultTitle(inverseGeocodeResults)"></div>
+				<div class="address" ng-bind="formatSearchResultAddress(inverseGeocodeResults)"></div>
+			</div>
+			<div ng-show="inverseGeocodeResults._related && inverseGeocodeResults._related._same_building">
+				<h5 ng-bind="translation['details.building.pois.pois']"></h5>
+				<ul ng-show="inverseGeocodeResults._eclosed">
+					<li ng-repeat="r in inverseGeocodeResults._eclosed" 
+						ng-class="{'selected': r.feature_id == activeFeatureID}" 
+						ng-click="selectRow(r);">
+						<div class="title" ng-bind="formatSearchResultTitle(r)"></div>
+						<div class="address" ng-bind="formatSearchResultAddress(r)"></div>
+					</li>
+				</ul>
+				<ul>
+					<li ng-repeat="r in inverseGeocodeResults._related._same_building" 
+						ng-class="{'selected': r.feature_id == activeFeatureID}" 
+						ng-click="selectRow(r);">
+						<div class="title" ng-bind="formatSearchResultTitle(r)"></div>
+						<div class="address" ng-bind="formatSearchResultAddress(r)"></div>
+					</li>			
+				</ul>
+			</div>
+			<div ng-show="inverseGeocodeResults._neighbours">
+				<h5 ng-bind="translation['map.js.igeocode.neigbours']"></h5>
+				<ul ng-show="inverseGeocodeResults._neighbours">
+					<li ng-repeat="r in inverseGeocodeResults._neighbours" 
+						ng-class="{'selected': r.feature_id == activeFeatureID}" 
+						ng-click="selectRow(r);">
+						<div class="title" ng-bind="formatSearchResultTitle(r)"></div>
+						<div class="address" ng-bind="formatSearchResultAddress(r)"></div>
+					</li>
+				</ul>
+			</div>
 		</div>
 	</div>
 </div>

@@ -20,7 +20,7 @@ meSearch.factory('search', ['$http', 'mapService', 'docTree',
 	    		});
 	    		
 	    		$scope.$on('SelectCathegoryTreeNode', function(){
-	    			$scope.searchQuerry = '';
+	    			$scope.searchForm.q = '';
 	    			$scope.searchResultsPage = {};
 	    			service.pagesMode = false;
 	    			service.listPOI.apply(service, [$scope, 1]);
@@ -48,7 +48,7 @@ meSearch.factory('search', ['$http', 'mapService', 'docTree',
 	    			mapService.openPopUP($scope, f.feature_id);
 	    		});
 	    		
-	    		$scope.$watch('searchQuerry', function(newValue, oldValue){
+	    		$scope.$watch('searchForm.q', function(newValue, oldValue){
 	    			if(service.suppressOnSearchQuerry) {
 	    				service.suppressOnSearchQuerry = false
 	    			}
@@ -64,7 +64,7 @@ meSearch.factory('search', ['$http', 'mapService', 'docTree',
 	    		
 	    		$scope.getSRPages = function(){
 	    			service.listPages($scope);
-	    		} 
+	    		}; 
 	    		
 	    		$scope.goPage = function(p) {
 	    			service.search($scope, p.p);
@@ -76,12 +76,12 @@ meSearch.factory('search', ['$http', 'mapService', 'docTree',
 				service.restrictWithBBOX = false;
 				service.userSearchInput = '';
 				
-				if(!$scope.searchQuerry) {
+				if(!$scope.searchForm.q) {
 					return;
 				}
 				
 				var prm = {
-					'q':$scope.searchQuerry,
+					'q':$scope.searchForm.q,
 					'mark': service.getHash($scope),
 					'page': page,
 					'hierarchy': $scope.hierarchyCode,
@@ -148,7 +148,7 @@ meSearch.factory('search', ['$http', 'mapService', 'docTree',
 			
 			suggest: function($scope) {
 				
-				if(!$scope.searchQuerry || $scope.searchQuerry.length < 3) {
+				if(!$scope.searchForm.q || $scope.searchForm.q.length < 3) {
 					return;
 				}
 				
@@ -158,7 +158,7 @@ meSearch.factory('search', ['$http', 'mapService', 'docTree',
 				if(!service.waitForAnswer) {
 					service.waitForAnswer = true;
 					var prm = {
-						'q': $scope.searchQuerry,
+						'q': $scope.searchForm.q,
 						'size': 10,
 						'mark': this.getHash($scope),
 						'hierarchy': $scope.hierarchyCode
@@ -190,7 +190,7 @@ meSearch.factory('search', ['$http', 'mapService', 'docTree',
 				
 				$http.get(API_ROOT + '/location/_search', {
 					'params' : {
-						'q': $scope.searchQuerry,
+						'q': $scope.searchForm.q,
 						'poiclass': docTree.cathegories.features,
 						'poigroup': docTree.cathegories.groups,
 						'bbox': mapService.map.getBounds().toBBoxString(),
@@ -224,7 +224,7 @@ meSearch.factory('search', ['$http', 'mapService', 'docTree',
 				return ('' + { 
 					'poiclass': $scope.osmdocCat.features,
 					'poigroup': $scope.osmdocCat.groups,
-					'query': $scope.searchQuerry}).hashCode();
+					'query': $scope.searchForm.q}).hashCode();
 			},
 			
 			listPages: function($scope) {
@@ -284,7 +284,7 @@ meSearch.factory('search', ['$http', 'mapService', 'docTree',
     			}
     			
     			if(service.selectedSuggestion == -1) {
-    				$scope.searchQuerry = service.userSearchInput;
+    				$scope.searchForm.q = service.userSearchInput;
     				$scope.selectedSuggestion = null;
         			$scope.suggestedFeature = null;
     				return;
@@ -293,7 +293,7 @@ meSearch.factory('search', ['$http', 'mapService', 'docTree',
     			var page = $scope.searchResultsPage.matched_type.slice(0);
     			page = page.concat($scope.searchResultsPage.features);
     			
-    			var split = $scope.searchQuerry.split(/[\s,;.]+/);
+    			var split = $scope.searchForm.q.split(/[\s,;.]+/);
 
     			var suggestedFeature = page[service.selectedSuggestion];
     			var suggestedToken = service.getToken(suggestedFeature);
@@ -303,7 +303,7 @@ meSearch.factory('search', ['$http', 'mapService', 'docTree',
     			newValue = (newValue.slice(-1) === ' ') ? newValue : (newValue + ' ');
     			
     			service.suppressOnSearchQuerry = true;
-    			$scope.searchQuerry = newValue;
+    			$scope.searchForm.q = newValue;
     			
     			$scope.selectedSuggestion = service.getId(suggestedFeature);
     			$scope.suggestedFeature = suggestedFeature;
@@ -311,10 +311,10 @@ meSearch.factory('search', ['$http', 'mapService', 'docTree',
     		
     		moveDown: function($scope) {
     			
-    			var split = $scope.searchQuerry.split(/[\s,;.]+/);
+    			var split = $scope.searchForm.q.split(/[\s,;.]+/);
 
     			if(service.selectedSuggestion == -1) {
-    				service.userSearchInput = $scope.searchQuerry;
+    				service.userSearchInput = $scope.searchForm.q;
     				split.pop();
     				service.queryHead = split.join(' ');
     			}
@@ -335,7 +335,7 @@ meSearch.factory('search', ['$http', 'mapService', 'docTree',
     			newValue = (newValue.slice(-1) === ' ') ? newValue : (newValue + ' ');
     			
     			service.suppressOnSearchQuerry = true;
-    			$scope.searchQuerry = newValue;
+    			$scope.searchForm.q = newValue;
     			$scope.selectedSuggestion = service.getId(suggestedFeature);
     			$scope.suggestedFeature = suggestedFeature;
     		},

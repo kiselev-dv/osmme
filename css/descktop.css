@@ -10,3 +10,8 @@
 #serch-input {
 	width:404px;
 }
+#map {
+	background-color: grey;
+	height: 100%;
+	position: relative;
+}

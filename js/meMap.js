@@ -71,6 +71,11 @@ var MapModule = angular.module('meMap', [ 'ngCookies', 'meI18n' ]);
 					i18nService.tr($scope, 'map.js.copy.rendering') + 
 					' <a href=\"http://giscience.uni-hd.de/\" target=\"_blank\">University of Heidelberg</a>';
 				
+				if($scope.mobile) {
+					msAttrString = '<a href="http://osm.org">OpenStreetMap</a>, ' + 
+						' <a href=\"http://giscience.uni-hd.de/\" target=\"_blank\">University of Heidelberg</a>';
+				}
+				
 				var mapsurfer = L.tileLayer('http://openmapsurfer.uni-hd.de/tiles/roads/x={x}&y={y}&z={z}', {
 				    attribution: msAttrString,
 				    maxZoom: 18

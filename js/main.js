@@ -82,8 +82,6 @@ function ($rootScope, $scope, $cookies, i18nService, mapService, search,
 		Analytics.trackPage('/#!/' + $scope.lng + '/');
 	}
 	
-	$scope.mobile = ((window.innerWidth > 0) ? window.innerWidth : screen.width) < 800;
-	
 	var searchParams = $location.search();
 	
 	//mobile
@@ -117,6 +115,8 @@ function ($rootScope, $scope, $cookies, i18nService, mapService, search,
 		$location.path('');
 		routeService.update(h);
 	}
+	
+	$scope.searchForm = {};
 
 	var ls = routeService.getParameters();
 	
@@ -124,9 +124,9 @@ function ($rootScope, $scope, $cookies, i18nService, mapService, search,
 		routeService.update('lang', initLang($cookies));
 	}
 	
-	$scope.mobile = ls['m'];
-	if(ls['m'] != isMobile()) {
-		routeService.update('m', isMobile());
+	$scope.mobile = isMobile();
+	if(ls['m'] != $scope.mobile) {
+		routeService.update('m', $scope.mobile);
 	}
 
 	angular.element(document.getElementsByTagName('head')[0])
@@ -275,8 +275,8 @@ function ($rootScope, $scope, $cookies, i18nService, mapService, search,
 			$scope.strictSearch = true;
 		}
 
-		if(ls.q && $scope.searchQuerry == null && $scope.searchQuerry != ls.q) {
-			$scope.searchQuerry = ls.q;
+		if(ls.q && $scope.searchForm.q == null && $scope.searchForm.q != ls.q) {
+			$scope.searchForm.q = ls.q;
 			$scope.$broadcast('Search', ls.q);
 		}
 
@@ -285,11 +285,11 @@ function ($rootScope, $scope, $cookies, i18nService, mapService, search,
 	});
 	
 	$scope.$on('Search', function() {
-		routeService.update('q', $scope.searchQuerry);
+		routeService.update('q', $scope.searchForm.q);
 	});
 	
 	$scope.$on('SelectFeature', function() {
-		routeService.update('q', $scope.searchQuerry);
+		routeService.update('q', $scope.searchForm.q);
 	});
 	
 	$scope.$on('HierarchyLoaded', updateCathegories);
@@ -335,7 +335,7 @@ function ($rootScope, $scope, $cookies, i18nService, mapService, search,
 	$scope.$on('CloseSearchResults', closeSearchResults);
 	
 	function closeSearchResults() {
-		$scope.searchQuerry = '';
+		$scope.searchForm.q = '';
 		$scope.searchResultsPage = null;
 		$scope.srPages = null;
 		mapService.filterMarkersByTypes($scope, docTree.expandCathegories($scope)); 
@@ -418,7 +418,7 @@ function ($rootScope, $scope, $cookies, i18nService, mapService, search,
 		}
 	}; 
 	
-	$scope.$watch('searchQuerry', function(newValue, oldValue){
+	$scope.$watch('searchForm.q', function(newValue, oldValue){
 		if(oldValue != "" && newValue == "") {
 			$scope.$broadcast('CleanSearchInput');
 		}
@@ -474,6 +474,10 @@ function ($rootScope, $scope, $cookies, i18nService, mapService, search,
 		$scope.$broadcast('SelectFeature', f);
 	}; 
 	
+	$scope.$on('SelectFeature', function() {
+		$scope.searchForm.showSlider = false;
+	});
+	
 	$scope.searchInputEnter = function() {
 		if($scope.suggestedFeature) {
 			
@@ -488,7 +492,7 @@ function ($rootScope, $scope, $cookies, i18nService, mapService, search,
 			}
 		}
 		else {
-			$scope.$broadcast('Search', $scope.searchQuerry);
+			$scope.$broadcast('Search', $scope.searchForm.q);
 		}
 	};
 	

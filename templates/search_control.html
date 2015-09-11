@@ -2,7 +2,7 @@
 	<form id="search-form">
 		<input id="serch-input" class="field ui-autocomplete-input ui-widget" 
 			type="search" placeholder="{{translation['map.js.input.search.placeholder']}}" 
-			autofocus="" autocomplete="off" name="q" ng-model="searchQuerry"
+			autofocus="" autocomplete="off" name="q" ng-model="searchForm.q"
 			ng-enter="searchInputEnter();"
 			ng-keydown="searchKeyDown($event);">
 		<input type="submit" id="search-button" value="" 

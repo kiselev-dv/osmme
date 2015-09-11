@@ -18,6 +18,12 @@
 	border-bottom: 1px solid green;
 	background-color: #AAA;
 }
+#map {
+	height: -moz-calc(100% - 42px);
+    height: -webkit-calc(100% - 42px);
+    height: calc(100% - 42px);
+    z-index: 0;
+}
 #mob-menu-button {
 	width: 36px;
 	height: 36px;
@@ -28,4 +34,15 @@
   	background-repeat: no-repeat;
   	background-color: transparent;
   	background-position: 6px 6px;
+}
+#m-m-slider {
+	height: -moz-calc(100% - 42px);
+    height: -webkit-calc(100% - 42px);
+    height: calc(100% - 42px);
+    width: 80%;
+    z-index: 10;
+    top: 42px;
+    left: 0;
+    background-color: white;
+    position: absolute;
 }

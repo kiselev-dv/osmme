@@ -6,11 +6,6 @@ html, body {
 #wrap { 
       min-height: 100%;
 }
-#map {
-	background-color: grey;
-	height: 100%;
-	position: relative;
-}
 #search-form {
 	display: inline;
 }
