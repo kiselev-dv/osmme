@@ -78,10 +78,6 @@ function ($rootScope, $scope, $cookies, i18nService, mapService, search,
 	$scope.HTML_ROOT = HTML_ROOT;
 	$rootScope.HTML_ROOT = HTML_ROOT;
 	
-	if(ANALYTICS_CODE) {
-		Analytics.trackPage('/#!/' + $scope.lng + '/');
-	}
-	
 	var searchParams = $location.search();
 	
 	//mobile
@@ -117,16 +113,27 @@ function ($rootScope, $scope, $cookies, i18nService, mapService, search,
 	}
 	
 	$scope.searchForm = {};
-
+	$scope.langsAvaible = ['en', 'ru'];
+	
 	var ls = routeService.getParameters();
 	
-	if(!ls['lang']) {
-		routeService.update('lang', initLang($cookies));
+	if($scope.langsAvaible.indexOf(ls['lang']) < 0) {
+		var cookieLang = initLang($cookies);
+		if($scope.langsAvaible.indexOf(ls['lang']) >= 0) {
+			routeService.update('lang', cookieLang);
+		}
+		else {
+			routeService.update('lang', DEFAULT_LANGUAGE);
+		}
 	}
 	
 	$scope.mobile = isMobile();
 	if(ls['m'] != $scope.mobile) {
 		routeService.update('m', $scope.mobile);
+	}
+	
+	if(ANALYTICS_CODE) {
+		Analytics.trackPage('/#!/' + $scope.lng + '/');
 	}
 
 	angular.element(document.getElementsByTagName('head')[0])
@@ -137,8 +144,6 @@ function ($rootScope, $scope, $cookies, i18nService, mapService, search,
 	$scope.lng = ls['lang'] || initLang($cookies);
 	$scope.hierarchyCode = docTree.getHierarchyCode($scope.lng);
 
-	$scope.langsAvaible = ['en', 'ru'];
-	
 	$scope.name2FClass = {};
 	$scope.name2Group = {};
 	docTree.loadTree($scope, $scope.lng, $scope.hierarchyCode);
