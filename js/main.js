@@ -1,4 +1,3 @@
-
 String.prototype.hashCode = function(){
 	var hash = 0;
 	if (this.length == 0) return hash;
@@ -74,6 +73,10 @@ OSMmeApp.controller('MapController', ['$rootScope', '$scope', '$cookies', 'i18nS
                        	     'docTree', 'details', 'iGeocoder', '$location', 'routeService', 'Analytics',
 function ($rootScope, $scope, $cookies, i18nService, mapService, search, 
 		 docTree, details, iGeocoder, $location, routeService, Analytics) {
+	
+	// Group user requests
+	$scope.SITE_SESSION = Math.floor((1 + Math.random()) * 0x10000)
+	    .toString(16).substring(1);
 	
 	$scope.HTML_ROOT = HTML_ROOT;
 	$rootScope.HTML_ROOT = HTML_ROOT;
