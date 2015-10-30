@@ -1,6 +1,8 @@
 var HTML_ROOT = '';
 var API_ROOT = '/api';
 
+var MAPSURFER_TILES = 'http://korona.geog.uni-heidelberg.de/tiles/roads/x={x}&y={y}&z={z}';
+
 var DEFAULT_LANGUAGE = 'ru';
 
 var DEFAULT_LAT = 57.7511;

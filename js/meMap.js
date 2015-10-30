@@ -76,7 +76,7 @@ var MapModule = angular.module('meMap', [ 'ngCookies', 'meI18n' ]);
 						' <a href=\"http://giscience.uni-hd.de/\" target=\"_blank\">University of Heidelberg</a>';
 				}
 				
-				var mapsurfer = L.tileLayer('http://openmapsurfer.uni-hd.de/tiles/roads/x={x}&y={y}&z={z}', {
+				var mapsurfer = L.tileLayer(MAPSURFER_TILES, {
 				    attribution: msAttrString,
 				    maxZoom: 18
 				}).addTo(this.map);
