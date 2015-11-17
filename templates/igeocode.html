@@ -1,0 +1,42 @@
+
+	<div>
+		<a id="close-search-results" ng-click="closeIGeocodeResults();" 
+			ng-bind="translation['map.js.search.result.close']"></a>
+		<div style="clear: both;"></div>	
+	</div>
+	<h4 ng-bind="translation['map.js.igeocode.title']" ng-show="inverseGeocodeResults.feature_id"></h4>
+	<div ng-class="{'selected': inverseGeocodeResults.feature_id == activeFeatureID}" 
+		ng-click="selectRow(inverseGeocodeResults);"
+		ng-show="inverseGeocodeResults.feature_id" >
+		<div class="title">
+			<span class="search-result-type" ng-bind="formatObjectType(inverseGeocodeResults)"></span>
+			<span class="search-result-name" ng-bind="inverseGeocodeResults.name"></span>
+		</div>
+		<div ng-show="inverseGeocodeResults.name" style="clear: both;"></div>
+		<div class="address">{{formatSearchResultAddress(inverseGeocodeResults)}}</div>
+		<div style="clear: both;"></div>
+	</div>
+	<div ng-show="inverseGeocodeResults._related && inverseGeocodeResults._related._same_building">
+		<h5 ng-bind="translation['details.building.pois.pois']"></h5>
+		<ul ng-show="inverseGeocodeResults._enclosed">
+			<li ng-repeat="f in inverseGeocodeResults._eclosed" 
+				ng-class="{'selected': f.feature_id == activeFeatureID}" 
+				ng-click="selectRow(f);"
+				ng-include="HTML_ROOT + 'templates/nameAndTitle.html'" />
+		</ul>
+		<ul>
+			<li ng-repeat="f in inverseGeocodeResults._related._same_building" 
+				ng-class="{'selected': f.feature_id == activeFeatureID}" 
+				ng-click="selectRow(f);"
+				ng-include="HTML_ROOT + 'templates/nameAndTitle.html'"/>
+		</ul>
+	</div>
+	<div ng-show="inverseGeocodeResults._neighbours">
+		<h5 ng-bind="translation['map.js.igeocode.neigbours']"></h5>
+		<ul ng-show="inverseGeocodeResults._neighbours">
+			<li ng-repeat="f in inverseGeocodeResults._neighbours" 
+				ng-class="{'selected': f.feature_id == activeFeatureID}" 
+				ng-click="selectRow(f);"
+				ng-include="HTML_ROOT + 'templates/nameAndTitle.html'"/>
+		</ul>
+	</div>

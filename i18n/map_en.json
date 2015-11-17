@@ -3,6 +3,7 @@
 		"weight_base_type.city": "City",
 		"weight_base_type.place:town": "Town",
 		"weight_base_type.place:village": "Village",
+		"weight_base_type.place:hamlet": "Hamlet",
 		"weight_base_type.place:district": "Neighborhood",
 		"weight_base_type.adrpnt": "Address",
 		"weight_base_type.hghnet": "Street",

@@ -14,6 +14,10 @@ var meIGeocoder = angular.module('meIGeocoder', [ 'ngResource', 'meMap', 'meDeta
 				});
 				this.scope = $scope;
 				
+				$scope.closeIGeocodeResults = function() {
+					$scope.$broadcast('CloseInverseGeocodeResults');
+				}
+				
 				$scope.$on('CloseInverseGeocodeResults', function(){
 					$scope.inverseGeocodeResults = null;
 					mapService.filterMarkersByTypes($scope, []);
@@ -44,13 +48,15 @@ var meIGeocoder = angular.module('meIGeocoder', [ 'ngResource', 'meMap', 'meDeta
 			},
 			
 			showAnswer: function(data) {
-				if(data && data.feature_id) {
+				if(data) {
 
-					this.scope.$broadcast('CloseSearchResults', data.feature_id);
 					this.scope.inverseGeocodeResults = data;
 					var $scope = this.scope;
 					
-					mapService.createPopUP($scope, data);
+					if(data.feature_id) {
+						this.scope.$broadcast('CloseSearchResults', data.feature_id);
+						mapService.createPopUP($scope, data);
+					}
 					
 					if(data._related && data._related._same_building) {
 						angular.forEach(data._related._same_building, function(obj) {

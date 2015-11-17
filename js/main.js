@@ -469,7 +469,13 @@ function ($rootScope, $scope, $cookies, i18nService, mapService, search,
 		
 		var order = $scope.translation ? 
 				$scope.translation['addr.order'] : 'hn-street-city';
-		return getAddress(f, order)[0];
+		
+		var addresses = getAddress(f, order);
+		if(addresses == undefined) {
+			return '';
+		}
+		
+		return addresses[0];
 	};
 	
 	$scope.getAddress = function(f) {
