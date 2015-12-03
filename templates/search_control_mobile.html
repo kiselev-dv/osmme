@@ -53,7 +53,7 @@
 				<li ng-repeat="data in hierarchy.groups" ng-include="'PoiTreeItem.html'" ></li>
 			</ul>
 		</div>
-		<div id="search-results" ng-show="searchResultsPage.features">
+		<div id="search-results" ng-show="!searchResultsPage.hide && searchResultsPage.features">
 			<div>
 				<a id="close-search-results" ng-click="$broadcast('CloseSearchResults');" 
 					ng-bind="translation['map.js.search.result.close']"></a>
@@ -62,9 +62,7 @@
 			<ul>
 				<li ng-repeat="f in searchResultsPage.features" 
 					ng-class="{'selected': f.feature_id == activeFeatureID, 'suggested': f.feature_id == selectedSuggestion}" 
-					class="search-result" ng-click="selectRow(f);"
-					<div id="inverse-geocode-results" ng-show="inverseGeocodeResults" 
-						ng-include="HTML_ROOT + 'templates/nameAndTitle.html'"/>	
+					class="search-result" ng-click="selectRow(f); searchResultsPage.hide = true;"
 				</li>	
 			</ul>
 			<div>
@@ -73,6 +71,8 @@
 					ng-repeat="pn in srPages" ng-click="goPage(pn)">{{pn.p}}</span>
 			</div>
 		</div>
+		<div id="inverse-geocode-results" ng-show="inverseGeocodeResults" 
+			ng-include="HTML_ROOT + 'templates/nameAndTitle.html'"/>	
 		<div ng-include="HTML_ROOT + 'templates/igeocode.html'" 
 			id="inverse-geocode-results" ng-show="inverseGeocodeResults"/>
 	</div>
