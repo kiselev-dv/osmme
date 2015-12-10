@@ -46,3 +46,6 @@
     background-color: white;
     position: absolute;
 }
+.button {
+	display: inline-block;
+}
