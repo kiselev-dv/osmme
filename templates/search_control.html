@@ -57,7 +57,6 @@
 				ng-bind="translation['map.js.search.result.close']"></a>
 			<div style="clear: both;"></div>	
 		</div>
-		<div id="not-strict-results-alert" ng-show="!searchResultsPage.strict">{{translation['map.js.search.result.not_strict']}}</div>
 		<ul>
 			<li ng-repeat="f in searchResultsPage.features" 
 				ng-class="{'selected': f.feature_id == activeFeatureID, 'suggested': f.feature_id == selectedSuggestion}" 

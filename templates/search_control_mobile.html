@@ -32,8 +32,10 @@
 			<span ng-bind="browserGeoLocation.text"></span>
 			<a class="button browserGeocode-button" ng-bind="translation['map.youAreHere.move']" 
 				ng-click="moveToBrowserGeoLocation(browserGeoLocation); browserGeoLocation = null;"></a>
-			<a class="button browserGeocode-button" ng-bind="translation['map.youAreHere.hide']" 
-				ng-click="browserGeoLocation = null;"></a>
+			<div class="button" ng-click="browserGeoLocation = null;">
+				<a class="browserGeocode-button" ng-bind="translation['map.youAreHere.hide']" 
+					ng-click="browserGeoLocation = null;"></a>
+			</div>	
 		</div>
 	</div>
 	<div ng-include="'templates/cathegories.html'"></div>
@@ -53,7 +55,7 @@
 				<li ng-repeat="data in hierarchy.groups" ng-include="'PoiTreeItem.html'" ></li>
 			</ul>
 		</div>
-		<div id="search-results" ng-show="!searchResultsPage.hide && searchResultsPage.features">
+		<div id="search-results" ng-show="searchResultsPage.features">
 			<div>
 				<a id="close-search-results" ng-click="$broadcast('CloseSearchResults');" 
 					ng-bind="translation['map.js.search.result.close']"></a>
@@ -62,7 +64,7 @@
 			<ul>
 				<li ng-repeat="f in searchResultsPage.features" 
 					ng-class="{'selected': f.feature_id == activeFeatureID, 'suggested': f.feature_id == selectedSuggestion}" 
-					class="search-result" ng-click="selectRow(f); searchResultsPage.hide = true;"
+					class="search-result" ng-click="selectRow(f); $broadcast('CloseSearchResults');"
 				</li>	
 			</ul>
 			<div>
