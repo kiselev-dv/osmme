@@ -200,6 +200,18 @@ function ($rootScope, $scope, $cookies, i18nService, mapService, search,
 		}
 	}
 	
+	$scope.switchPoiClassArray = function(pt) {
+		var arr = $scope.osmdocCat.features.slice(0);
+		var index = $scope.osmdocCat.features.indexOf(pt);
+		if(index < 0) {
+			arr.push(pt);
+		} 
+		else {
+			arr.splice(index, 1);
+		}
+		return arr;
+	};
+	
 	function updateCathegories() {
 		var ls = routeService.getParameters();
 		

@@ -8,10 +8,6 @@
 		<input type="submit" id="search-button" value="" 
 			style="background-image:url('{{HTML_ROOT + '/img/magnifier12w.png'}}');"
 			class="button" ng-click="$broadcast('Search', searchQuerry);"/> 
-<!-- 		<div id="search-addresses-only"> -->
-<!-- 			<input  ng-model="searchAddressesOnly" type="checkbox" /> -->
-<!-- 			<span ng-bind="translation['map.search.addressesOnly']"></span> -->
-<!-- 		</div> -->
 	</form>
 </div>
 <div id="links">
@@ -41,8 +37,10 @@
 			<li ng-repeat="f in searchResultsPage.matched_type" 
 				ng-class="{'suggested': f.name == selectedSuggestion}" 
 				class="search-result" >
-				<input type="checkbox" ng-model="f.selected" ng-change=""></input>
-				<span class="title" ng-show="f.translated_title" ng-click="">{{f.translated_title[0]}}</span>
+				<input type="checkbox" ng-model="f.selected" 
+					ng-change="selectCathegory(f, 'features')"></input>
+				<a class="title" href="{{mergeIntoPath('pt', switchPoiClassArray(f.name))}}" 
+					ng-show="f.translated_title" ng-bind="f.translated_title[0]"></a>
 			</li>
 		</ul>
 	</div>

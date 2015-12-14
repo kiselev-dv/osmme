@@ -244,7 +244,7 @@ input, textarea, form:active, input:focus {
 #browserGeocode {
 	padding-left: 4px;
 	color: black;
-	font-size: 12pt;
+	font-size: 8pt;
 }
 #close-search-results {
 	cursor: pointer;
