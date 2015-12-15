@@ -211,14 +211,3 @@ var meOSMDoc = angular.module('meOSMDoc', [ 'meMap' ]);
 
 })(angular, meOSMDoc);
 
-function filterAndSort(arr) {
-	if(arr.length > 1) {
-		return a.sort().filter(function(item, pos) {
-	        return !pos || item != a[pos - 1];
-	    });
-	}
-	else {
-		return arr;
-	}
-}
-

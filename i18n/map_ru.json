@@ -42,5 +42,6 @@
 		"details.adr.building": "Здание",
 		"details.building.levels": "Этажи: ",
 		"details.building.pois": "Организации",
-		"details.building.pois.pois": "Другие организации в том же здании"
+		"details.building.pois.pois": "Другие организации в том же здании",
+		"map.js.igeocode.title": "Информация об объектах"
 }

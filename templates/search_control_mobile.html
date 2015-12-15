@@ -2,9 +2,9 @@
 	<button id="mob-menu-button" ng-switch="!!searchResultsPage.features" 
 		ng-click="searchForm.showSlider = !searchForm.showSlider;" >
 		<img id="search-img" ng-switch-when="false"
-			src="{{HTML_ROOT + '/img/menu48.png'}}" ></img>
+			ng-src="{{pathWithRoot('/img/menu48.png')}}" ></img>
 		<img id="search-img" ng-switch-when="true"
-			src="{{HTML_ROOT + '/img/menu48g.png'}}" ></img>
+			ng-src="{{pathWithRoot('/img/menu48g.png')}}" ></img>
 	</button>	
 	<form id="search-form">
 		<input id="serch-input" class="field ui-autocomplete-input ui-widget" 
@@ -55,9 +55,9 @@
 				<li ng-repeat="data in hierarchy.groups" ng-include="'PoiTreeItem.html'" ></li>
 			</ul>
 		</div>
-		<div id="search-results" ng-show="searchResultsPage.features">
+		<div class="search-results" ng-show="searchResultsPage.features">
 			<div>
-				<a id="close-search-results" ng-click="$broadcast('CloseSearchResults');" 
+				<a class="close-search-results" ng-click="$broadcast('CloseSearchResults');" 
 					ng-bind="translation['map.js.search.result.close']"></a>
 				<div style="clear: both;"></div>	
 			</div>
@@ -68,23 +68,20 @@
 				</li>	
 			</ul>
 			<div>
-				<span>{{translation['map.js.search.result.pages']}}</span>
+				<span ng-bind="translation['map.js.search.result.pages']"></span>
 				<span class="page-number" ng-class="{current:pn.active}" 
 					ng-repeat="pn in srPages" ng-click="goPage(pn)">{{pn.p}}</span>
 			</div>
 		</div>
-		<div id="inverse-geocode-results" ng-show="inverseGeocodeResults" 
-			ng-include="HTML_ROOT + 'templates/nameAndTitle.html'"/>	
-		<div ng-include="HTML_ROOT + 'templates/igeocode.html'" 
-			id="inverse-geocode-results" ng-show="inverseGeocodeResults"/>
+		<ng-include src="HTML_ROOT + 'templates/igeocode.html'" />
 	</div>
 </div>
 
 <script type="text/ng-template"  id="PoiTreeItem.html">
 	<input type="checkbox" ng-model="data.selected" ng-change="selectCathegory(data, 'groups')"></input>
 	<a ng-click="expand(data);" ng-show="(data.groups.length!=0 || data.features.length!=0)" >
-		<img class="expand" src="{{HTML_ROOT}}/img/expanded.png" ng-show="data.expanded"></img>
-		<img class="expand" src="{{HTML_ROOT}}/img/expand.png" ng-show="!data.expanded"></img>
+		<img class="expand" ng-src="{{pathWithRoot('/img/expanded.png')}}" ng-show="data.expanded"></img>
+		<img class="expand" ng-src="{{pathWithRoot('/img/expand.png')}}" ng-show="!data.expanded"></img>
 	</a>
     <a ng-click="expand(data);" 
 		ng-class="{'not-empty':(data.groups.length!=0 || data.features.length!=0)}">

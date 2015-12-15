@@ -36,6 +36,8 @@ var meIGeocoder = angular.module('meIGeocoder', [ 'ngResource', 'meMap', 'meDeta
 				}
 				
 				if(undefined == callback) {
+					var neighbours = typeof IGEOCODE_NEIGHBOURS !== 'undefined' ? IGEOCODE_NEIGHBOURS : 8;
+					path += '?' + '&max_neighbours=' + (neighbours || 8);
 					$http.get(path).success(function(data) {
 						service.showAnswer.apply(service, [data]);
 					});
@@ -56,6 +58,7 @@ var meIGeocoder = angular.module('meIGeocoder', [ 'ngResource', 'meMap', 'meDeta
 					if(data.feature_id) {
 						this.scope.$broadcast('CloseSearchResults', data.feature_id);
 						mapService.createPopUP($scope, data);
+						mapService.openPopUP($scope, data.feature_id);
 					}
 					
 					if(data._related && data._related._same_building) {

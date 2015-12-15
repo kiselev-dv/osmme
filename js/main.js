@@ -16,6 +16,17 @@ String.prototype.format = function() {
 	});
 };
 
+function filterAndSort(arr) {
+	if(arr.length > 1) {
+		return arr.sort().filter(function(item, pos) {
+	        return !pos || item != arr[pos - 1];
+	    });
+	}
+	else {
+		return arr;
+	}
+}
+
 var OSMmeApp = angular.module('OSMmeApp', [ 'ngCookies', 'ngSanitize', 'meMap', 'meI18n', 'angular-google-analytics',
                                    'meSearch', 'meOSMDoc', 'meIGeocoder', 'meDetails', 'meRouter', 'ngDisqus']);
 
@@ -80,6 +91,13 @@ function ($rootScope, $scope, $cookies, i18nService, mapService, search,
 	
 	$scope.HTML_ROOT = HTML_ROOT;
 	$rootScope.HTML_ROOT = HTML_ROOT;
+	
+	$rootScope.pathWithRoot = function(part){
+		return HTML_ROOT + part;
+	};
+	$scope.pathWithRoot = function(part){
+		return HTML_ROOT + part;
+	};
 	
 	var searchParams = $location.search();
 	
@@ -201,15 +219,28 @@ function ($rootScope, $scope, $cookies, i18nService, mapService, search,
 	}
 	
 	$scope.switchPoiClassArray = function(pt) {
-		var arr = $scope.osmdocCat.features.slice(0);
-		var index = $scope.osmdocCat.features.indexOf(pt);
-		if(index < 0) {
-			arr.push(pt);
-		} 
-		else {
-			arr.splice(index, 1);
+		try {
+			var arr = $scope.osmdocCat.features.slice(0);
+			var index = $scope.osmdocCat.features.indexOf(pt);
+			if(index < 0) {
+				arr.push(pt);
+			} 
+			else {
+				arr.splice(index, 1);
+			}
+			
+			return filterAndSort(arr);
 		}
-		return arr;
+		catch (e) {
+			return [];
+		}
+	};
+	
+	$scope.poiClassTranslatedTitle = function(f) {
+		if(f.title_by_lang && f.title_by_lang[$scope.lng]) {
+			return f.title_by_lang[$scope.lng];
+		}
+		return f.translated_title[0];
 	};
 	
 	function updateCathegories() {
@@ -447,6 +478,10 @@ function ($rootScope, $scope, $cookies, i18nService, mapService, search,
 	$scope.$on('CleanSearchInput', function() {
 		routeService.update('q', null);
 	});
+	
+	$scope.navigate = function(key, value) {
+		routeService.update(key, value);
+	}
 
 	$scope.formatSearchResultTitle = function(f) {
 		

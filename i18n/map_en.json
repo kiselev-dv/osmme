@@ -42,5 +42,6 @@
 		"details.adr.building": "Building",
 		"details.building.levels": "Levels: ",
 		"details.building.pois": "Organizations",
-		"details.building.pois.pois": "Other organizations here"
+		"details.building.pois.pois": "Other organizations here",
+		"map.js.igeocode.title": "Objects information"
 }

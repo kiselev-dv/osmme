@@ -1,10 +1,11 @@
-
+<div class="inverse-geocode-results" ng-show="inverseGeocodeResults">
 	<div>
-		<a id="close-search-results" ng-click="closeIGeocodeResults();" 
+		<h4 ng-bind="translation['map.js.igeocode.title']" 
+			ng-show="inverseGeocodeResults.feature_id"></h4>
+		<a class="close-search-results" ng-click="closeIGeocodeResults();" 
 			ng-bind="translation['map.js.search.result.close']"></a>
 		<div style="clear: both;"></div>	
 	</div>
-	<h4 ng-bind="translation['map.js.igeocode.title']" ng-show="inverseGeocodeResults.feature_id"></h4>
 	<div ng-class="{'selected': inverseGeocodeResults.feature_id == activeFeatureID}" 
 		ng-click="selectRow(inverseGeocodeResults);"
 		ng-show="inverseGeocodeResults.feature_id" >
@@ -16,7 +17,7 @@
 		<div class="address">{{formatSearchResultAddress(inverseGeocodeResults)}}</div>
 		<div style="clear: both;"></div>
 	</div>
-	<div ng-show="inverseGeocodeResults._related && inverseGeocodeResults._related._same_building">
+	<div ng-show="inverseGeocodeResults._related._same_building.length > 0">
 		<h5 ng-bind="translation['details.building.pois.pois']"></h5>
 		<ul ng-show="inverseGeocodeResults._enclosed">
 			<li ng-repeat="f in inverseGeocodeResults._eclosed" 
@@ -40,3 +41,4 @@
 				ng-include="HTML_ROOT + 'templates/nameAndTitle.html'"/>
 		</ul>
 	</div>
+</div>

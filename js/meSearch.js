@@ -21,7 +21,7 @@ meSearch.factory('search', ['$http', 'mapService', 'docTree',
 	    		
 	    		$scope.$on('SelectCathegoryTreeNode', function(){
 	    			$scope.searchForm.q = '';
-	    			$scope.searchResultsPage = {};
+	    			delete $scope.searchResultsPage.features;
 	    			service.pagesMode = false;
 	    			service.listPOI.apply(service, [$scope, 1]);
 	    		});

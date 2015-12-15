@@ -11,6 +11,11 @@ h5 {
 	margin-bottom: 10px;
 	margin-top: 0;
 }
+h4 {
+	font-size: 12pt;
+	margin-bottom: 10px;
+	margin-top: 0;
+}
 #search-form {
 	display: inline;
 }
@@ -63,6 +68,9 @@ input, textarea, form:active, input:focus {
 #cathegories-tree li, #serch-types li {
 	list-style: none;
 }
+#serch-types input {
+	vertical-align: middle;
+}
 #cathegories-tree .feature {
 	cursor: pointer;
 }
@@ -75,12 +83,15 @@ input, textarea, form:active, input:focus {
 #cathegories-tree input {
 	vertical-align: middle;
 }
-#search-results {
+.search-results {
 	border-bottom: 3px solid #FF9D1C;
 }
-#search-results ul,#serch-types ul {
+.search-results ul,#serch-types ul {
 	padding: 0;
 	margin: 0;	
+}
+#poi-filters {
+	margin-bottom: 10px;
 }
 .search-result .address {
 	font-size: 9pt;
@@ -92,7 +103,7 @@ input, textarea, form:active, input:focus {
 	padding: 0 5px 4px 5px;
 	list-style-type: none;
 }
-#search-results .selected {
+.search-results .selected {
 	background-color: #FFD296;
 }
 .suggested {
@@ -128,7 +139,6 @@ input, textarea, form:active, input:focus {
 }
 #serch-input {
 	font-size: 1.2em;
-	background: url("img/magnifier12.png") no-repeat scroll 98% center rgba(0, 0, 0, 0);
     height: 32px;
     margin: 1px 0px 1px 1px;
     padding: 0 0 0 5px;
@@ -178,14 +188,13 @@ input, textarea, form:active, input:focus {
     text-align:center;
     text-decoration:none;
     background: #bbb;
-    font-size:18px;
+    font-size:14px;
     font-weight:bold;
 }
 .round-button:hover {
     background: #888;
 }
 .selected-type {
-	width: 200px;
 	font-size: 15px;
 	margin-top: 2px;
 	margin-left: 5px;
@@ -198,21 +207,31 @@ input, textarea, form:active, input:focus {
 	margin: 3px 0 3px 0;
 	padding-left: 5px;
 }
-#close-search-results {
+.close-search-results {
 	float: right;
 	margin-right: 5px;
+	cursor: pointer;
+	font-size: 12pt;
+	display: inline-block;
+	padding: 0px 0px 4px 4px;
 }
-#inverse-geocode-results {
+.inverse-geocode-results {
 	padding-left: 5px;
 	padding-right: 5px;
 }
-#inverse-geocode-results ul {
+.inverse-geocode-results h4 {
+	float: left;
+	width: 80%;
+	margin-top: 0;
+	padding-top: 0;
+}
+.inverse-geocode-results ul {
 	padding-left: 22px;
 }
-#inverse-geocode-results li {
+.inverse-geocode-results li {
 	list-style: none;
 }
-#inverse-geocode-results li:HOVER {
+.inverse-geocode-results li:HOVER {
 	background-color: #A1BB6C;
 	cursor: pointer;
 }
@@ -245,7 +264,4 @@ input, textarea, form:active, input:focus {
 	padding-left: 4px;
 	color: black;
 	font-size: 8pt;
-}
-#close-search-results {
-	cursor: pointer;
 }

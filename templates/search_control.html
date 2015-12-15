@@ -6,7 +6,7 @@
 			ng-enter="searchInputEnter();"
 			ng-keydown="searchKeyDown($event);">
 		<input type="submit" id="search-button" value="" 
-			style="background-image:url('{{HTML_ROOT + '/img/magnifier12w.png'}}');"
+			style="background-image:url('{{pathWithRoot('/img/magnifier12w.png')}}');"
 			class="button" ng-click="$broadcast('Search', searchQuerry);"/> 
 	</form>
 </div>
@@ -14,7 +14,6 @@
 	<a href="javascript:void(0);" ng-bind="translation['map.catalog']" ng-click="showCatalog = !showCatalog"></a>
 	<a href="{{HTML_ROOT}}/{{lng}}/about.html" ng-bind="translation['map.aboutus']"></a>
 	<a href="{{HTML_ROOT}}/blog/" ng-bind="translation['map.blog']"></a>
-	<!-- <a href="javascript:void(0);" ng-bind="translation['map.note']"></a> -->
 	
 	<span id="languages">
 		<a ng-repeat="l in langsAvaible | filter: '!' + lng" href="{{mergeIntoPath('lang', l)}}" ng-bind="l"></a>
@@ -37,10 +36,10 @@
 			<li ng-repeat="f in searchResultsPage.matched_type" 
 				ng-class="{'suggested': f.name == selectedSuggestion}" 
 				class="search-result" >
-				<input type="checkbox" ng-model="f.selected" 
-					ng-change="selectCathegory(f, 'features')"></input>
+				<input type="checkbox" ng-checked="osmdocCat.features.indexOf(f.name) >= 0" 
+					ng-click="navigate('pt', switchPoiClassArray(f.name));"></input>
 				<a class="title" href="{{mergeIntoPath('pt', switchPoiClassArray(f.name))}}" 
-					ng-show="f.translated_title" ng-bind="f.translated_title[0]"></a>
+					ng-show="f.translated_title" ng-bind="poiClassTranslatedTitle(f)"></a>
 			</li>
 		</ul>
 	</div>
@@ -49,9 +48,9 @@
 			<li ng-repeat="data in hierarchy.groups" ng-include="'PoiTreeItem.html'" ></li>
 		</ul>
 	</div>
-	<div id="search-results" ng-show="searchResultsPage.features">
+	<div class="search-results" ng-show="searchResultsPage.features">
 		<div>
-			<a id="close-search-results" ng-click="$broadcast('CloseSearchResults');" 
+			<a class="close-search-results" ng-click="$broadcast('CloseSearchResults');" 
 				ng-bind="translation['map.js.search.result.close']"></a>
 			<div style="clear: both;"></div>	
 		</div>
@@ -63,20 +62,19 @@
 			</li>
 		</ul>
 		<div>
-			<span>{{translation['map.js.search.result.pages']}}</span>
+			<span ng-bind="translation['map.js.search.result.pages']"></span>
 			<span class="page-number" ng-class="{current:pn.active}" 
 				ng-repeat="pn in srPages" ng-click="goPage(pn)">{{pn.p}}</span>
 		</div>
 	</div>
-	<div ng-include="HTML_ROOT + 'templates/igeocode.html'" 
-		id="inverse-geocode-results" ng-show="inverseGeocodeResults"/>
+	<ng-include src="HTML_ROOT + 'templates/igeocode.html'" />
 </div>
 
 <script type="text/ng-template"  id="PoiTreeItem.html">
 	<input type="checkbox" ng-model="data.selected" ng-change="selectCathegory(data, 'groups')"></input>
 	<a ng-click="expand(data);" ng-show="(data.groups.length!=0 || data.features.length!=0)" >
-		<img class="expand" src="{{HTML_ROOT}}/img/expanded.png" ng-show="data.expanded"></img>
-		<img class="expand" src="{{HTML_ROOT}}/img/expand.png" ng-show="!data.expanded"></img>
+		<img class="expand" ng-src="{{pathWithRoot('/img/expanded.png')}}" ng-show="data.expanded"></img>
+		<img class="expand" ng-src="{{pathWithRoot('/img/expand.png')}}" ng-show="!data.expanded"></img>
 	</a>
     <a ng-click="expand(data);" 
 		ng-class="{'not-empty':(data.groups.length!=0 || data.features.length!=0)}">
