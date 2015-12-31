@@ -12,6 +12,10 @@
 				<div ng-repeat="a in getAddress(objectDetails)">{{a}}</div>
 			</div>
 			<div class="details-info" ng-show="objectDetails.more_tags">
+				<div ng-show="objectDetails.more_tags.description" class="description">
+					<h4 ng-bind="translation['details.description']"></h4>
+					<div ng-bind="objectDetails.more_tags.description"></div>
+				</div>
 				<table>
 					<tr ng-repeat="t in listMoreTags(objectDetails)">
 						<td class="attr-name" valign="top" ng-bind="t.name"></td>
@@ -34,6 +38,7 @@
 					</li>
 				</ul>
 			</div>
+			
 			<div id="disqus_thread" 
 				disqus="(objectDetails && objectDetails.type == 'poipnt') ? activeFeatureID : null" 
 				title="objectDetails.name"></div>

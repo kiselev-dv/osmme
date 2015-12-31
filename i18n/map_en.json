@@ -43,5 +43,9 @@
 		"details.building.levels": "Levels: ",
 		"details.building.pois": "Organizations",
 		"details.building.pois.pois": "Other organizations here",
-		"map.js.igeocode.title": "Objects information"
+		"map.js.igeocode.title": "Objects information",
+		"details.description": "Description",
+		"pt.routes": "Routes",
+		"pt.route.type.bus": "Bus" ,
+		"pt.route.type.tram": "Tram"
 }

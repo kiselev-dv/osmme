@@ -8,6 +8,12 @@
 			class="round-button">&times;</span><span ng-bind="name2FClass[f]['translated_title']"></span>
 	</div>
 	<div class="tag-filters">
-		
+		<div ng-repeat="(key, values) in poi_subfilters">
+			<span ng-bind="key"></span>:&nbsp;<span 
+				ng-repeat="val in values">
+					<input type="checkbox"></input> 
+					<span ng-bind="val"></span> 
+				</span>
+		</div>
 	</div>
 </div>

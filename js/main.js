@@ -40,6 +40,19 @@ if(ANALYTICS_CODE) {
 	}]);
 }
 
+OSMmeApp.directive('dynamic', function($compile) {
+	return {
+		restrict : 'A',
+		replace : true,
+		link : function(scope, ele, attrs) {
+			scope.$watch(attrs.dynamic, function(html) {
+				ele.html(html);
+				$compile(ele.contents())(scope);
+			});
+		}
+	};
+});
+
 OSMmeApp.directive('ngEnter', function() {
 	return function(scope, element, attrs) {
 		element.bind("keydown keypress", function(event) {
@@ -75,7 +88,9 @@ OSMmeApp.directive('meResize', ['$window', function ($window) {
         }, true);
 
         w.bind('resize', function () {
-            scope.$apply();
+        	if(!scope.$$phase) {
+        		scope.$apply();
+        	}
         });
     }
 }]);
@@ -276,6 +291,7 @@ function ($rootScope, $scope, $cookies, i18nService, mapService, search,
 			$scope.osmdocCat.features = pt;
 			docTree.organizeCathegories();
 			docTree.updateSelections($scope);
+			docTree.loadTagValuesStatistic($scope);
 			$scope.$broadcast('SelectCathegoryTreeNode');
 		}
 	}
@@ -351,8 +367,11 @@ function ($rootScope, $scope, $cookies, i18nService, mapService, search,
 		}
 	});
 	
-	$scope.$on('PopupOpen', function(evnt, fid) {
+	$scope.$on('PopupOpen', function(evnt, fid, poiClass) {
 		routeService.update({'id': fid, 'map': null});
+		if(poiClass) {
+			details.loadPTRoutes($scope, fid, poiClass);
+		}
 	});
 	
 	$scope.$on('MapViewChanged', function() {
@@ -565,6 +584,10 @@ function ($rootScope, $scope, $cookies, i18nService, mapService, search,
 		mapService.setView(position.lat, position.lon, 14);
 		mapService.saveStateToCookie();
 	};
+	
+	$scope.getPTRoutes = function(id) {
+		return details.getPTRoutes(id);
+	}
 	
 }]);
 

@@ -90,7 +90,7 @@ input, textarea, form:active, input:focus {
 	padding: 0;
 	margin: 0;	
 }
-#poi-filters {
+.poi-filters {
 	margin-bottom: 10px;
 }
 .search-result .address {
@@ -264,4 +264,10 @@ input, textarea, form:active, input:focus {
 	padding-left: 4px;
 	color: black;
 	font-size: 8pt;
+}
+.routes-list {
+	margin-bottom: 10px;
+}
+.route-ref {
+	margin-left: 10px;
 }

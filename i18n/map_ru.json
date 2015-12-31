@@ -43,5 +43,9 @@
 		"details.building.levels": "Этажи: ",
 		"details.building.pois": "Организации",
 		"details.building.pois.pois": "Другие организации в том же здании",
-		"map.js.igeocode.title": "Информация об объектах"
+		"map.js.igeocode.title": "Информация об объектах",
+		"details.description": "Описание",
+		"pt.routes": "Список маршрутов",
+		"pt.route.type.bus": "Автобус" ,
+		"pt.route.type.tram": "Трамвай"
 }

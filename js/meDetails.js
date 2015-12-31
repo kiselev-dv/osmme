@@ -1,10 +1,13 @@
 var meDetails = angular.module('meDetails', [ 'meMap', 'meI18n' ]);
 
-meDetails.factory('details', ['$http', 'mapService', 'i18nService', function($http, mapService, i18nService) {  
+meDetails.factory('details', ['$http', '$timeout', '$rootScope', 'mapService', 'i18nService', 
+    function($http, $timeout, $rootScope, mapService, i18nService) {  
 	
 	var service = {
 		
 		cache: new FixedSizeFIFOCache(),
+		
+		ptCache: new FixedSizeFIFOCache(200), 
 		
 		showPopup: function($scope, activeFeatureID) {
 
@@ -45,8 +48,69 @@ meDetails.factory('details', ['$http', 'mapService', 'i18nService', function($ht
 					this._load($scope, id, true, function(data) {
 						$scope.objectDetails = data;
 						$scope.content = 'details';
-						$scope.moreLikeThisH4 = i18nService.tr($scope, 'details.poi.more')
+						$scope.moreLgetPTRoutesikeThisH4 = i18nService.tr($scope, 'details.poi.more')
 							.format(($scope.formatObjectType($scope.objectDetails) || '').toLowerCase());
+					});
+				}
+			}
+		},
+		
+		getPTRoutes: function(id) {
+			return service.ptCache.get(id);
+		},
+		
+		loadPTRoutes: function($scope, id, poiClass) {
+			
+			if(poiClass[0] == 'tram_stop' || poiClass[0] == 'bus_stop') {
+				
+				if(service.ptCache.get(id) != null) {
+					return;
+				}
+				
+				var osmId = id.split('-')[2];
+				if(osmId) {
+					var idString = '';
+					
+					if(osmId.charAt(0) == 'n') {
+						idString += 'node';
+					}
+					else if(osmId.charAt(0) == 'w') {
+						idString += 'way';
+					}
+					else if(osmId.charAt(0) == 'r') {
+						idString += 'rel';
+					}
+					else {
+						return;
+					}
+					
+					idString += '(' + osmId.substring(1) + ');' 
+					var overpassQS = '[out:json];(' + idString + ');<<; out tags qt;';
+					
+					var url = 'http://overpass-api.de/api/interpreter';
+					$http.post(url, 'data=' + overpassQS ).success(function(data) {
+						if(data.elements) {
+							var routesByType = {};
+							for(var i = 0; i < data.elements.length; i++) {
+								var element = data.elements[i];
+								if(element.type == 'relation') {
+									if(element.tags.type == 'route') {
+										var routeType = element.tags.route;
+										if(routeType && (routeType == 'bus' || routeType == 'tram')) {
+											if(routesByType[routeType] == null) {
+												routesByType[routeType] = [];
+											}
+											routesByType[routeType].push(element.tags.ref);
+										}
+									}
+								}
+							}
+							
+							service.ptCache.put(id, 
+									{'id': id, 'routes': routesByType});
+							
+							$rootScope.$$phase || $rootScope.$apply();
+						}
 					});
 				}
 			}

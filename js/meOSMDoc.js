@@ -3,19 +3,21 @@ var meOSMDoc = angular.module('meOSMDoc', [ 'meMap' ]);
 (function(ng, module){
 	
 	function traverseHierarchy(h, traverser, groups) {
-		angular.forEach(h.features, function(f){
-			if(traverser.feature) {
-				traverser.feature(f, groups);
-			}
-		});
-		angular.forEach(h.groups, function(g){
-			groups.push(g.name);
-			if(traverser.group) {
-				traverser.group(g);
-			}
-			traverseHierarchy(g, traverser, groups);
-			groups.pop(g.name);
-		});
+		if(h) {
+			angular.forEach(h.features, function(f){
+				if(traverser.feature) {
+					traverser.feature(f, groups);
+				}
+			});
+			angular.forEach(h.groups, function(g){
+				groups.push(g.name);
+				if(traverser.group) {
+					traverser.group(g);
+				}
+				traverseHierarchy(g, traverser, groups);
+				groups.pop(g.name);
+			});
+		}
 	}
 	
 	module.factory('docTree', ['$http', 'mapService', function($http, mapService) {  
@@ -65,27 +67,30 @@ var meOSMDoc = angular.module('meOSMDoc', [ 'meMap' ]);
 					var types = obj.poi_class;
 					var result = [];
 					angular.forEach(obj.more_tags, function(value, key){
-						for(var i in types) {
-							var tr = {};
-							
-							var type = $scope.name2FClass[types[i]];
-							
-							if(type) {
-								var tag = type.more_tags[key];
-								if(tag) {
-									tr.name = tag.name;
-									tr.type = tag.valueType;
-									tr['key'] = key;
-									
-									if(tag.values[value]) {
-										tr.value = tag.values[value].name;
-										tr.group = tag.values[value].group;
+						// Skip description, because we will format if in separate div
+						if(key != 'description') {
+							for(var i in types) {
+								var tr = {};
+								
+								var type = $scope.name2FClass[types[i]];
+								
+								if(type) {
+									var tag = type.more_tags[key];
+									if(tag) {
+										tr.name = tag.name;
+										tr.type = tag.valueType;
+										tr['key'] = key;
+										
+										if(tag.values[value]) {
+											tr.value = tag.values[value].name;
+											tr.group = tag.values[value].group;
+										}
+										else {
+											tr.value = value;
+										}
+										
+										result.push(tr);
 									}
-									else {
-										tr.value = value;
-									}
-									
-									result.push(tr);
 								}
 							}
 						}
@@ -160,6 +165,7 @@ var meOSMDoc = angular.module('meOSMDoc', [ 'meMap' ]);
 				}
 				
 				$scope.$broadcast('SelectCathegoryTreeNode');
+				this.loadTagValuesStatistic($scope);
 			},
 
 			removeSelection: function($scope, obj, type) {
@@ -174,6 +180,7 @@ var meOSMDoc = angular.module('meOSMDoc', [ 'meMap' ]);
 				}
 				
 				$scope.$broadcast('UnselectCathegoryTreeNode');
+				this.loadTagValuesStatistic($scope);
 			},
 			
 			updateSelections: function($scope) {
@@ -202,7 +209,55 @@ var meOSMDoc = angular.module('meOSMDoc', [ 'meMap' ]);
 			organizeCathegories: function() {
 				service.cathegories.groups = filterAndSort(service.cathegories.groups);
 				service.cathegories.features = filterAndSort(service.cathegories.features);
-			}
+			},
+			
+			loadTagValuesStatistic: function($scope) {
+				var service = this;
+				
+				if(service.cathegories.features || service.cathegories.groups) {
+					$http.get(API_ROOT + '/osmdoc/statistic/tagvalues.json',{
+						'params' : {
+							'poiclass': service.cathegories.features,
+							'poigroup': service.cathegories.groups,
+							'hierarchy': $scope.hierarchyCode
+						}
+					}).success(function(data) {
+						
+						var filters = {};
+						
+						var commonTags = data['common_tags'];
+						for(var i = 0; i < commonTags.length; i++) {
+							var key = commonTags[i];
+							
+							var filterOptions = [];
+							
+							var values = data['tags'][key];
+							var valKeys = Object.keys(values) || [];
+							if(valKeys && valKeys.length > 0) {
+								for(var vk=0; vk < valKeys.length; vk++) {
+									var valueKey = valKeys[vk];
+									if("no" != valueKey) {
+										filterOptions.push(valueKey);
+									}
+									else if(valKeys.length == 1) {
+										//Only one option = no
+										filterOptions.push(valueKey);
+									}
+								}
+							}
+							
+							if(filterOptions.length > 0) {
+								filters[key] = filterOptions;
+							}
+						}
+						//$scope.poi_subfilters = filters;
+					});
+				}
+				else {
+					$scope.poi_subfilters = null;
+				}
+				
+			} 
 			
 		};
 		

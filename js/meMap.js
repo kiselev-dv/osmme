@@ -110,6 +110,7 @@ var MapModule = angular.module('meMap', [ 'ngCookies', 'meI18n' ]);
 				}
 				
 				var mapClosure = this.map;
+				
 				this.map.on('viewreset', function() {
 					// do not block map
 					window.setTimeout(function() {
@@ -139,14 +140,12 @@ var MapModule = angular.module('meMap', [ 'ngCookies', 'meI18n' ]);
 						animate : false
 					});
 					
-//					angular.element(e.popup._container).find('a').on('click', function(){
-//						var fid = (e.popup._source ? e.popup._source.feature_id : e.popup.feature_id);
-//						$scope.$broadcast('PopUPDetailsLinkClick', fid);
-//						$rootScope.$$phase || $rootScope.$apply();
-//					});
-					
 					var fid = (e.popup._source ? e.popup._source.feature_id : e.popup.feature_id);
-					$scope.$broadcast('PopupOpen', fid);
+					
+					// _contentNode rebuilded on each poup open 
+					$compile(e.popup._contentNode)($scope);
+					
+					$scope.$broadcast('PopupOpen', fid, service.id2Feature[fid].poi_class);
 					$rootScope.$$phase || $rootScope.$apply();
 				});
 
@@ -187,7 +186,11 @@ var MapModule = angular.module('meMap', [ 'ngCookies', 'meI18n' ]);
 							var m = L.marker([data.center_point.lat, data.center_point.lon], {'icon': clazz.ll_icon});
 						}
 						thisClosure.id2Marker[data.feature_id] = m;
-						m.addTo(thisClosure.map).bindPopup(thisClosure.getPopUPHtml(data, data.feature_id, $scope));
+						
+						var html = thisClosure.getPopUPHtml(
+								data, data.feature_id, $scope, clazz);
+						
+						m.addTo(thisClosure.map).bindPopup(html);
 						m.feature_id = data.feature_id;
 					});
 				}
@@ -223,7 +226,7 @@ var MapModule = angular.module('meMap', [ 'ngCookies', 'meI18n' ]);
 				return id && !!this.id2Marker[id];
 			},
 			
-			getPopUPHtml: function(f, activeFeatureID, $scope) {
+			getPopUPHtml: function(f, activeFeatureID, $scope, clazz) {
 				var title = $scope.formatSearchResultTitle(f);
 
 				var order = $scope.translation ? 
@@ -234,8 +237,23 @@ var MapModule = angular.module('meMap', [ 'ngCookies', 'meI18n' ]);
 					+ $scope.mergeIntoPath({'details': true, 'id': activeFeatureID}) + '">' + 
 					i18nService.tr($scope, 'map.js.popup.more') + '</a>';
 				
+				var pt = '';
+				if(clazz) {
+					if(clazz.name == 'tram_stop' || clazz.name == 'bus_stop') {
+						pt = '<h5 ng-bind="translation[\'pt.routes\']"></h5>' +
+							 '<div ng-hide="getPTRoutes(\'' + activeFeatureID + '\') != null">' + 
+							 	'<img ng-src="{{HTML_ROOT}}/img/loading.gif"/>' +
+							 '</div>' +
+							 '<div ng-show="getPTRoutes(\'' + activeFeatureID + '\')" ' + 
+							 		'class="routes-list" ng-repeat="(type, refs) in getPTRoutes(\'' + activeFeatureID + '\').routes">' + 
+							 	'<span ng-bind="translation[\'pt.route.type.\' + type]"></span>&nbsp;' + 
+							 	'<span class="route-ref" ng-repeat="ref in refs" ng-bind="ref"></span>' + 
+							 '</div>';
+					}
+				}
+				
 				if(title) {
-					return '<div class="fpopup"><h2>' + title + '</h2>' +
+					return '<div class="fpopup"><h2>' + title + '</h2>' + pt +
 					'<div>' + address + '</div><div>' + moreLink + '</div>';
 				}
 				
