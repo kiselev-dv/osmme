@@ -250,13 +250,15 @@ var meOSMDoc = angular.module('meOSMDoc', [ 'meMap' ]);
 							if(valKeys && valKeys.length > 0) {
 								for(var vk=0; vk < valKeys.length; vk++) {
 									var valueKey = valKeys[vk];
-									var docValues = feature.more_tags[key]['values'];
-									if(docValues && docValues[valueKey]) {
-										var valueTitle = docValues[valueKey].name;
-										filterOptions.push({
-											'valueKey': valueKey,
-											'valueTitle': valueTitle
-										});
+									if(feature && feature.more_tags && feature.more_tags[key]) {
+										var docValues = feature.more_tags[key]['values'];
+										if(docValues && docValues[valueKey]) {
+											var valueTitle = docValues[valueKey].name;
+											filterOptions.push({
+												'valueKey': valueKey,
+												'valueTitle': valueTitle
+											});
+										}
 									}
 								}
 
