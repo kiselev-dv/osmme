@@ -211,6 +211,11 @@ var meOSMDoc = angular.module('meOSMDoc', [ 'meMap' ]);
 			},
 			
 			loadTagValuesStatistic: function($scope) {
+				
+				if(!USE_POI_TAGS_FILTERS) {
+					return;
+				}
+				
 				var service = this;
 				var features = service.cathegories.features;
 				var groups =  service.cathegories.groups;
