@@ -76,15 +76,15 @@ var MapModule = angular.module('meMap', [ 'ngCookies', 'meI18n' ]);
 						' <a href=\"http://giscience.uni-hd.de/\" target=\"_blank\">University of Heidelberg</a>';
 				}
 				
-				var mapsurfer = L.tileLayer(MAPSURFER_TILES, {
+				this.mapsurfer = L.tileLayer(MAPSURFER_TILES, {
 				    attribution: msAttrString,
 				    maxZoom: 18
-				}).addTo(this.map);
+				});
 				
 				var osmAttrString = i18nService.tr($scope, 'map.js.copy.contributors') 
 		    		+ '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a>';
 				
-				var mapnik = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+				this.mapnik = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
 				    attribution: osmAttrString
 				});
 
@@ -100,9 +100,12 @@ var MapModule = angular.module('meMap', [ 'ngCookies', 'meI18n' ]);
 				});
 				
 				var base = {
-					'Mapnik': mapnik,
-					'MapSurfer': mapsurfer
+					'Mapnik': this.mapnik,
+					'MapSurfer': this.mapsurfer
 				};
+				
+				(this[DEFAULT_LAYER || 'mapsurfer'] || mapsurfer).addTo(this.map);
+				
 
 				if(!$scope.mobile) {
 					this.layersControl = L.control.layers(base, overlays);
