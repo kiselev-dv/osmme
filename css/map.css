@@ -271,3 +271,19 @@ input, textarea, form:active, input:focus {
 .route-ref {
 	margin-left: 10px;
 }
+.tag-filters {
+	margin-left: 35px;
+}
+.tag-filters input {
+	vertical-align: middle;
+}
+.val-option {
+	white-space: nowrap;
+}
+.val-option-checkbox {
+	margin-left: 1px;
+	margin-right: 7px;
+}
+.poi-filter {
+	margin-bottom: 6px;
+}

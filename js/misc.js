@@ -29,57 +29,6 @@ function whTableSpan(table) {
 	}
 }
 
-function tagValueHTML(t) {
-	if(t.value === true) {
-		return i18nService.tr($scope, 'details.poi.tag.values.true');
-	}
-	else if(t.value === false) {
-		return i18nService.tr($scope, 'details.poi.tag.values.false');
-	}
-	if(t.key == 'contact:website') {
-		return '<a href="' + t.value + '">' + t.value + '</a>';
-	}
-	if(t.key == 'opening_hours') {
-		if(t.value['24_7']) {
-			return i18nService.tr($scope, 'details.poi.tag.values.wh.24_7');
-		}
-		
-		var table = getWHTable($scope, t, i18nService);
-		whTableSpan(table);
-		if(table[0][1].rspan == 6) {
-			return i18nService.tr($scope, 'details.poi.tag.values.wh.evryday') + table[0][1].text; 
-		}
-		
-		return whTableHTML(table);
-	}
-	
-	return t.value;
-};
-
-function whTableHTML(table) {
-	var t = '<table>';
-	for(var r in table) {
-		t += '<tr>';
-		for(var c in table[r]) {
-			var cell = table[r][c];
-			if(cell) {
-				t += '<td';
-				if(cell.cspan) {
-					t += ' colspan="' + cell.cspan + '"';
-				}
-				if(cell.rspan) {
-					t += ' rowspan="' + cell.rspan + '"';
-				}
-				t += '>';
-				t += cell.text + '</td>';
-			}
-		}
-		t += '</tr>';
-	}
-	t += '</table>';
-	return t;
-}
-
 function getWHTable($scope, t, i18nService) {
 	var table = [];
 	
@@ -108,6 +57,57 @@ function getWHTable($scope, t, i18nService) {
 	}
 	
 	return table;
+}
+
+function tagValueHTML(t, $scope, i18nService) {
+	if(t.value === true) {
+		return i18nService.tr($scope, 'details.poi.tag.values.true');
+	}
+	else if(t.value === false) {
+		return i18nService.tr($scope, 'details.poi.tag.values.false');
+	}
+	if(t.key == 'contact:website') {
+		return '<a href="' + t.value + '">' + t.value + '</a>';
+	}
+	if(t.key == 'opening_hours') {
+		if(t.value['24_7']) {
+			return i18nService.tr($scope, 'details.poi.tag.values.wh.24_7');
+		}
+		
+		var table = getWHTable($scope, t, i18nService);
+		whTableSpan(table);
+		if(table[0][1].rspan == 6) {
+			return i18nService.tr($scope, 'details.poi.tag.values.wh.evryday') + table[0][1].text; 
+		}
+		
+		return whTableHTML(table);
+	}
+	
+	return t.value;
+}
+
+function whTableHTML(table) {
+	var t = '<table>';
+	for(var r in table) {
+		t += '<tr>';
+		for(var c in table[r]) {
+			var cell = table[r][c];
+			if(cell) {
+				t += '<td';
+				if(cell.cspan) {
+					t += ' colspan="' + cell.cspan + '"';
+				}
+				if(cell.rspan) {
+					t += ' rowspan="' + cell.rspan + '"';
+				}
+				t += '>';
+				t += cell.text + '</td>';
+			}
+		}
+		t += '</tr>';
+	}
+	t += '</table>';
+	return t;
 }
 
 function getAddress(f, order) {

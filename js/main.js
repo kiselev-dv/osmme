@@ -467,7 +467,9 @@ function ($rootScope, $scope, $cookies, i18nService, mapService, search,
 		return false;
 	};
 	
-	$scope.tagValueHTML = tagValueHTML;
+	$scope.tagValueHTML = function(t) {
+		return tagValueHTML(t, $scope, i18nService);
+	};
 	
 	$scope.buildingType = function(f) {
 		return i18nService.tr($scope, 'details.adr.building');
@@ -587,7 +589,7 @@ function ($rootScope, $scope, $cookies, i18nService, mapService, search,
 	
 	$scope.getPTRoutes = function(id) {
 		return details.getPTRoutes(id);
-	}
+	};
 	
 }]);
 

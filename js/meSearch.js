@@ -56,9 +56,18 @@ meSearch.factory('search', ['$http', 'mapService', 'docTree',
 	    				if(service.suggestTimer) {
 	    					window.clearTimeout(service.suggestTimer);
 	    				}
-	    				service.suggestTimer = window.setTimeout(function(){service.suggest($scope);}, 300); 
+	    				service.suggestTimer = 
+	    					window.setTimeout(function(){service.suggest($scope);}, 300); 
 	    			}
 	    		});
+	    		
+	    		$scope.$watch('activePoiFilters', function(newValue, oldValue) {
+	    			if(oldValue && newValue) {
+	    				service.pagesMode = false;
+	    				mapService.clearAllMarkers($scope);
+	    				service.listPOI.apply(service, [$scope, 1]);
+	    			}
+	    		}, true);
 
 	    		$scope.searchResultsPage = {};
 	    		
@@ -188,17 +197,24 @@ meSearch.factory('search', ['$http', 'mapService', 'docTree',
 				
 				service.restrictWithBBOX = true;
 				
+				var params = {
+					'q': $scope.searchForm.q,
+					'poiclass': docTree.cathegories.features,
+					'poigroup': docTree.cathegories.groups,
+					'bbox': mapService.map.getBounds().toBBoxString(),
+					'size': 20,
+					'page': page,
+					'mark': service.getHash($scope),
+					'hierarchy': $scope.hierarchyCode
+				};
+
+				var pf = service.notNullPoiFilters($scope);
+				if(pf) {
+					params['tag_filters'] = pf;
+				}
+				
 				$http.get(API_ROOT + '/location/_search', {
-					'params' : {
-						'q': $scope.searchForm.q,
-						'poiclass': docTree.cathegories.features,
-						'poigroup': docTree.cathegories.groups,
-						'bbox': mapService.map.getBounds().toBBoxString(),
-						'size': 20,
-						'page': page,
-						'mark': service.getHash($scope),
-						'hierarchy': $scope.hierarchyCode
-					}
+					'params' : params
 				}).success(function(data) {
 					if(data.result == 'success') {
 						service.listPOISuccess.apply(service, [data, $scope]);
@@ -221,10 +237,12 @@ meSearch.factory('search', ['$http', 'mapService', 'docTree',
 			},
 
 			getHash: function($scope) {
+				var nnpf = this.notNullPoiFilters($scope);
 				return ('' + { 
 					'poiclass': $scope.osmdocCat.features,
 					'poigroup': $scope.osmdocCat.groups,
-					'query': $scope.searchForm.q}).hashCode();
+					'query': $scope.searchForm.q,
+					'poifilters': nnpf}).hashCode();
 			},
 			
 			listPages: function($scope) {
@@ -338,6 +356,41 @@ meSearch.factory('search', ['$http', 'mapService', 'docTree',
     			$scope.searchForm.q = newValue;
     			$scope.selectedSuggestion = service.getId(suggestedFeature);
     			$scope.suggestedFeature = suggestedFeature;
+    		},
+    		
+    		notNullPoiFilters: function($scope) {
+    			var filters = $scope.activePoiFilters;
+    			if(!filters) {
+    				return null;
+    			}
+    			var notNull = {};
+    			var keys = Object.keys(filters);
+    			for(var k = 0; k < keys.length; k++) {
+    				var key = keys[k];
+    				if (angular.isObject(filters[key])) {
+    					var options = filters[key];
+    					var optKeys = Object.keys(options);
+    					var notNullOptions = [];
+    					for(var o = 0; o < optKeys.length; o++) {
+    						var option = optKeys[o];
+    						if(options[option]) {
+    							notNullOptions.push(option); 
+    						}
+    					}
+    					if(notNullOptions && notNullOptions.length > 0) {
+    						notNull[key] = notNullOptions;
+    					}
+    				}
+    				else if (filters[key]) {
+    					notNull[key] = true;
+    				}
+    			}
+    			
+    			if(Object.keys(notNull) == 0) {
+    				return null;
+    			}
+    			
+    			return notNull;
     		},
     		
     		getToken: function(f) {
