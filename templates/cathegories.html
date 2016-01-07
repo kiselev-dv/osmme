@@ -9,18 +9,25 @@
 	</div>
 	<div class="tag-filters">
 		<div ng-repeat="key in poi_subfilters._ordered_keys" class="poi-filter">
-			<span ng-bind="poi_subfilters[key].title"></span>
-			<span ng-show="poi_subfilters[key].type == 'WORKING_HOURS'">
+			<span class="tag-filter-title" ng-bind="poi_subfilters[key].title"></span>
+			<span ng-if="poi_subfilters[key].type == 'WORKING_HOURS'">
 				<input type="checkbox" ng-model="activePoiFilters['opening_hours']['24_7']"></input>
 			</span> 
-			<span ng-show="poi_subfilters[key].type == 'BOOLEAN'">
+			<span ng-if="poi_subfilters[key].type == 'BOOLEAN'">
 				<input type="checkbox" ng-model="activePoiFilters[key]"></input>
 			</span> 
-			<span ng-hide="poi_subfilters[key].type == 'BOOLEAN' || poi_subfilters[key].type == 'WORKING_HOURS'">:&nbsp;</span>
-			<span ng-repeat="opt in poi_subfilters[key].options">
+			<span ng-if="poi_subfilters[key].type != 'BOOLEAN' && poi_subfilters[key].type != 'WORKING_HOURS'">:&nbsp;</span>
+			<span ng-if="poi_subfilters[key].type != 'GROUP_TRAIT'" 
+				ng-repeat="opt in poi_subfilters[key].options">
 					<span ng-bind="opt.valueTitle" class="val-option"></span> 
 					<input class="val-option-checkbox" type="checkbox" 
 						ng-model="activePoiFilters[key][opt.valueKey]"></input> 
+			</span>
+			<span ng-if="poi_subfilters[key].type == 'GROUP_TRAIT'" 
+				ng-repeat="opt in poi_subfilters[key].options">
+					<span ng-bind="opt.valueTitle" class="val-option"></span> 
+					<input class="val-option-checkbox" type="checkbox" 
+						ng-model="activePoiFilters[opt.valueKey]"></input> 
 			</span>
 		</div>
 	</div>

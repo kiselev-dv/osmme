@@ -287,3 +287,6 @@ input, textarea, form:active, input:focus {
 .poi-filter {
 	margin-bottom: 6px;
 }
+.tag-filter-title {
+	font-weight: bold;
+}

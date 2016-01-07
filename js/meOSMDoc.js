@@ -225,76 +225,89 @@ var meOSMDoc = angular.module('meOSMDoc', [ 'meMap' ]);
 						'params' : {
 							'poiclass': features,
 							'poigroup': groups,
+							'lang': $scope.lng,
 							'hierarchy': $scope.hierarchyCode
 						}
 					}).success(function(data) {
 						
 						var filters = {'_ordered_keys':[]};
+						var tagOptions = data.tag_options;
+						var values = data.tagValuesStatistic;
 						
-						var commonTags = data['common_tags'];
-						if(commonTags.indexOf('opening_hours') >= 0) {
-							filters['opening_hours'] = {
-								'key': 'opening_hours',
-								'type': 'WORKING_HOURS',
-								'title': $scope.translation['details.poi.tag.values.wh.24_7']
-							};
-							filters._ordered_keys.push('opening_hours');
-						}
+						var commonTags = tagOptions.commonTagOptions;
 						
-						var feature = $scope.name2FClass[data.poi_class[0]];
+						addWHFilter(filters, $scope);
 						var activePoiFilters = {'opening_hours': {'24_7': false}};
 						
 						for(var i = 0; i < commonTags.length; i++) {
-							var key = commonTags[i];
+							var commonTag = commonTags[i];
 							
-							var filterOptions = [];
-							
-							var values = data['tags'][key];
-							var valKeys = Object.keys(values) || [];
-							
-							if(valKeys && valKeys.length > 0) {
-								for(var vk=0; vk < valKeys.length; vk++) {
-									var valueKey = valKeys[vk];
-									if(feature && feature.more_tags && feature.more_tags[key]) {
-										var docValues = feature.more_tags[key]['values'];
-										if(docValues && docValues[valueKey]) {
-											var valueTitle = docValues[valueKey].name;
-											filterOptions.push({
-												'valueKey': valueKey,
-												'valueTitle': valueTitle
-											});
-										}
-									}
-								}
+							if (commonTag.type == 'GROUP_TRAIT') {
+								filters._ordered_keys.push(commonTag.key);
 
-								if(filterOptions.length > 0) {
-									filters[key] = {
-											'key': key,
-											'type': feature.more_tags[key].valueType,
-											'title': feature.more_tags[key]['name'],										
-											'options': filterOptions
-									};
-									filters._ordered_keys.push(key);
-									
-									activePoiFilters[key] = {};
-									for(var oi = 0; oi < filterOptions.length; oi++) {
-										var opt = filterOptions[oi];
-										var valKey = opt.valueKey;
-										activePoiFilters[key][valKey] = false;
+								var filterOptions = [];
+								for(var opti in commonTag.options) {
+									var opt = commonTag.options[opti];
+									var count = values[opt.valueKey];
+									if(count) {
+										activePoiFilters[opt.valueKey] = false;
+										filterOptions.push(opt);
 									}
 								}
-								else if(feature.more_tags[key] && 
-										'BOOLEAN' == feature.more_tags[key].valueType) {
-									activePoiFilters[key] = false;
-									filters[key] = {
-											'key': key,
-											'type': feature.more_tags[key].valueType,
-											'title': feature.more_tags[key]['name']
-									};
-									filters._ordered_keys.push(key);
-								}
+								
+								filters[commonTag.key] = {
+										'key': commonTag.key,
+										'title': commonTag.title,
+										'type': commonTag.type,
+										'options': filterOptions
+								};
 							}
+							else if(values[commonTag.key] && commonTag.type == 'BOOLEAN') {
+								filters._ordered_keys.push(commonTag.key);
+								activePoiFilters[commonTag.key] = false;
+								filters[commonTag.key] = commonTag;
+							}
+							else if(values[commonTag.key] && commonTag.type == 'ENUM') {
+								filters._ordered_keys.push(commonTag.key);
+
+								var filterOptions = [];
+								activePoiFilters[commonTag.key] = {};
+								for(var opti in commonTag.options) {
+									var opt = commonTag.options[opti];
+									var count = values[commonTag.key][opt.valueKey];
+									if(count) {
+										activePoiFilters[commonTag.key][opt.valueKey] = false;
+										filterOptions.push(opt);
+									}
+								}
+								filters[commonTag.key] = {
+										'key': commonTag.key,
+										'title': commonTag.title,
+										'type': commonTag.type,
+										'options': filterOptions
+								};
+							}
+							else if(values[commonTag.key] && commonTag.type == 'ANY_STRING') {
+								filters._ordered_keys.push(commonTag.key);
+								activePoiFilters[commonTag.key] = {};
+								var filterOptions = [];
+								for(var valKey in values[commonTag.key]) {
+									activePoiFilters[commonTag.key][valKey] = false;
+									filterOptions.push({
+										'valueKey': valKey,
+										'valueTitle': valKey
+									});
+								}
+								filters[commonTag.key] = {
+										'key': commonTag.key,
+										'title': commonTag.title,
+										'type': commonTag.type,
+										'options': filterOptions
+								};
+							}
+							
 						}
+						console.log(filters);
 						$scope.poi_subfilters = filters;
 						$scope.activePoiFilters = activePoiFilters;
 					});
@@ -306,6 +319,15 @@ var meOSMDoc = angular.module('meOSMDoc', [ 'meMap' ]);
 		};
 		return service;
 	}]);
+	
+	function addWHFilter(filters, $scope) {
+		filters['opening_hours'] = {
+				'key': 'opening_hours',
+				'type': 'WORKING_HOURS',
+				'title': $scope.translation['details.poi.tag.values.wh.24_7']
+		};
+		filters._ordered_keys.push('opening_hours');
+	}
 
 })(angular, meOSMDoc);
 
