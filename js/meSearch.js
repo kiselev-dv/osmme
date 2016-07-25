@@ -94,7 +94,8 @@ meSearch.factory('search', ['$http', 'mapService', 'docTree',
 					'mark': service.getHash($scope),
 					'page': page,
 					'hierarchy': $scope.hierarchyCode,
-					'explain': $scope.explain
+					'explain': $scope.explain,
+					'site_session': $scope.SITE_SESSION
 				};
 
 				// docTree.cathegories.groups and $scope.osmdocCat.groups 
@@ -170,7 +171,8 @@ meSearch.factory('search', ['$http', 'mapService', 'docTree',
 						'q': $scope.searchForm.q,
 						'size': 10,
 						'mark': this.getHash($scope),
-						'hierarchy': $scope.hierarchyCode
+						'hierarchy': $scope.hierarchyCode,
+						'site_session': $scope.SITE_SESSION
 					};
 					if($scope.strictSearch) {
 						prm['strict'] = true;
@@ -205,7 +207,8 @@ meSearch.factory('search', ['$http', 'mapService', 'docTree',
 					'size': 20,
 					'page': page,
 					'mark': service.getHash($scope),
-					'hierarchy': $scope.hierarchyCode
+					'hierarchy': $scope.hierarchyCode,
+					'site_session': $scope.SITE_SESSION
 				};
 
 				var pf = service.notNullPoiFilters($scope);

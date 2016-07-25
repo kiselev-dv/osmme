@@ -37,13 +37,14 @@ var meIGeocoder = angular.module('meIGeocoder', [ 'ngResource', 'meMap', 'meDeta
 				
 				if(undefined == callback) {
 					var neighbours = typeof IGEOCODE_NEIGHBOURS !== 'undefined' ? IGEOCODE_NEIGHBOURS : 8;
-					path += '?' + '&max_neighbours=' + (neighbours || 8);
+					path += '?' + '&max_neighbours=' + (neighbours || 8) + '&site_session=' + $scope.SITE_SESSION;
 					$http.get(path).success(function(data) {
 						service.showAnswer.apply(service, [data]);
 					});
 				}
 				else {
-					path += '?' + 'largest_level=all&max_neighbours=0&full_geometry=false'; 
+					path += '?' + 'largest_level=all&max_neighbours=0&full_geometry=false';
+					path += '&site_session=' + $scope.SITE_SESSION;
 					$http.get(path).success(callback);
 				}
 

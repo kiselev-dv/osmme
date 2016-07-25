@@ -104,6 +104,21 @@ function ($rootScope, $scope, $cookies, i18nService, mapService, search,
 	$scope.SITE_SESSION = Math.floor((1 + Math.random()) * 0x10000)
 	    .toString(16).substring(1);
 	
+	if (USER_COOKIE) {
+		if ($cookies.get('user')) {
+			$scope.USER_ID = $cookies.get('user'); 
+		}
+		else {
+			$scope.USER_ID = Math.floor((1 + Math.random()) * 0x10000)
+		    	.toString(16).substring(1);
+			var expires = new Date();
+			expires.setDate(expires.getDate() + 100);
+			$cookies.put('user', $scope.USER_ID, {
+				'expires': expires
+			}); 
+		}
+	}
+	
 	$scope.HTML_ROOT = HTML_ROOT;
 	$rootScope.HTML_ROOT = HTML_ROOT;
 	

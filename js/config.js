@@ -5,6 +5,7 @@ var DEFAULT_LAYER = 'mapnik';
 var MAPSURFER_TILES = 'http://korona.geog.uni-heidelberg.de/tiles/roads/x={x}&y={y}&z={z}';
 
 var DEFAULT_LANGUAGE = 'ru';
+var USER_COOKIE = true;
 
 var DEFAULT_LAT = 57.7511;
 var DEFAULT_LON = 53.02;

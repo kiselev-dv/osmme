@@ -121,6 +121,7 @@ meDetails.factory('details', ['$http', '$timeout', '$rootScope', 'mapService', '
 			if(related) {
 				url += '/_related';
 			}
+			url += '?site_session=' + $scope.SITE_SESSION;
 			
 			$http.get(url)
 			.success(function(data) {

@@ -107,8 +107,9 @@ var meOSMDoc = angular.module('meOSMDoc', [ 'meMap' ]);
 			loadTree: function($scope, lang, hierarchy) {
 	        
 				var service = this;
-				
-	        	$http.get(API_ROOT + '/osmdoc/hierarchy/' + lang + '/' + hierarchy)
+				var path = API_ROOT + '/osmdoc/hierarchy/' + lang + '/' + hierarchy;
+				path += '?site_session=' + $scope.SITE_SESSION;
+	        	$http.get(path)
 		        	.success(function(data) {
 		        		$scope.hierarchy = data;
 		        		traverseHierarchy($scope.hierarchy, {
@@ -226,7 +227,8 @@ var meOSMDoc = angular.module('meOSMDoc', [ 'meMap' ]);
 							'poiclass': features,
 							'poigroup': groups,
 							'lang': $scope.lng,
-							'hierarchy': $scope.hierarchyCode
+							'hierarchy': $scope.hierarchyCode,
+							'site_session=': $scope.SITE_SESSION
 						}
 					}).success(function(data) {
 						
