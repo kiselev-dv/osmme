@@ -143,7 +143,7 @@ var MapModule = angular.module('meMap', [ 'ngCookies', 'meI18n' ]);
 						animate : false
 					});
 					
-					var fid = (e.popup._source ? e.popup._source.feature_id : e.popup.feature_id);
+					var fid = (e.popup._source ? e.popup._source.id : e.popup.id);
 					
 					// _contentNode rebuilded on each poup open 
 					$compile(e.popup._contentNode)($scope);
@@ -153,7 +153,7 @@ var MapModule = angular.module('meMap', [ 'ngCookies', 'meI18n' ]);
 				});
 
 				this.map.on('popupclose', function(e) {
-					var fid = (e.popup._source ? e.popup._source.feature_id : e.popup.feature_id);
+					var fid = (e.popup._source ? e.popup._source.id : e.popup.id);
 					$scope.$broadcast('PopupClose', fid);
 					$rootScope.$$phase || $rootScope.$apply();
 				});
@@ -177,24 +177,24 @@ var MapModule = angular.module('meMap', [ 'ngCookies', 'meI18n' ]);
 			},
 			
 			createPopUP: function($scope, data) {
-				if(!this.id2Feature[data.feature_id]) {
-					this.id2Feature[data.feature_id] = data;
+				if(!this.id2Feature[data.id]) {
+					this.id2Feature[data.id] = data;
 					
 					var clazz = data.poi_class ? $scope.name2FClass[data.poi_class[0]] : null;
 					
 					var thisClosure = this;
 					this.loadIcon(clazz, function(){
-						var m = L.marker([data.center_point.lat, data.center_point.lon]);
+						var m = L.marker([data.centroid.lat, data.centroid.lon]);
 						if(clazz && clazz.ll_icon) {
-							var m = L.marker([data.center_point.lat, data.center_point.lon], {'icon': clazz.ll_icon});
+							var m = L.marker([data.centroid.lat, data.centroid.lon], {'icon': clazz.ll_icon});
 						}
-						thisClosure.id2Marker[data.feature_id] = m;
+						thisClosure.id2Marker[data.id] = m;
 						
 						var html = thisClosure.getPopUPHtml(
-								data, data.feature_id, $scope, clazz);
+								data, data.id, $scope, clazz);
 						
 						m.addTo(thisClosure.map).bindPopup(html);
-						m.feature_id = data.feature_id;
+						m.id = data.id;
 					});
 				}
 			},
@@ -236,9 +236,9 @@ var MapModule = angular.module('meMap', [ 'ngCookies', 'meI18n' ]);
 						$scope.translation['addr.order'] : 'hn-street-city';
 				var address = getAddress(f, order)[0];
 				
-				var moreLink = '<a class="more-link" href="' 
-					+ $scope.mergeIntoPath({'details': true, 'id': activeFeatureID}) + '">' + 
-					i18nService.tr($scope, 'map.js.popup.more') + '</a>';
+				// var moreLink = '<a class="more-link" href="' 
+				// 	+ $scope.mergeIntoPath({'details': true, 'id': activeFeatureID}) + '">' + 
+				// 	i18nService.tr($scope, 'map.js.popup.more') + '</a>';
 				
 				var pt = '';
 				if(clazz) {
@@ -257,10 +257,10 @@ var MapModule = angular.module('meMap', [ 'ngCookies', 'meI18n' ]);
 				
 				if(title) {
 					return '<div class="fpopup"><h2>' + title + '</h2>' + pt +
-					'<div>' + address + '</div><div>' + moreLink + '</div>';
+					'<div>' + address + '</div>';// + '<div>' + moreLink + '</div>';
 				}
 				
-				return '<div>' + address + '</div>' + moreLink;
+				return '<div>' + address + '</div>';// + moreLink;
 			},
 			
 			remove: function($scope, id) {

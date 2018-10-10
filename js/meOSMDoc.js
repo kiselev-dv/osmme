@@ -123,7 +123,7 @@ var meOSMDoc = angular.module('meOSMDoc', [ 'meMap' ]);
 		        		$scope.$broadcast('HierarchyLoaded');
 		            });
 	        	
-	        },        
+			},
 
 			expandCathegories: function($scope) {
 				

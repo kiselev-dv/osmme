@@ -28,13 +28,13 @@
 				<h4 ng-bind="translation['details.building.pois.pois']"></h4>
 				<ul>
 					<li ng-repeat="f in objectDetails._related._same_building | filter : {'poi_addr_match':'!nearest'}">
-						<a href="{{mergeIntoPath('id', f.feature_id)}}" >{{formatSearchResultTitle(f)}}</a>
+						<a href="{{mergeIntoPath('id', f.id)}}" >{{formatSearchResultTitle(f)}}</a>
 					</li>
 				</ul>
 				<h4 ng-bind="moreLikeThisH4"></h4>
 				<ul>
 					<li ng-repeat="f in objectDetails._related._same_poi_type">
-						<a href="{{mergeIntoPath('id', f.feature_id)}}" >{{formatSearchResultTitle(f)}}</a>
+						<a href="{{mergeIntoPath('id', f.id)}}" >{{formatSearchResultTitle(f)}}</a>
 					</li>
 				</ul>
 			</div>
@@ -64,7 +64,7 @@
 				<h4 ng-bind="translation['details.building.pois']"></h4>
 				<ul>
 					<li ng-repeat="f in objectDetails._related._same_building | filter : {'poi_addr_match':'!nearest'}">
-						<a href="{{mergeIntoPath('id', f.feature_id)}}" >{{formatSearchResultTitle(f)}}</a>
+						<a href="{{mergeIntoPath('id', f.id)}}" >{{formatSearchResultTitle(f)}}</a>
 					</li>
 				</ul>
 			</div>

@@ -22,6 +22,8 @@ var meIGeocoder = angular.module('meIGeocoder', [ 'ngResource', 'meMap', 'meDeta
 					$scope.inverseGeocodeResults = null;
 					mapService.filterMarkersByTypes($scope, []);
 				});
+
+				service.SITE_SESSION = $scope.SITE_SESSION;
 			},
 			
 			
@@ -37,14 +39,14 @@ var meIGeocoder = angular.module('meIGeocoder', [ 'ngResource', 'meMap', 'meDeta
 				
 				if(undefined == callback) {
 					var neighbours = typeof IGEOCODE_NEIGHBOURS !== 'undefined' ? IGEOCODE_NEIGHBOURS : 8;
-					path += '?' + '&max_neighbours=' + (neighbours || 8) + '&site_session=' + $scope.SITE_SESSION;
+					path += '?' + '&max_neighbours=' + (neighbours || 8) + '&site_session=' + service.SITE_SESSION;
 					$http.get(path).success(function(data) {
 						service.showAnswer.apply(service, [data]);
 					});
 				}
 				else {
 					path += '?' + 'largest_level=all&max_neighbours=0&full_geometry=false';
-					path += '&site_session=' + $scope.SITE_SESSION;
+					path += '&site_session=' + service.SITE_SESSION;
 					$http.get(path).success(callback);
 				}
 
@@ -56,10 +58,10 @@ var meIGeocoder = angular.module('meIGeocoder', [ 'ngResource', 'meMap', 'meDeta
 					this.scope.inverseGeocodeResults = data;
 					var $scope = this.scope;
 					
-					if(data.feature_id) {
-						this.scope.$broadcast('CloseSearchResults', data.feature_id);
+					if(data.id) {
+						this.scope.$broadcast('CloseSearchResults', data.id);
 						mapService.createPopUP($scope, data);
-						mapService.openPopUP($scope, data.feature_id);
+						mapService.openPopUP($scope, data.id);
 					}
 					
 					if(data._related && data._related._same_building) {

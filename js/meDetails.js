@@ -126,7 +126,7 @@ meDetails.factory('details', ['$http', '$timeout', '$rootScope', 'mapService', '
 			$http.get(url)
 			.success(function(data) {
 				
-				if(data && data.feature_id) {
+				if(data && data.id) {
 					check($scope, data);
 				}
 				

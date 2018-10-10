@@ -13,7 +13,7 @@
 <div id="links">
 	<a href="javascript:void(0);" ng-bind="translation['map.catalog']" ng-click="showCatalog = !showCatalog"></a>
 	<a href="{{HTML_ROOT}}/{{lng}}/about.html" ng-bind="translation['map.aboutus']"></a>
-	<a href="{{HTML_ROOT}}/blog/" ng-bind="translation['map.blog']"></a>
+	<!-- <a href="{{HTML_ROOT}}/blog/" ng-bind="translation['map.blog']"></a> -->
 	
 	<span id="languages">
 		<a ng-repeat="l in langsAvaible | filter: '!' + lng" href="{{mergeIntoPath('lang', l)}}" ng-bind="l"></a>
@@ -29,34 +29,34 @@
 			ng-click="browserGeoLocation = null;"></a>
 	</div>
 </div>
-<div ng-include="'templates/cathegories.html'"></div>
+<!-- <div ng-include="'templates/cathegories.html'"></div> -->
 <div id="r-scroll-pane" class="y-scroll" ng-style="{'max-height': (windowHeight - windowHeight * 0.15) + 'px'}" me-resize >
-	<div id="serch-types" ng-show="searchResultsPage.matched_type">
+	<!-- <div id="serch-types" ng-show="searchResultsPage.matched_poi_classes">
 		<ul>
-			<li ng-repeat="f in searchResultsPage.matched_type" 
-				ng-class="{'suggested': f.name == selectedSuggestion}" 
+			<li ng-repeat="f in searchResultsPage.matched_poi_classes" 
+				ng-class="{'suggested': f == selectedSuggestion}" 
 				class="search-result" >
-				<input type="checkbox" ng-checked="osmdocCat.features.indexOf(f.name) >= 0" 
-					ng-click="navigate('pt', switchPoiClassArray(f.name));"></input>
-				<a class="title" href="{{mergeIntoPath('pt', switchPoiClassArray(f.name))}}" 
-					ng-show="f.translated_title" ng-bind="poiClassTranslatedTitle(f)"></a>
+				<input type="checkbox" ng-checked="osmdocCat.features.indexOf(f) >= 0" 
+					ng-click="navigate('pt', switchPoiClassArray(f));"></input>
+				<a class="title" href="{{mergeIntoPath('pt', switchPoiClassArray(f))}}" 
+					ng-bind="poiClassTranslatedTitle(f)"></a>
 			</li>
 		</ul>
-	</div>
-	<div id="catalog" ng-show="!searchResultsPage.features && showCatalog">
+	</div> -->
+	<div id="catalog" ng-show="!searchResultsPage.rows && showCatalog">
 		<ul id="cathegories-tree">
 			<li ng-repeat="data in hierarchy.groups" ng-include="'PoiTreeItem.html'" ></li>
 		</ul>
 	</div>
-	<div class="search-results" ng-show="searchResultsPage.features">
+	<div class="search-results" ng-show="searchResultsPage.rows">
 		<div>
 			<a class="close-search-results" ng-click="$broadcast('CloseSearchResults');" 
 				ng-bind="translation['map.js.search.result.close']"></a>
 			<div style="clear: both;"></div>	
 		</div>
 		<ul>
-			<li ng-repeat="f in searchResultsPage.features" 
-				ng-class="{'selected': f.feature_id == activeFeatureID, 'suggested': f.feature_id == selectedSuggestion}" 
+			<li ng-repeat="f in searchResultsPage.rows" 
+				ng-class="{'selected': f.id == activeFeatureID, 'suggested': f.id == selectedSuggestion}" 
 				class="search-result" ng-click="selectRow(f);" 
 				ng-include="HTML_ROOT + 'templates/nameAndTitle.html'" />
 			</li>

@@ -19,7 +19,7 @@
 	<div id="links">
 		<a href="javascript:void(0);" ng-bind="translation['map.catalog']" ng-click="showCatalog = !showCatalog"></a>
 		<a href="{{HTML_ROOT}}/{{lng}}/about.html" ng-bind="translation['map.aboutus']"></a>
-		<a href="{{HTML_ROOT}}/blog/" ng-bind="translation['map.blog']"></a>
+		<!-- <a href="{{HTML_ROOT}}/blog/" ng-bind="translation['map.blog']"></a> -->
 		<!-- <a href="javascript:void(0);" ng-bind="translation['map.note']"></a> -->
 		
 		<span id="languages">
@@ -40,9 +40,9 @@
 	</div>
 	<div ng-include="'templates/cathegories.html'"></div>
 	<div id="r-scroll-pane" class="y-scroll" ng-style="{'max-height': (windowHeight - windowHeight * 0.15) + 'px'}" me-resize >
-		<div id="serch-types" ng-show="searchResultsPage.matched_type">
+		<div id="serch-types" ng-show="searchResultsPage.matched_poi_classes">
 			<ul>
-				<li ng-repeat="f in searchResultsPage.matched_type" 
+				<li ng-repeat="f in searchResultsPage.matched_poi_classes" 
 					ng-class="{'suggested': f.name == selectedSuggestion}" 
 					class="search-result" >
 					<input type="checkbox" ng-model="f.selected" ng-change=""></input>
@@ -63,7 +63,7 @@
 			</div>
 			<ul>
 				<li ng-repeat="f in searchResultsPage.features" 
-					ng-class="{'selected': f.feature_id == activeFeatureID, 'suggested': f.feature_id == selectedSuggestion}" 
+					ng-class="{'selected': f.id == activeFeatureID, 'suggested': f.id == selectedSuggestion}" 
 					class="search-result" ng-click="selectRow(f); $broadcast('CloseSearchResults');"
 				</li>	
 			</ul>

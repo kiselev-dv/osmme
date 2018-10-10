@@ -34,7 +34,8 @@ OSMmeApp.config(['$locationProvider', function($locationProvider) {
 	$locationProvider.hashPrefix('!');
 }]);
 
-if(ANALYTICS_CODE) {
+// Check that GA wasn't blocked by adblock
+if(ANALYTICS_CODE && window._gaq && window._gaq._getTracker) {
 	OSMmeApp.config(['AnalyticsProvider', function(AnalyticsProvider) {
 		AnalyticsProvider.setAccount(ANALYTICS_CODE);
 	}]);
@@ -207,32 +208,32 @@ function ($rootScope, $scope, $cookies, i18nService, mapService, search,
 		}
 		
 		var map = mapService.createMap($scope, zlatlon[1], zlatlon[2], zlatlon[0]);
-		iGeocoder.create($scope, map);
+		// iGeocoder.create($scope, map);
 		
 		docTree.attach($scope);
 		search.attach($scope);
 		
 		$scope.dayNames = i18nService.tr($scope, 'details.poi.tag.values.wh.days').split(' ');
 		
-		mapService.enquirePosition(function(position){
-			if(position) {
-				var lat = position.coords.latitude;
-				var lon = position.coords.longitude;
+		// mapService.enquirePosition(function(position){
+		// 	if(position) {
+		// 		var lat = position.coords.latitude;
+		// 		var lon = position.coords.longitude;
 				
-				if(map.getCenter().distanceTo([lat, lon]) > 500) {
-					iGeocoder.sendRequest(lon, lat, false, function(data){
-						if(data && data.text) {
-							data.lat = lat;
-							data.lon = lon;
-							$scope.browserGeoLocation = data;
-						}
-						else if($scope.browserGeoLocation) {
-							delete $scope.browserGeoLocation;
-						}
-					});
-				}
-			}
-		});
+		// 		if(map.getCenter().distanceTo([lat, lon]) > 500) {
+		// 			iGeocoder.sendRequest(lon, lat, false, function(data){
+		// 				if(data && data.text) {
+		// 					data.lat = lat;
+		// 					data.lon = lon;
+		// 					$scope.browserGeoLocation = data;
+		// 				}
+		// 				else if($scope.browserGeoLocation) {
+		// 					delete $scope.browserGeoLocation;
+		// 				}
+		// 			});
+		// 		}
+		// 	}
+		// });
 	});
 	
 	$scope.activeFeatureID = ls['fid'];
@@ -267,10 +268,7 @@ function ($rootScope, $scope, $cookies, i18nService, mapService, search,
 	};
 	
 	$scope.poiClassTranslatedTitle = function(f) {
-		if(f.title_by_lang && f.title_by_lang[$scope.lng]) {
-			return f.title_by_lang[$scope.lng];
-		}
-		return f.translated_title[0];
+		return $scope.name2FClass[f].translated_title;
 	};
 	
 	function updateCathegories() {
@@ -579,7 +577,7 @@ function ($rootScope, $scope, $cookies, i18nService, mapService, search,
 		if($scope.suggestedFeature) {
 			
 			//location
-			if($scope.suggestedFeature.feature_id) {
+			if($scope.suggestedFeature.id) {
 				$scope.$broadcast('SelectFeature', $scope.suggestedFeature);
 			}
 			

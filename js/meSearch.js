@@ -45,7 +45,7 @@ meSearch.factory('search', ['$http', 'mapService', 'docTree',
 	    		});
 
 	    		$scope.$on('SelectFeature', function(evnt, f) {
-	    			mapService.openPopUP($scope, f.feature_id);
+	    			mapService.openPopUP($scope, f.id);
 	    		});
 	    		
 	    		$scope.$watch('searchForm.q', function(newValue, oldValue){
@@ -127,16 +127,16 @@ meSearch.factory('search', ['$http', 'mapService', 'docTree',
 			},
 
 			searchSuccess: function($scope, data) {
-				if(data.result == 'success') {
+				if(!data.error) {
 					
 					var curentHash = this.getHash($scope);
 					if(data.mark == curentHash) {
 						
 						mapService.closePopUP($scope, $scope.activeFeatureID);
 						
-						if($scope.searchResultsPage && $scope.searchResultsPage.features) {
-							angular.forEach($scope.searchResultsPage.features, function(f){
-								mapService.remove($scope, f.feature_id);
+						if($scope.searchResultsPage && $scope.searchResultsPage.rows) {
+							angular.forEach($scope.searchResultsPage.rows, function(f){
+								mapService.remove($scope, f.id);
 							});
 						}
 
@@ -144,9 +144,9 @@ meSearch.factory('search', ['$http', 'mapService', 'docTree',
 						$scope.getSRPages();
 						
 						var pointsArray = [];
-						angular.forEach(data.features, function(f, index){
-							mapService.createPopUP($scope, f, f.feature_id);
-							pointsArray.push(f.center_point);
+						angular.forEach(data.rows, function(f, index){
+							mapService.createPopUP($scope, f, f.id);
+							pointsArray.push(f.centroid);
 						});
 						
 						if(service.resetMap && pointsArray && pointsArray.length > 0){
@@ -169,22 +169,25 @@ meSearch.factory('search', ['$http', 'mapService', 'docTree',
 					service.waitForAnswer = true;
 					var prm = {
 						'q': $scope.searchForm.q,
+						'prefix': true,
 						'size': 10,
 						'mark': this.getHash($scope),
 						'hierarchy': $scope.hierarchyCode,
 						'site_session': $scope.SITE_SESSION
 					};
-					if($scope.strictSearch) {
-						prm['strict'] = true;
-					}
+					// if($scope.strictSearch) {
+					// 	prm['strict'] = true;
+					// }
 					if($scope.searchAddressesOnly) {
 						prm['only_address'] = true;
 					}
-					$http.get(API_ROOT + '/location/_suggest', {
+					$http.get(API_ROOT + '/location/_search.json', {
 						'params' : prm 
 					}).success(function(data) {
 						service.waitForAnswer = false;
 						service.searchSuccess.apply(service, [$scope, data]);
+					}).error(function() {
+						// TODO add errors handling
 					});
 				}
 			},
@@ -211,6 +214,10 @@ meSearch.factory('search', ['$http', 'mapService', 'docTree',
 					'site_session': $scope.SITE_SESSION
 				};
 
+				if (EXPAND_POI_CATHEGORIES) {
+					params['poiclass'] += docTree.expandCathegories($scope);
+				}
+
 				var pf = service.notNullPoiFilters($scope);
 				if(pf) {
 					params['tag_filters'] = pf;
@@ -219,7 +226,7 @@ meSearch.factory('search', ['$http', 'mapService', 'docTree',
 				$http.get(API_ROOT + '/location/_search', {
 					'params' : params
 				}).success(function(data) {
-					if(data.result == 'success') {
+					if(data.rows) {
 						service.listPOISuccess.apply(service, [data, $scope]);
 					}
 				});
@@ -228,12 +235,12 @@ meSearch.factory('search', ['$http', 'mapService', 'docTree',
 			listPOISuccess: function(data, $scope) {
 				var curentHash = service.getHash($scope);
 				if(data.mark == curentHash) {
-					angular.forEach(data.features, function(f, index){
+					angular.forEach(data.rows, function(f, index){
 						mapService.createPopUP($scope, f);
 					});
 					
 					//load data paged but no more than 10 pages
-					if(data.page * data.size < data.hits && data.page < 10) {
+					if(data.page * data.pageSize < data.total_hits && data.page < 10) {
 						service.listPOI($scope, data.page + 1);
 					}
 				}
@@ -254,9 +261,10 @@ meSearch.factory('search', ['$http', 'mapService', 'docTree',
     			
     			if($scope.searchResultsPage) {
     				
-    				var total = $scope.searchResultsPage.hits;
+    				var total = $scope.searchResultsPage.total_hits;
     				var page = $scope.searchResultsPage.page;
-    				var pageSize = $scope.searchResultsPage.size;
+					var pageSize = $scope.searchResultsPage.pageSize;
+					
     				var maxPage = parseInt(total/pageSize);
     				if(total % pageSize == 0) {
     					maxPage += 1;
@@ -311,7 +319,7 @@ meSearch.factory('search', ['$http', 'mapService', 'docTree',
     				return;
     			}
     			
-    			var page = $scope.searchResultsPage.matched_type.slice(0);
+    			var page = $scope.searchResultsPage.matched_poi_classes.slice(0);
     			page = page.concat($scope.searchResultsPage.features);
     			
     			var split = $scope.searchForm.q.split(/[\s,;.]+/);
@@ -340,7 +348,7 @@ meSearch.factory('search', ['$http', 'mapService', 'docTree',
     				service.queryHead = split.join(' ');
     			}
     			
-    			var page = $scope.searchResultsPage.matched_type.slice(0);
+    			var page = $scope.searchResultsPage.matched_poi_classes.slice(0);
     			page = page.concat($scope.searchResultsPage.features);
     			
     			service.selectedSuggestion++;
@@ -406,7 +414,7 @@ meSearch.factory('search', ['$http', 'mapService', 'docTree',
     		},
     		
     		getId: function(f) {
-    			return f.feature_id || f.name;
+    			return f.id || f.name;
     		}
 	    };
 	    
