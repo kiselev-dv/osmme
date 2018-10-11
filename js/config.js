@@ -17,6 +17,6 @@ var ADDR_ADMIN2 = true;
 var ADDR_LOCAL_ADMIN = true;
 
 var TYPE_ICONS_ROOT = '/img/type_icons';
-var USE_POI_TAGS_FILTERS = false;
+var USE_POI_TAGS_FILTERS = true;
 var EXPAND_POI_CATHEGORIES = true;
 var ANALYTICS_CODE = '';
