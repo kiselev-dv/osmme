@@ -220,16 +220,14 @@ var meOSMDoc = angular.module('meOSMDoc', [ 'meMap' ]);
 				var service = this;
 				var features = service.cathegories.features;
 				if (service.cathegories.groups) {
-					features.concat(service.expandCathegories($scope));
+					features = features.concat(service.expandCathegories($scope));
 				}
 				
-				if( features.length > 0 || groups.length > 0 ) {
+				if( features.length > 0) {
 					$http.get(API_ROOT + '/osmdoc/statistic/tagvalues.json',{
 						'params' : {
 							'poiclass': features,
-							// 'poigroup': groups,
 							'lang': $scope.lng,
-							// 'hierarchy': $scope.hierarchyCode,
 							'site_session=': $scope.SITE_SESSION
 						}
 					}).success(function(data) {
